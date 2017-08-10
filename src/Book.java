@@ -13,4 +13,24 @@ public class Book{
 		publication = p;
 		borrower_id = b;
 	}
+
+	public int get_id(){
+		return id;
+	}
+
+	public String get_title(){
+		return title;
+	}
+
+	public String get_author(){
+		return author;
+	}
+
+	public String get_publication(){
+		return publication;
+	}
+
+	public int borrower_id(){
+		return borrower_id;
+	}
 }
