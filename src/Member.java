@@ -1,4 +1,5 @@
-class Member{
+package slm;
+public class Member{
 	private int id;
 	private String name;
 	private String email;

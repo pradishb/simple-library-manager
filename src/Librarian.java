@@ -1,3 +1,4 @@
-class Librarian{
+package slm;
+public class Librarian{
 	
 }
