@@ -4,14 +4,12 @@ public class Book{
 	private String title;
 	private String author;
 	private String publication;
-	private int borrower_id;
 
-	public void update_data(int i, String t, String a, String p, int b){
+	public void update_data(int i, String t, String a, String p){
 		id = i;
 		title = t;
 		author = a;
 		publication = p;
-		borrower_id = b;
 	}
 
 	public int get_id(){
@@ -30,7 +28,4 @@ public class Book{
 		return publication;
 	}
 
-	public int borrower_id(){
-		return borrower_id;
-	}
 }

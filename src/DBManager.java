@@ -9,7 +9,8 @@ public class DBManager{
 	static Connection conn = null;
 	static Statement stmt = null;
 	static PreparedStatement add_member_stmt;
-
+	static PreparedStatement add_book_stmt;
+	static PreparedStatement issue_book_stmt;
 
 	public static void init_database(){
 		try{
@@ -21,6 +22,8 @@ public class DBManager{
 
 			stmt = conn.createStatement();			
 			add_member_stmt = conn.prepareStatement("INSERT INTO members(id, name, semester, email, books_borrowed) VALUES (0,?,?,?,?)");
+			add_book_stmt = conn.prepareStatement("INSERT INTO books(id, title, author, publication) VALUES (0,?,?,?)");
+			issue_book_stmt = conn.prepareStatement("INSERT INTO borrows(id, borrower_id, book_id, borrowed_date) VALUES (0,?,?,CURRENT_TIMESTAMP)");
 		}catch(SQLException se){
 			System.out.println("Error while loading from database.");
 			System.out.println("Details:");
