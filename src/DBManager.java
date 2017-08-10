@@ -1,5 +1,4 @@
 package slm;
-import slm.Book;
 import java.sql.*;
 
 public class DBManager{
@@ -9,8 +8,8 @@ public class DBManager{
 	static final String PASS = "";
 	static Connection conn = null;
 	static Statement stmt = null;
-	static int no_of_books = 0;
-	static Book[] books;
+	static PreparedStatement add_member_stmt;
+
 
 	public static void init_database(){
 		try{
@@ -18,42 +17,30 @@ public class DBManager{
 
 			System.out.println("Connecting to database...");
 
-			conn = DriverManager.getConnection(DB_URL,USER,PASS);	
+			conn = DriverManager.getConnection(DB_URL,USER,PASS);
 
-			stmt = conn.createStatement();
-			// ResultSet rs = stmt.executeQuery("SELECT * FROM books");
-			// rs.last();
-			// no_of_books = rs.getRow();
-			// rs.beforeFirst();
-			
-			// System.out.println(no_of_books + " book(s) found.");
-			// System.out.println("Creating book objects...");
-
-			// books = new Book[no_of_books];
-
-			// while(rs.next()){
-			// 	int id  = rs.getInt("id");
-			// 	String title = rs.getString("title");
-			// 	String author = rs.getString("author");
-			// 	String publication = rs.getString("publication");
-			// 	int borrower_id = rs.getInt("borrower_id");
-
-
-			// 	books[rs.getRow()-1] = new Book();
-			// 	books[rs.getRow()-1].update_data(id,title,author,publication,borrower_id);				
-			// }
-			// rs.close();
-			// stmt.close();
-			// conn.close();
-			
+			stmt = conn.createStatement();			
+			add_member_stmt = conn.prepareStatement("INSERT INTO members(id, name, semester, email, books_borrowed) VALUES (0,?,?,?,?)");
 		}catch(SQLException se){
 			System.out.println("Error while loading from database.");
+			System.out.println("Details:");
 			se.printStackTrace();
 		}catch(Exception e){
 			System.out.println("Error while loading from database.");
+			System.out.println("Details:");
 			e.printStackTrace();
-		}finally{
-			
 		}
+	}
+
+	public static void close_database(){
+		try{
+			stmt.close();
+			conn.close();
+		}catch(SQLException se){
+			System.out.println("Error while destroying database objects.");
+			System.out.println("Details:");
+			se.printStackTrace();
+		}
+
 	}
 }
