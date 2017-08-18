@@ -5,6 +5,13 @@ public class Book{
 	private String author;
 	private String publication;
 
+	public Book(int i, String t, String a, String p){
+		id = i;
+		title = t;
+		author = a;
+		publication = p;
+	}
+
 	public void update_data(int i, String t, String a, String p){
 		id = i;
 		title = t;
