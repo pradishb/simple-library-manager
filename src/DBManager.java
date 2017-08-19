@@ -15,6 +15,7 @@ public class DBManager{
 	static PreparedStatement remove_book_stmt;
 	static PreparedStatement update_book_stmt;
 	static PreparedStatement issue_book_stmt;
+	static PreparedStatement get_books_stmt;
 
 	public static void init_database(){
 		try{
@@ -32,6 +33,7 @@ public class DBManager{
 			remove_book_stmt = conn.prepareStatement("DELETE FROM books WHERE id=?");
 			update_book_stmt = conn.prepareStatement("UPDATE books SET id=0,title=?,author=?,publication=?");
 			issue_book_stmt = conn.prepareStatement("INSERT INTO borrows(id, borrower_id, book_id, borrowed_date) VALUES (0,?,?,CURRENT_TIMESTAMP)");
+			get_books_stmt = conn.prepareStatement("SELECT * FROM books");
 			System.out.println("Connection has been made to database.");
 		}catch(SQLException se){
 			System.out.println("Error while loading from database.");
