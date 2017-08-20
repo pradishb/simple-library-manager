@@ -38,7 +38,7 @@ public class LibrarySystem{
 	}
 
 	public static void update_table(JTable table, String[] cols, Object[][]  data){
-		DefaultTableModel myData = new DefaultTableModel(data, cols);
-		table.setModel(myData);
+		table.setModel(new DefaultTableModel(data, cols));
+		table.getColumn("ID").setMaxWidth(30);
 	}
 }
