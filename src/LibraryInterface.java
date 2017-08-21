@@ -90,6 +90,15 @@ public class LibraryInterface{
 			public void actionPerformed(ActionEvent ae){
 				chooser.setFileFilter(new FileNameExtensionFilter("CSV Files", "csv"));
 				int returnVal = chooser.showOpenDialog(library_window);
+				if(returnVal == JFileChooser.APPROVE_OPTION){
+					try{
+						LibrarySystem.import_books(chooser.getSelectedFile());
+						LibrarySystem.update_table(mb_table, new String[]{"ID","TITLE","AUTHER","PUBLICATION"}, LibrarySystem.books_to_array(LibrarySystem.get_books()));
+					}catch(InvalidCsvFormatException e){
+						System.out.println(e.getMessage());
+					}
+				}
+
 			}
 		});
 			
