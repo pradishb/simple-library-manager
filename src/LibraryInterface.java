@@ -8,82 +8,65 @@ import javax.swing.table.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-
 public class LibraryInterface{
 	private static final int WIDTH = 500;
 	private static final int HEIGHT = 500;
-	private static final int MARGIN = 10;
-	
-	public static void init_interface(){
-		JLabel ib_member_id_label;
-		JLabel ib_book_id_label;
-		JLabel id_label;
-		JLabel title_label;
-		JLabel author_label;
-		JLabel publication_label;
-		JTextField ib_member_id_tf;
-		JTextField ib_book_id_tf;
-		JTextField mb_add_book_title_tf;
-		JTextField mb_add_book_author_tf;
-		JTextField mb_add_book_publication_tf;
-		JTextField mb_remove_book_id_tf;
-		JFileChooser chooser;
-		JButton ib_btn;
-		JButton mb_add_book_btn;
-		JButton mb_remove_book_btn;
-		JButton mb_add_book_dialog_btn;
-		JButton mb_remove_book_dialog_btn;
-		JButton mb_import_books_btn;
-		JDialog mb_add_book_dialog;
-		JDialog mb_remove_book_dialog;
-		JTable mb_table;
-		JScrollPane mb_table_sp;
-		JPanel ib_panel;
-		JPanel mb_panel;
-		JPanel mb_add_book_panel;
-		JPanel mb_update_book_panel;
-		JPanel mb_remove_book_panel;
-		JPanel mm_panel;
-		JTabbedPane jtp;
-		JFrame library_window;
-		GroupLayout ib_layout;
-		GroupLayout mb_layout;
-		GroupLayout mb_add_book_dialog_layout;
-		GroupLayout mb_remove_book_dialog_layout;
+	private static JLabel ib_member_id_label;
+	private static JLabel ib_book_id_label;
+	private static JTextField ib_member_id_tf;
+	private static JTextField ib_book_id_tf;
+	private static JFileChooser chooser;
+	private static JButton ib_btn;
+	private static JButton mb_add_book_btn;
+	private static JButton mb_remove_book_btn;
+	private static JButton mb_import_books_btn;
+	private static JTable mb_table;
+	private static JScrollPane mb_table_sp;
+	private static JPanel ib_panel;
+	private static JPanel mb_panel;
+	private static JPanel mb_add_book_panel;
+	private static JPanel mb_update_book_panel;
+	private static JPanel mb_remove_book_panel;
+	private static JPanel mm_panel;
+	private static JTabbedPane jtp;
+	private static JFrame library_window;
+	private static GroupLayout layout;
+	private static GroupLayout ib_layout;
+	private static GroupLayout mb_layout;
+	private static RemoveBookDialog rbd;
+	private static AddBookDialog abd;
 
+	public static void init_interface(){
+		System.out.println("Initializing Interface...");
 		//Initialization
 		ib_member_id_label = new JLabel("Enter Member Id");
 		ib_book_id_label = new JLabel("Enter Book Id");
-		id_label = new JLabel("Book Id:");
-		title_label = new JLabel("Title:");
-		author_label = new JLabel("Author:");
-		publication_label = new JLabel("Publication:");
 		ib_member_id_tf = new JTextField();
 		ib_book_id_tf = new JTextField();
-		mb_add_book_title_tf = new JTextField();
-		mb_add_book_author_tf = new JTextField();
-		mb_add_book_publication_tf = new JTextField();
-		mb_remove_book_id_tf = new JTextField();
 		chooser = new JFileChooser();
 		ib_btn = new JButton("Issue Book");
 		mb_add_book_btn = new JButton("Add Book");
 		mb_remove_book_btn = new JButton("Remove Book");
 		mb_import_books_btn = new JButton("Import Books");
-		mb_add_book_dialog_btn = new JButton("Add Book");
-		mb_remove_book_dialog_btn = new JButton("Remove Book");
 		mb_table = new JTable();		
 		ib_panel = new JPanel();
 		mb_panel = new JPanel();
 		mm_panel = new JPanel();
 		jtp = new JTabbedPane();
 		library_window = new JFrame("Simple Library Manager");
-		mb_add_book_dialog = new JDialog(library_window, "Add Book Form", true);
-		mb_remove_book_dialog = new JDialog(library_window, "Remove Book Form", true);
+		rbd = new RemoveBookDialog();
+		abd = new AddBookDialog();
 
+	}
+
+	
+
+	public static void load_interface(){
+		System.out.println("Loading Interface...");
 		//Buttons
 		mb_add_book_btn.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent ae){
-				 mb_add_book_dialog.setVisible(true);
+				 abd.setVisible(true);
 			}
 		});
 		mb_import_books_btn.addActionListener(new ActionListener(){
@@ -93,10 +76,10 @@ public class LibraryInterface{
 				if(returnVal == JFileChooser.APPROVE_OPTION){
 					try{
 						LibrarySystem.import_books(chooser.getSelectedFile());
-						LibrarySystem.update_table(mb_table, new String[]{"ID","TITLE","AUTHER","PUBLICATION"}, LibrarySystem.books_to_array(LibrarySystem.get_books()));
 					}catch(InvalidCsvFormatException e){
 						System.out.println(e.getMessage());
 					}
+					LibrarySystem.update_table(mb_table, new String[]{"ID","TITLE","AUTHER","PUBLICATION"}, LibrarySystem.books_to_array(LibrarySystem.get_books()));
 				}
 
 			}
@@ -104,42 +87,9 @@ public class LibraryInterface{
 			
 		mb_remove_book_btn.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent ae){
-				 mb_remove_book_dialog.setVisible(true);
+				 rbd.setVisible(true);
 			}
 		});	
-		mb_add_book_dialog_btn.addActionListener(new ActionListener(){
-			public void actionPerformed(ActionEvent ae){
-				Book myBook = new Book(0,mb_add_book_title_tf.getText(),mb_add_book_author_tf.getText(),mb_add_book_publication_tf.getText());
-				Librarian.add_book(myBook);
-				LibrarySystem.update_table(mb_table, new String[]{"ID","TITLE","AUTHER","PUBLICATION"}, LibrarySystem.books_to_array(LibrarySystem.get_books()));
-				mb_add_book_dialog.setVisible(false);
-			}
-		});
-		mb_remove_book_dialog_btn.addActionListener(new ActionListener(){
-			public void actionPerformed(ActionEvent ae){
-				Librarian.remove_book(Integer.parseInt(mb_remove_book_id_tf.getText()));
-				LibrarySystem.update_table(mb_table, new String[]{"ID","TITLE","AUTHER","PUBLICATION"}, LibrarySystem.books_to_array(LibrarySystem.get_books()));
-				mb_remove_book_dialog.setVisible(false);
-			}
-		});
-
-		//Dialogs
-		mb_add_book_dialog_layout = new GroupLayout(mb_add_book_dialog.getContentPane());
-		mb_add_book_dialog.getContentPane().setLayout(mb_add_book_dialog_layout);
-		mb_add_book_dialog.setSize(400,180);
-		mb_remove_book_dialog_layout = new GroupLayout(mb_remove_book_dialog.getContentPane());
-		mb_remove_book_dialog.getContentPane().setLayout(mb_remove_book_dialog_layout);
-		mb_remove_book_dialog.setSize(400,130);
-		mb_add_book_dialog.add(title_label);
-		mb_add_book_dialog.add(mb_add_book_title_tf);
-		mb_add_book_dialog.add(author_label);
-		mb_add_book_dialog.add(mb_add_book_author_tf);
-		mb_add_book_dialog.add(publication_label);
-		mb_add_book_dialog.add(mb_add_book_publication_tf);
-		mb_add_book_dialog.add(mb_add_book_dialog_btn);
-		mb_remove_book_dialog.add(id_label);
-		mb_remove_book_dialog.add(mb_remove_book_id_tf);
-		mb_remove_book_dialog.add(mb_remove_book_dialog_btn);
 
 		//Tables
 		mb_table.setEnabled(false);
@@ -163,15 +113,43 @@ public class LibraryInterface{
 		mb_panel.add(mb_import_books_btn);
 		mb_panel.add(mb_remove_book_btn);
 
+		//Tabbed Pane
+		jtp.addTab("Issue Book", ib_panel);
+		jtp.addTab("Managae Books", mb_panel);
+		jtp.addTab("Managae Memberships", mm_panel);
+		jtp.addChangeListener(new ChangeListener() {
+			public void stateChanged(ChangeEvent e){
+				if(jtp.getSelectedComponent().getName()=="manage_books"){
+					LibrarySystem.update_table(mb_table, new String[]{"ID","TITLE","AUTHER","PUBLICATION"}, LibrarySystem.books_to_array(LibrarySystem.get_books()));
+				}
+			}
+		});
+
+		//Frame
+		layout = new GroupLayout(library_window.getContentPane());
+		library_window.getContentPane().setLayout(layout);
+		library_window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		library_window.setVisible(true);
+		library_window.setSize(WIDTH,HEIGHT);
+		library_window.setResizable(false);	
+		library_window.add(jtp);
+
 		//Layout Configuration
+		layout.setAutoCreateGaps(true);
+		layout.setAutoCreateContainerGaps(true);
 		ib_layout.setAutoCreateGaps(true);
 		ib_layout.setAutoCreateContainerGaps(true);
 		mb_layout.setAutoCreateGaps(true);
 		mb_layout.setAutoCreateContainerGaps(true);
-		mb_add_book_dialog_layout.setAutoCreateGaps(true);
-		mb_add_book_dialog_layout.setAutoCreateContainerGaps(true);
-		mb_remove_book_dialog_layout.setAutoCreateGaps(true);
-		mb_remove_book_dialog_layout.setAutoCreateContainerGaps(true);
+		//frame layout
+		layout.setHorizontalGroup(
+			layout.createSequentialGroup()
+				.addComponent(jtp)
+			);
+		layout.setVerticalGroup(
+			layout.createSequentialGroup()
+				.addComponent(jtp)
+			);
 		//issue book panel
 		ib_layout.setHorizontalGroup(
 			ib_layout.createSequentialGroup()
@@ -210,68 +188,129 @@ public class LibraryInterface{
 				.addComponent(mb_import_books_btn)
 				.addComponent(mb_remove_book_btn))
 			);
-		//add book dialog
-		mb_add_book_dialog_layout.setHorizontalGroup(
-			mb_add_book_dialog_layout.createSequentialGroup()
-			.addGroup(mb_add_book_dialog_layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+	}
+
+	static class AddBookDialog extends JDialog{
+		JLabel title_label;
+		JLabel author_label;
+		JLabel publication_label;
+		JTextField title_tf;
+		JTextField author_tf;
+		JTextField publication_tf;
+		JButton btn;
+		
+		GroupLayout layout;
+
+		AddBookDialog(){
+			super(library_window,"Add Book Form",false);
+
+			title_label = new JLabel("Title:");
+			author_label = new JLabel("Author:");
+			publication_label = new JLabel("Publication:");
+			title_tf = new JTextField();
+			author_tf = new JTextField();
+			publication_tf = new JTextField();
+			btn = new JButton("Add Book");
+
+			layout = new GroupLayout(getContentPane());
+			getContentPane().setLayout(layout);
+
+			btn.addActionListener(new ActionListener(){
+				public void actionPerformed(ActionEvent ae){
+					Book myBook = new Book(0,title_tf.getText(),author_tf.getText(),publication_tf.getText());
+					Librarian.add_book(myBook);
+					LibrarySystem.update_table(mb_table, new String[]{"ID","TITLE","AUTHER","PUBLICATION"}, LibrarySystem.books_to_array(LibrarySystem.get_books()));
+					setVisible(false);
+				}
+			});
+
+			layout.setAutoCreateGaps(true);
+			layout.setAutoCreateContainerGaps(true);
+
+			layout.setHorizontalGroup(
+			layout.createSequentialGroup()
+			.addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
 				.addComponent(title_label)
 				.addComponent(author_label)
 				.addComponent(publication_label))
-			.addGroup(mb_add_book_dialog_layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-				.addComponent(mb_add_book_title_tf)
-				.addComponent(mb_add_book_author_tf)
-				.addComponent(mb_add_book_publication_tf)
-				.addComponent(mb_add_book_dialog_btn))
-			);
-		mb_add_book_dialog_layout.setVerticalGroup(
-			mb_add_book_dialog_layout.createSequentialGroup()
-			.addGroup(mb_add_book_dialog_layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-				.addComponent(title_label)
-				.addComponent(mb_add_book_title_tf))
-			.addGroup(mb_add_book_dialog_layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-				.addComponent(author_label)
-				.addComponent(mb_add_book_author_tf))
-			.addGroup(mb_add_book_dialog_layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-				.addComponent(publication_label)
-				.addComponent(mb_add_book_publication_tf))
-			.addComponent(mb_add_book_dialog_btn)
-			);
-		//remove book dialog
-		mb_remove_book_dialog_layout.setHorizontalGroup(
-			mb_remove_book_dialog_layout.createSequentialGroup()
-			.addGroup(mb_remove_book_dialog_layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-				.addComponent(id_label))
-			.addGroup(mb_remove_book_dialog_layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-				.addComponent(mb_remove_book_id_tf)
-				.addComponent(mb_remove_book_dialog_btn))
-			);
-		mb_remove_book_dialog_layout.setVerticalGroup(
-			mb_remove_book_dialog_layout.createSequentialGroup()
-			.addGroup(mb_remove_book_dialog_layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-				.addComponent(id_label)
-				.addComponent(mb_remove_book_id_tf))
-			.addComponent(mb_remove_book_dialog_btn)
-			);
+			.addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+				.addComponent(title_tf)
+				.addComponent(author_tf)
+				.addComponent(publication_tf)
+				.addComponent(btn))
+				);
+			layout.setVerticalGroup(
+				layout.createSequentialGroup()
+				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+					.addComponent(title_label)
+					.addComponent(title_tf))
+				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+					.addComponent(author_label)
+					.addComponent(author_tf))
+				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+					.addComponent(publication_label)
+					.addComponent(publication_tf))
+				.addComponent(btn)
+				);
+			
+			setSize(400,180);
+			add(title_label);
+			add(title_tf);
+			add(author_label);
+			add(author_tf);
+			add(publication_label);
+			add(publication_tf);
+			add(btn);
+		}	
+	}
 
-		//Tabbed Pane
-		jtp.setBounds(MARGIN,MARGIN,WIDTH-2*MARGIN-5,HEIGHT-2*MARGIN-35);
-		jtp.addTab("Issue Book", ib_panel);
-		jtp.addTab("Managae Books", mb_panel);
-		jtp.addTab("Managae Memberships", mm_panel);
-		jtp.addChangeListener(new ChangeListener() {
-			public void stateChanged(ChangeEvent e){
-				if(jtp.getSelectedComponent().getName()=="manage_books"){
+	static class RemoveBookDialog extends JDialog{
+		JLabel book_id_label;
+		JTextField book_id_tf;
+		JButton btn;
+		GroupLayout layout;
+
+		RemoveBookDialog(){
+			super(library_window,"Remove Book Form",false);
+
+			book_id_tf = new JTextField();
+			btn = new JButton("Remove Book");
+			book_id_label = new JLabel("Book Id:");
+			layout = new GroupLayout(getContentPane());
+			getContentPane().setLayout(layout);
+
+			btn.addActionListener(new ActionListener(){
+				public void actionPerformed(ActionEvent ae){
+					Librarian.remove_book(Integer.parseInt(book_id_tf.getText()));
 					LibrarySystem.update_table(mb_table, new String[]{"ID","TITLE","AUTHER","PUBLICATION"}, LibrarySystem.books_to_array(LibrarySystem.get_books()));
+					setVisible(false);
 				}
-			}
-		});
+			});
 
-		//Frame
-		library_window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		library_window.setVisible(true);
-		library_window.setLayout(null);
-		library_window.setSize(WIDTH,HEIGHT);
-		library_window.setResizable(false);	
-		library_window.add(jtp);
+			layout.setAutoCreateGaps(true);
+			layout.setAutoCreateContainerGaps(true);
+			layout.setHorizontalGroup(
+				layout.createSequentialGroup()
+				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+					.addComponent(book_id_label))
+				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+					.addComponent(book_id_tf)
+					.addComponent(btn))
+				);
+			layout.setVerticalGroup(
+				layout.createSequentialGroup()
+				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+					.addComponent(book_id_label)
+					.addComponent(book_id_tf))
+				.addComponent(btn)
+				);
+
+			
+			setSize(400,130);
+			add(book_id_label);
+			add(book_id_tf);
+			add(btn);
+		}	
 	}
 }
+

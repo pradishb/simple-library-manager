@@ -6,7 +6,7 @@ import javax.swing.*;
 import javax.swing.table.*;
 
 class InvalidCsvFormatException extends Exception{
-	public InvalidCsvFormatException(){
+	public InvalidCsvFormatException(String){
 		super("The CSV file is not valid.");
 	}
 }

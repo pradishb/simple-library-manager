@@ -8,5 +8,6 @@ class SLM{
 	public static void main(String[] args) {
 			DBManager.init_database();
 			LibraryInterface.init_interface();
+			LibraryInterface.load_interface();
 		}
 }
