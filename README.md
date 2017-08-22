@@ -1,5 +1,2 @@
 # Simple Library Manager
-
-## Execute
-Use this to execute:
-	java -cp ./bin;./lib/mysql-connector-java-5.1.43-bin.jar Database
+Simple Library Manager (SLM) is a Library Management System, a computer software which helps in the systematic way of managing books and members. 
