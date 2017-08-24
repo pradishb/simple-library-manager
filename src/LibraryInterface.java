@@ -78,6 +78,7 @@ public class LibraryInterface{
 						LibrarySystem.import_books(chooser.getSelectedFile());
 					}catch(InvalidCsvFormatException e){
 						System.out.println(e.getMessage());
+						JOptionPane.showMessageDialog(library_window, "Some errors occured while import the CSV file.", "Bad Input File", JOptionPane.ERROR_MESSAGE);
 					}
 					LibrarySystem.update_table(mb_table, new String[]{"ID","TITLE","AUTHER","PUBLICATION"}, LibrarySystem.books_to_array(LibrarySystem.get_books()));
 				}
@@ -217,10 +218,16 @@ public class LibraryInterface{
 
 			btn.addActionListener(new ActionListener(){
 				public void actionPerformed(ActionEvent ae){
-					Book myBook = new Book(0,title_tf.getText(),author_tf.getText(),publication_tf.getText());
-					Librarian.add_book(myBook);
-					LibrarySystem.update_table(mb_table, new String[]{"ID","TITLE","AUTHER","PUBLICATION"}, LibrarySystem.books_to_array(LibrarySystem.get_books()));
-					setVisible(false);
+					if(title_tf.getText().equals("") || author_tf.getText().equals("") || publication_tf.getText().equals("")){
+						System.out.println("ERROR: Some fields are empty in add book form.");
+						JOptionPane.showMessageDialog(abd, "Form is not complete.", "Bad Input", JOptionPane.ERROR_MESSAGE);
+					}
+					else{
+						Book myBook = new Book(0,title_tf.getText(),author_tf.getText(),publication_tf.getText());
+						Librarian.add_book(myBook);
+						LibrarySystem.update_table(mb_table, new String[]{"ID","TITLE","AUTHER","PUBLICATION"}, LibrarySystem.books_to_array(LibrarySystem.get_books()));
+						setVisible(false);
+					}
 				}
 			});
 
@@ -253,7 +260,8 @@ public class LibraryInterface{
 				.addComponent(btn)
 				);
 			
-			setSize(400,180);
+			setSize(400,165);
+			setResizable(false);
 			add(title_label);
 			add(title_tf);
 			add(author_label);
@@ -281,9 +289,15 @@ public class LibraryInterface{
 
 			btn.addActionListener(new ActionListener(){
 				public void actionPerformed(ActionEvent ae){
-					Librarian.remove_book(Integer.parseInt(book_id_tf.getText()));
-					LibrarySystem.update_table(mb_table, new String[]{"ID","TITLE","AUTHER","PUBLICATION"}, LibrarySystem.books_to_array(LibrarySystem.get_books()));
-					setVisible(false);
+					try{
+						Librarian.remove_book(Integer.parseInt(book_id_tf.getText()));
+						LibrarySystem.update_table(mb_table, new String[]{"ID","TITLE","AUTHER","PUBLICATION"}, LibrarySystem.books_to_array(LibrarySystem.get_books()));
+						setVisible(false);
+					}
+					catch(NumberFormatException e){
+						System.out.println("ERROR: Book id provided is not valid.");
+						JOptionPane.showMessageDialog(rbd, "Please enter a valid book id.", "Bad Input", JOptionPane.ERROR_MESSAGE);
+					}				
 				}
 			});
 
@@ -306,7 +320,8 @@ public class LibraryInterface{
 				);
 
 			
-			setSize(400,130);
+			setSize(400,110);
+			setResizable(false);
 			add(book_id_label);
 			add(book_id_tf);
 			add(btn);

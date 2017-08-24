@@ -33,14 +33,14 @@ public class DBManager{
 			remove_book_stmt = conn.prepareStatement("DELETE FROM books WHERE id=?");
 			update_book_stmt = conn.prepareStatement("UPDATE books SET id=0,title=?,author=?,publication=?");
 			issue_book_stmt = conn.prepareStatement("INSERT INTO borrows(id, borrower_id, book_id, borrowed_date) VALUES (0,?,?,CURRENT_TIMESTAMP)");
-			get_books_stmt = conn.prepareStatement("SELECT * FROM books");
+			get_books_stmt = conn.prepareStatement("SELECT * FROM books ORDER BY id");
 			System.out.println("Connection has been made to database.");
 		}catch(SQLException se){
-			System.out.println("Error while loading from database.");
+			System.out.println("ERROR: Error while loading from database.");
 			System.out.println("Details:");
 			se.printStackTrace();
 		}catch(Exception e){
-			System.out.println("Error while loading from database.");
+			System.out.println("ERROR: Error while loading from database.");
 			System.out.println("Details:");
 			e.printStackTrace();
 		}
@@ -52,7 +52,7 @@ public class DBManager{
 			conn.close();
 			System.out.println("Connection closed.");
 		}catch(SQLException se){
-			System.out.println("Error while destroying database objects.");
+			System.out.println("ERROR: Error while destroying database objects.");
 			System.out.println("Details:");
 			se.printStackTrace();
 		}

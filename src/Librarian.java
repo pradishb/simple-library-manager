@@ -11,7 +11,7 @@ public class Librarian{
 			System.out.println(r_affected + " book(s) added to database.");
 		}
 		catch(SQLException se){
-			System.out.println("Error while adding books to database.");
+			System.out.println("ERROR: Error while adding books to database.");
 			System.out.println("Details:");
 			se.printStackTrace();
 		}
@@ -24,7 +24,7 @@ public class Librarian{
 			System.out.println(r_affected + " book(s) removed from database.");
 		}
 		catch(SQLException se){
-			System.out.println("Error while removing books from database.");
+			System.out.println("ERROR: Error while removing books from database.");
 			System.out.println("Details:");
 			se.printStackTrace();
 		}
@@ -39,7 +39,7 @@ public class Librarian{
 			System.out.println(r_affected + " book(s) updated in database.");
 		}
 		catch(SQLException se){
-			System.out.println("Error while updating books in database.");
+			System.out.println("ERROR: Error while updating books in database.");
 			System.out.println("Details:");
 			se.printStackTrace();
 		}
@@ -55,7 +55,7 @@ public class Librarian{
 			System.out.println(r_affected + " member(s) added to database.");
 		}
 		catch(SQLException se){
-			System.out.println("Error while member book to database.");
+			System.out.println("ERROR: Error while member book to database.");
 			System.out.println("Details:");
 			se.printStackTrace();
 		}
@@ -68,7 +68,7 @@ public class Librarian{
 			System.out.println(r_affected + " member(s) removed from database.");
 		}
 		catch(SQLException se){
-			System.out.println("Error while removing members from database.");
+			System.out.println("ERROR: Error while removing members from database.");
 			System.out.println("Details:");
 			se.printStackTrace();
 		}
@@ -84,7 +84,7 @@ public class Librarian{
 			System.out.println(r_affected + " member(s) updated in database.");
 		}
 		catch(SQLException se){
-			System.out.println("Error while updating members in database.");
+			System.out.println("ERROR: Error while updating members in database.");
 			System.out.println("Details:");
 			se.printStackTrace();
 		}
@@ -98,7 +98,7 @@ public class Librarian{
 			System.out.println(r_affected + " book(s) has been issued.");
 		}
 		catch(SQLException se){
-			System.out.println("Error while issuing book.");
+			System.out.println("ERROR: Error while issuing book.");
 			System.out.println("Details:");
 			se.printStackTrace();
 		}

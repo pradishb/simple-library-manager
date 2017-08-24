@@ -6,8 +6,8 @@ import javax.swing.*;
 import javax.swing.table.*;
 
 class InvalidCsvFormatException extends Exception{
-	public InvalidCsvFormatException(String){
-		super("The CSV file is not valid.");
+	public InvalidCsvFormatException(){
+		super("ERROR: The CSV file is not valid.");
 	}
 }
 
@@ -25,7 +25,7 @@ public class LibrarySystem{
 			
 		}
 		catch(SQLException se){
-			System.out.println("Error while load books from database.");
+			System.out.println("ERROR: Error while load books from database.");
 			System.out.println("Details:");
 			se.printStackTrace();
 		}
@@ -47,7 +47,6 @@ public class LibrarySystem{
 					}
 					else{
 						throw new InvalidCsvFormatException();		//when the content of CSV is invalid
-
 					}
 				}
 			}
@@ -55,7 +54,7 @@ public class LibrarySystem{
 				throw new InvalidCsvFormatException();				//when the 1st line of CSV is invalid
 			}
 		}catch(IOException e){
-			System.out.println("Error while importing books.");
+			System.out.println("ERROR: Error while importing books.");
 			System.out.println("Details:");
 			e.printStackTrace();
 		}
