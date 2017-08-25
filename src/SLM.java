@@ -1,13 +1,9 @@
-import slm.LibraryInterface;
-import slm.DBManager;
-import slm.Librarian;
-import slm.Book;
-import slm.Member;
+package slm;
 
 class SLM{
 	public static void main(String[] args) {
-			DBManager.init_database();
-			LibraryInterface.init_interface();
-			LibraryInterface.load_interface();
+			DBManager dm = new DBManager();
+			Librarian l = new Librarian(dm);
+			LibraryInterface li = new LibraryInterface(l);
 		}
 }

@@ -9,34 +9,41 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 public class LibraryInterface{
-	private static final int WIDTH = 500;
-	private static final int HEIGHT = 500;
-	private static JLabel ib_member_id_label;
-	private static JLabel ib_book_id_label;
-	private static JTextField ib_member_id_tf;
-	private static JTextField ib_book_id_tf;
-	private static JFileChooser chooser;
-	private static JButton ib_btn;
-	private static JButton mb_add_book_btn;
-	private static JButton mb_remove_book_btn;
-	private static JButton mb_import_books_btn;
-	private static JTable mb_table;
-	private static JScrollPane mb_table_sp;
-	private static JPanel ib_panel;
-	private static JPanel mb_panel;
-	private static JPanel mb_add_book_panel;
-	private static JPanel mb_update_book_panel;
-	private static JPanel mb_remove_book_panel;
-	private static JPanel mm_panel;
-	private static JTabbedPane jtp;
-	private static JFrame library_window;
-	private static GroupLayout layout;
-	private static GroupLayout ib_layout;
-	private static GroupLayout mb_layout;
-	private static RemoveBookDialog rbd;
-	private static AddBookDialog abd;
+	private Librarian librarian;
+	private final int WIDTH = 500;
+	private final int HEIGHT = 500;
+	private JLabel ib_member_id_label;
+	private JLabel ib_book_id_label;
+	private JTextField ib_member_id_tf;
+	private JTextField ib_book_id_tf;
+	private JFileChooser chooser;
+	private JButton ib_btn;
+	private JButton mb_add_book_btn;
+	private JButton mb_remove_book_btn;
+	private JButton mb_import_books_btn;
+	private JTable mb_table;
+	private JScrollPane mb_table_sp;
+	private JPanel ib_panel;
+	private JPanel mb_panel;
+	private JPanel mb_add_book_panel;
+	private JPanel mb_update_book_panel;
+	private JPanel mb_remove_book_panel;
+	private JPanel mm_panel;
+	private JTabbedPane jtp;
+	private JFrame library_window;
+	private GroupLayout layout;
+	private GroupLayout ib_layout;
+	private GroupLayout mb_layout;
+	private RemoveBookDialog rbd;
+	private AddBookDialog abd;
 
-	public static void init_interface(){
+	public LibraryInterface(Librarian librarian){
+		this.librarian = librarian;
+		init_interface();
+		load_interface();
+	}
+
+	public void init_interface(){
 		System.out.println("Initializing Interface...");
 		//Initialization
 		ib_member_id_label = new JLabel("Enter Member Id");
@@ -59,9 +66,7 @@ public class LibraryInterface{
 
 	}
 
-	
-
-	public static void load_interface(){
+	public void load_interface(){
 		System.out.println("Loading Interface...");
 		//Buttons
 		mb_add_book_btn.addActionListener(new ActionListener(){
@@ -75,12 +80,12 @@ public class LibraryInterface{
 				int returnVal = chooser.showOpenDialog(library_window);
 				if(returnVal == JFileChooser.APPROVE_OPTION){
 					try{
-						LibrarySystem.import_books(chooser.getSelectedFile());
+						librarian.import_books(chooser.getSelectedFile());
 					}catch(InvalidCsvFormatException e){
 						System.out.println(e.getMessage());
 						JOptionPane.showMessageDialog(library_window, "Some errors occured while import the CSV file.", "Bad Input File", JOptionPane.ERROR_MESSAGE);
 					}
-					LibrarySystem.update_table(mb_table, new String[]{"ID","TITLE","AUTHER","PUBLICATION"}, LibrarySystem.books_to_array(LibrarySystem.get_books()));
+					librarian.update_table(mb_table, new String[]{"ID","TITLE","AUTHER","PUBLICATION"}, librarian.books_to_array(librarian.get_books()));
 				}
 
 			}
@@ -121,7 +126,7 @@ public class LibraryInterface{
 		jtp.addChangeListener(new ChangeListener() {
 			public void stateChanged(ChangeEvent e){
 				if(jtp.getSelectedComponent().getName()=="manage_books"){
-					LibrarySystem.update_table(mb_table, new String[]{"ID","TITLE","AUTHER","PUBLICATION"}, LibrarySystem.books_to_array(LibrarySystem.get_books()));
+					librarian.update_table(mb_table, new String[]{"ID","TITLE","AUTHER","PUBLICATION"}, librarian.books_to_array(librarian.get_books()));
 				}
 			}
 		});
@@ -191,7 +196,7 @@ public class LibraryInterface{
 			);
 	}
 
-	static class AddBookDialog extends JDialog{
+	class AddBookDialog extends JDialog{
 		JLabel title_label;
 		JLabel author_label;
 		JLabel publication_label;
@@ -224,8 +229,8 @@ public class LibraryInterface{
 					}
 					else{
 						Book myBook = new Book(0,title_tf.getText(),author_tf.getText(),publication_tf.getText());
-						Librarian.add_book(myBook);
-						LibrarySystem.update_table(mb_table, new String[]{"ID","TITLE","AUTHER","PUBLICATION"}, LibrarySystem.books_to_array(LibrarySystem.get_books()));
+						librarian.add_book(myBook);
+						librarian.update_table(mb_table, new String[]{"ID","TITLE","AUTHER","PUBLICATION"}, librarian.books_to_array(librarian.get_books()));
 						setVisible(false);
 					}
 				}
@@ -272,7 +277,7 @@ public class LibraryInterface{
 		}	
 	}
 
-	static class RemoveBookDialog extends JDialog{
+	class RemoveBookDialog extends JDialog{
 		JLabel book_id_label;
 		JTextField book_id_tf;
 		JButton btn;
@@ -290,8 +295,8 @@ public class LibraryInterface{
 			btn.addActionListener(new ActionListener(){
 				public void actionPerformed(ActionEvent ae){
 					try{
-						Librarian.remove_book(Integer.parseInt(book_id_tf.getText()));
-						LibrarySystem.update_table(mb_table, new String[]{"ID","TITLE","AUTHER","PUBLICATION"}, LibrarySystem.books_to_array(LibrarySystem.get_books()));
+						librarian.remove_book(Integer.parseInt(book_id_tf.getText()));
+						librarian.update_table(mb_table, new String[]{"ID","TITLE","AUTHER","PUBLICATION"}, librarian.books_to_array(librarian.get_books()));
 						setVisible(false);
 					}
 					catch(NumberFormatException e){

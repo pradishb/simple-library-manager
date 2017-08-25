@@ -2,22 +2,26 @@ package slm;
 import java.sql.*;
 
 public class DBManager{
-	static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";  
-	static final String DB_URL = "jdbc:mysql://localhost:3306/?useSSL=false";
-	static final String USER = "root";
-	static final String PASS = "";
-	static Connection conn = null;
-	static Statement stmt = null;
-	static PreparedStatement add_member_stmt;
-	static PreparedStatement remove_member_stmt;
-	static PreparedStatement update_member_stmt;
-	static PreparedStatement add_book_stmt;
-	static PreparedStatement remove_book_stmt;
-	static PreparedStatement update_book_stmt;
-	static PreparedStatement issue_book_stmt;
-	static PreparedStatement get_books_stmt;
+	final String JDBC_DRIVER = "com.mysql.jdbc.Driver";  
+	final String DB_URL = "jdbc:mysql://localhost:3306/?useSSL=false";
+	final String USER = "root";
+	final String PASS = "";
+	Connection conn = null;
+	Statement stmt = null;
+	PreparedStatement add_member_stmt;
+	PreparedStatement remove_member_stmt;
+	PreparedStatement update_member_stmt;
+	PreparedStatement add_book_stmt;
+	PreparedStatement remove_book_stmt;
+	PreparedStatement update_book_stmt;
+	PreparedStatement issue_book_stmt;
+	PreparedStatement get_books_stmt;
 
-	public static void init_database(){
+	public DBManager(){
+		init_database();
+	}
+
+	public void init_database(){
 		try{
 			System.out.println("INFORMATION: Make sure that your database server username is \"root\" and password is \"\"");
 			System.out.println("Connecting to database server...");
@@ -56,7 +60,7 @@ public class DBManager{
 		}
 	}
 
-	public static void close_database(){
+	public void close_database(){
 		try{
 			stmt.close();
 			conn.close();
