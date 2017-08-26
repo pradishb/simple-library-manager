@@ -8,14 +8,13 @@ import javax.swing.table.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-public class LibraryInterface{
+public class LibraryInterface extends JFrame{
 	private Librarian librarian;
 	private final int WIDTH = 500;
 	private final int HEIGHT = 500;
 	private JFileChooser chooser;
 	private JPanel mm_panel;
 	private JTabbedPane jtp;
-	private JFrame library_window;
 	private GroupLayout layout;
 	private RemoveBookDialog rbd;
 	private AddBookDialog abd;
@@ -23,6 +22,7 @@ public class LibraryInterface{
 	private ManageBooksPanel mb_panel;
 
 	public LibraryInterface(Librarian librarian){
+		super("Simple Library Manager");
 		this.librarian = librarian;
 		init_interface();
 		load_interface();
@@ -34,7 +34,6 @@ public class LibraryInterface{
 		chooser = new JFileChooser();
 		mm_panel = new JPanel();
 		jtp = new JTabbedPane();
-		library_window = new JFrame("Simple Library Manager");
 		rbd = new RemoveBookDialog();
 		abd = new AddBookDialog();
 		ib_panel = new IssueBookPanel();
@@ -62,13 +61,20 @@ public class LibraryInterface{
 		});
 
 		//Frame
-		layout = new GroupLayout(library_window.getContentPane());
-		library_window.getContentPane().setLayout(layout);
-		library_window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		library_window.setVisible(true);
-		library_window.setSize(WIDTH,HEIGHT);
-		library_window.setResizable(false);	
-		library_window.add(jtp);
+		layout = new GroupLayout(getContentPane());
+		getContentPane().setLayout(layout);
+		// setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setVisible(true);
+		setSize(WIDTH,HEIGHT);
+		setResizable(false);	
+		add(jtp);
+		addWindowListener(new WindowAdapter(){
+			public void windowClosing(WindowEvent we){
+				SLM.db_manager.close_database();
+				setVisible(false);
+				dispose();
+			}
+		});
 
 		//Layout Configuration
 		layout.setAutoCreateGaps(true);
@@ -189,13 +195,13 @@ public class LibraryInterface{
 			}
 			else{
 				chooser.setFileFilter(new FileNameExtensionFilter("CSV Files", "csv"));
-				int returnVal = chooser.showOpenDialog(library_window);
+				int returnVal = chooser.showOpenDialog(LibraryInterface.this);
 				if(returnVal == JFileChooser.APPROVE_OPTION){
 					try{
 						librarian.import_books(chooser.getSelectedFile());
 					}catch(InvalidCsvFormatException e){
 						System.out.println(e.getMessage());
-						JOptionPane.showMessageDialog(library_window, "Some errors occured while import the CSV file.", "Bad Input File", JOptionPane.ERROR_MESSAGE);
+						JOptionPane.showMessageDialog(LibraryInterface.this, "Some errors occured while import the CSV file.", "Bad Input File", JOptionPane.ERROR_MESSAGE);
 					}
 					librarian.update_table(table, new String[]{"ID","TITLE","AUTHER","PUBLICATION"}, librarian.books_to_array(librarian.get_books()));
 				}
@@ -214,7 +220,7 @@ public class LibraryInterface{
 		private GroupLayout layout;
 
 		AddBookDialog(){
-			super(library_window,"Add Book Form",true);
+			super(LibraryInterface.this,"Add Book Form",true);
 
 			title_label = new JLabel("Title:");
 			author_label = new JLabel("Author:");
@@ -289,7 +295,7 @@ public class LibraryInterface{
 		private GroupLayout layout;
 
 		RemoveBookDialog(){
-			super(library_window,"Remove Book Form",true);
+			super(LibraryInterface.this,"Remove Book Form",true);
 
 			book_id_tf = new JTextField();
 			btn = new JButton("Remove Book");

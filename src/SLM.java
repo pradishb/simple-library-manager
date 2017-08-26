@@ -1,9 +1,12 @@
 package slm;
 
 class SLM{
+	static DBManager db_manager;
+	static Librarian librarian;
+	static LibraryInterface library_interface;
 	public static void main(String[] args) {
-			DBManager dm = new DBManager();
-			Librarian l = new Librarian(dm);
-			LibraryInterface li = new LibraryInterface(l);
-		}
+			db_manager = new DBManager();
+			librarian = new Librarian(db_manager);
+			library_interface = new LibraryInterface(librarian);
+	}
 }
