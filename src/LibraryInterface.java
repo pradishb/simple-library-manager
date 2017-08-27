@@ -10,6 +10,7 @@ import javax.swing.event.ChangeListener;
 
 public class LibraryInterface extends JFrame{
 	private Librarian librarian;
+	private DBManager db_manager;
 	private final int WIDTH = 500;
 	private final int HEIGHT = 500;
 	private JFileChooser chooser;
@@ -21,9 +22,10 @@ public class LibraryInterface extends JFrame{
 	private IssueBookPanel ib_panel;
 	private ManageBooksPanel mb_panel;
 
-	public LibraryInterface(Librarian librarian){
+	public LibraryInterface(Librarian librarian, DBManager db_manager){
 		super("Simple Library Manager");
 		this.librarian = librarian;
+		this.db_manager = db_manager;
 		init_interface();
 		load_interface();
 	}
@@ -72,7 +74,7 @@ public class LibraryInterface extends JFrame{
 		add(jtp);
 		addWindowListener(new WindowAdapter(){
 			public void windowClosing(WindowEvent we){
-				SLM.db_manager.close_database();
+				db_manager.close_database();
 				setVisible(false);
 				dispose();
 			}
@@ -262,6 +264,8 @@ public class LibraryInterface extends JFrame{
 			if(ae.getSource()==add_member_btn){
 			}
 			else if(ae.getSource()==remove_member_btn){
+				RemoveMemberDialog rmd = new RemoveMemberDialog(LibraryInterface.this,librarian,mm_panel.table);
+				rmd.setVisible(true);
 			}
 			else{
 				chooser.setFileFilter(new FileNameExtensionFilter("CSV Files", "csv"));
