@@ -16,6 +16,7 @@ public class DBManager{
 	PreparedStatement update_book_stmt;
 	PreparedStatement issue_book_stmt;
 	PreparedStatement get_books_stmt;
+	PreparedStatement get_members_stmt;
 
 	public DBManager(){
 		init_database();
@@ -49,6 +50,7 @@ public class DBManager{
 			update_book_stmt = conn.prepareStatement("UPDATE books SET id=0,title=?,author=?,publication=?");
 			issue_book_stmt = conn.prepareStatement("INSERT INTO borrows(id, borrower_id, book_id, borrowed_date) VALUES (0,?,?,CURRENT_TIMESTAMP)");
 			get_books_stmt = conn.prepareStatement("SELECT * FROM books ORDER BY id");
+			get_members_stmt = conn.prepareStatement("SELECT * FROM members ORDER BY id");
 		}catch(SQLException se){
 			System.out.println("ERROR: Error while loading from database.");
 			System.out.println("Details:");

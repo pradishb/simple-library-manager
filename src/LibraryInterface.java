@@ -13,7 +13,7 @@ public class LibraryInterface extends JFrame{
 	private final int WIDTH = 500;
 	private final int HEIGHT = 500;
 	private JFileChooser chooser;
-	private JPanel mm_panel;
+	private ManageMembersPanel mm_panel;
 	private JTabbedPane jtp;
 	private GroupLayout layout;
 	private RemoveBookDialog rbd;
@@ -32,7 +32,7 @@ public class LibraryInterface extends JFrame{
 		System.out.println("Initializing Interface...");
 		//Initialization
 		chooser = new JFileChooser();
-		mm_panel = new JPanel();
+		mm_panel = new ManageMembersPanel();
 		jtp = new JTabbedPane();
 		rbd = new RemoveBookDialog();
 		abd = new AddBookDialog();
@@ -57,13 +57,15 @@ public class LibraryInterface extends JFrame{
 				if(jtp.getSelectedComponent().getName()=="manage_books"){
 					librarian.update_table(mb_panel.table, new String[]{"ID","TITLE","AUTHER","PUBLICATION"}, librarian.books_to_array(librarian.get_books()));
 				}
+				if(jtp.getSelectedComponent().getName()=="manage_memberships"){
+					librarian.update_table(mm_panel.table, new String[]{"ID","NAME","EMAIL","SEMESTER","BOOKS BORROWED"}, librarian.members_to_array(librarian.get_members()));
+				}
 			}
 		});
 
 		//Frame
 		layout = new GroupLayout(getContentPane());
 		getContentPane().setLayout(layout);
-		// setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setVisible(true);
 		setSize(WIDTH,HEIGHT);
 		setResizable(false);	
@@ -204,6 +206,74 @@ public class LibraryInterface extends JFrame{
 						JOptionPane.showMessageDialog(LibraryInterface.this, "Some errors occured while import the CSV file.", "Bad Input File", JOptionPane.ERROR_MESSAGE);
 					}
 					librarian.update_table(table, new String[]{"ID","TITLE","AUTHER","PUBLICATION"}, librarian.books_to_array(librarian.get_books()));
+				}
+			}
+		}
+	}
+
+	class ManageMembersPanel extends JPanel implements ActionListener{
+		private JButton add_member_btn;
+		private JButton remove_member_btn;
+		private JButton import_members_btn;
+		private JTable table;
+		private JScrollPane table_sp;
+		private GroupLayout layout;
+
+		ManageMembersPanel(){
+			add_member_btn = new JButton("Add Member");
+			remove_member_btn = new JButton("Remove Member");
+			import_members_btn = new JButton("Import Members");
+
+			table = new JTable();		
+			table.setEnabled(false);
+			table_sp = new JScrollPane(table);
+
+			add(table_sp);
+			add(add_member_btn);
+			add(import_members_btn);
+			add(remove_member_btn);
+
+			add_member_btn.addActionListener(this);
+			remove_member_btn.addActionListener(this);
+			import_members_btn.addActionListener(this);
+
+			layout = new GroupLayout(this);
+			setLayout(layout);
+			layout.setAutoCreateGaps(true);
+			layout.setAutoCreateContainerGaps(true);
+			layout.setHorizontalGroup(
+			layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+				.addComponent(table_sp)
+				.addGroup(layout.createSequentialGroup()
+					.addComponent(add_member_btn)
+					.addComponent(import_members_btn)
+					.addComponent(remove_member_btn))
+			);
+			layout.setVerticalGroup(
+				layout.createSequentialGroup()
+				.addComponent(table_sp)
+				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+					.addComponent(add_member_btn)
+					.addComponent(import_members_btn)
+					.addComponent(remove_member_btn))
+			);
+		}
+		public void actionPerformed(ActionEvent ae){
+			if(ae.getSource()==add_member_btn){
+			}
+			else if(ae.getSource()==remove_member_btn){
+			}
+			else{
+				chooser.setFileFilter(new FileNameExtensionFilter("CSV Files", "csv"));
+				int returnVal = chooser.showOpenDialog(LibraryInterface.this);
+				if(returnVal == JFileChooser.APPROVE_OPTION){
+					try{
+						librarian.import_members(chooser.getSelectedFile());
+					}catch(InvalidCsvFormatException e){
+						System.out.println(e.getMessage());
+						JOptionPane.showMessageDialog(LibraryInterface.this, "Some errors occured while import the CSV file.", "Bad Input File", JOptionPane.ERROR_MESSAGE);
+					}
+					librarian.update_table(table, new String[]{"ID","NAME","EMAIL","SEMESTER","BOOKS BORROWED"}, librarian.members_to_array(librarian.get_members()));
 				}
 			}
 		}

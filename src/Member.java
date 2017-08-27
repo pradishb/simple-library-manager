@@ -6,6 +6,14 @@ public class Member{
 	private int semester;
 	private int no_books_borrowed;
 
+	public Member(int i, String n, String e, int s, int b){
+		id = i;
+		name = n;
+		email = e;
+		semester = s;
+		no_books_borrowed = b;
+	}
+
 	public void update_data(int i, String n, String e, int s, int b){
 		id = i;
 		name = n;

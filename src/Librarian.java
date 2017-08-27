@@ -118,9 +118,6 @@ public class Librarian{
 		}
 	}
 
-	/////////////////////////////////
-	/////////////////////////////////
-	////////////////////////////////
 
 	public Vector<Book> get_books(){
 		Vector<Book> result = new Vector<Book>();
@@ -136,6 +133,26 @@ public class Librarian{
 		}
 		catch(SQLException se){
 			System.out.println("ERROR: Error while load books from database.");
+			System.out.println("Details:");
+			se.printStackTrace();
+		}
+		return result;
+	}
+
+	public Vector<Member> get_members(){
+		Vector<Member> result = new Vector<Member>();
+		
+		try{
+			ResultSet rs = dm.get_members_stmt.executeQuery();
+			
+			while(rs.next()){
+				Member temp = new Member(rs.getInt("id"),rs.getString("name"),rs.getString("email"),rs.getInt("semester"),rs.getInt("books_borrowed"));
+				result.addElement(temp);
+			}
+			
+		}
+		catch(SQLException se){
+			System.out.println("ERROR: Error while loading members from database.");
 			System.out.println("Details:");
 			se.printStackTrace();
 		}
@@ -170,6 +187,34 @@ public class Librarian{
 		}
 	}
 
+	public void import_members(File myFile) throws InvalidCsvFormatException{
+		try{
+			BufferedReader br=new BufferedReader(new FileReader(myFile));
+			String line="";
+			line=br.readLine();
+			String[] cells = line.split(",");
+			if(cells[0].equals("name") && cells[1].equals("email") && cells[2].equals("semester") && cells.length==3){
+				while((line=br.readLine())!=null){
+					cells = line.split(",");
+					if(cells.length==3){
+						Member myMember = new Member(0,cells[0],cells[1],Integer.parseInt(cells[2]),0);
+						add_member(myMember);
+					}
+					else{
+						throw new InvalidCsvFormatException();		//when the content of CSV is invalid
+					}
+				}
+			}
+			else{
+				throw new InvalidCsvFormatException();				//when the 1st line of CSV is invalid
+			}
+		}catch(IOException e){
+			System.out.println("ERROR: Error while importing members.");
+			System.out.println("Details:");
+			e.printStackTrace();
+		}
+	}
+
 	public Object[][] books_to_array(Vector<Book> books){
 		Object[][] result = new Object[books.size()][4];
 
@@ -182,6 +227,18 @@ public class Librarian{
 		return result;
 	}
 
+	public Object[][] members_to_array(Vector<Member> members){
+		Object[][] result = new Object[members.size()][5];
+
+		for(int i=0; i<members.size();i++){
+			result[i][0]=members.elementAt(i).get_id();
+			result[i][1]=members.elementAt(i).get_name();
+			result[i][2]=members.elementAt(i).get_email();
+			result[i][3]=members.elementAt(i).get_semester();
+			result[i][4]=members.elementAt(i).get_no_books_borrowed();
+		}
+		return result;
+	}
 	public void update_table(JTable table, String[] cols, Object[][]  data){
 		table.setModel(new DefaultTableModel(data, cols));
 		table.getColumn("ID").setMaxWidth(30);
