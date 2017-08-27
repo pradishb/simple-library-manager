@@ -262,6 +262,8 @@ public class LibraryInterface extends JFrame{
 		}
 		public void actionPerformed(ActionEvent ae){
 			if(ae.getSource()==add_member_btn){
+				AddMemberDialog amd = new AddMemberDialog(LibraryInterface.this,librarian,mm_panel.table);
+				amd.setVisible(true);
 			}
 			else if(ae.getSource()==remove_member_btn){
 				RemoveMemberDialog rmd = new RemoveMemberDialog(LibraryInterface.this,librarian,mm_panel.table);
