@@ -27,10 +27,10 @@ public class Librarian{
 			int r_affected = dm.add_book_stmt.executeUpdate();
 			System.out.println(r_affected + " book(s) added to database.");
 		}
-		catch(SQLException se){
+		catch(Exception se){
 			System.out.println("ERROR: Error while adding books to database.");
 			System.out.println("Details:");
-			se.printStackTrace();
+			System.out.println(se.toString());
 		}
 	}
 
@@ -40,10 +40,10 @@ public class Librarian{
 			int r_affected = dm.remove_book_stmt.executeUpdate();
 			System.out.println(r_affected + " book(s) removed from database.");
 		}
-		catch(SQLException se){
+		catch(Exception se){
 			System.out.println("ERROR: Error while removing books from database.");
 			System.out.println("Details:");
-			se.printStackTrace();
+			System.out.println(se.toString());
 		}
 	}
 
@@ -55,10 +55,10 @@ public class Librarian{
 			int r_affected = dm.update_book_stmt.executeUpdate();
 			System.out.println(r_affected + " book(s) updated in database.");
 		}
-		catch(SQLException se){
+		catch(Exception se){
 			System.out.println("ERROR: Error while updating books in database.");
 			System.out.println("Details:");
-			se.printStackTrace();
+			System.out.println(se.toString());
 		}
 	}
 
@@ -71,10 +71,10 @@ public class Librarian{
 			int r_affected = dm.add_member_stmt.executeUpdate();
 			System.out.println(r_affected + " member(s) added to database.");
 		}
-		catch(SQLException se){
+		catch(Exception se){
 			System.out.println("ERROR: Error while member book to database.");
 			System.out.println("Details:");
-			se.printStackTrace();
+			System.out.println(se.toString());
 		}
 	}
 
@@ -84,10 +84,10 @@ public class Librarian{
 			int r_affected = dm.remove_member_stmt.executeUpdate();
 			System.out.println(r_affected + " member(s) removed from database.");
 		}
-		catch(SQLException se){
+		catch(Exception se){
 			System.out.println("ERROR: Error while removing members from database.");
 			System.out.println("Details:");
-			se.printStackTrace();
+			System.out.println(se.toString());
 		}
 	}
 
@@ -100,10 +100,10 @@ public class Librarian{
 			int r_affected = dm.update_member_stmt.executeUpdate();
 			System.out.println(r_affected + " member(s) updated in database.");
 		}
-		catch(SQLException se){
+		catch(Exception se){
 			System.out.println("ERROR: Error while updating members in database.");
 			System.out.println("Details:");
-			se.printStackTrace();
+			System.out.println(se.toString());
 		}
 	}
 
@@ -114,10 +114,10 @@ public class Librarian{
 			int r_affected = dm.issue_book_stmt.executeUpdate();
 			System.out.println(r_affected + " book(s) has been issued.");
 		}
-		catch(SQLException se){
+		catch(Exception se){
 			System.out.println("ERROR: Error while issuing book.");
 			System.out.println("Details:");
-			se.printStackTrace();
+			System.out.println(se.toString());
 		}
 	}
 
@@ -134,10 +134,10 @@ public class Librarian{
 			}
 			
 		}
-		catch(SQLException se){
+		catch(Exception se){
 			System.out.println("ERROR: Error while load books from database.");
 			System.out.println("Details:");
-			se.printStackTrace();
+			System.out.println(se.toString());
 		}
 		return result;
 	}
@@ -154,10 +154,30 @@ public class Librarian{
 			}
 			
 		}
-		catch(SQLException se){
+		catch(Exception se){
 			System.out.println("ERROR: Error while loading members from database.");
 			System.out.println("Details:");
-			se.printStackTrace();
+			System.out.println(se.toString());
+		}
+		return result;
+	}
+
+	public Vector<Transaction> get_transactions(){
+		Vector<Transaction> result = new Vector<Transaction>();
+		
+		try{
+			ResultSet rs = dm.get_transactions_stmt.executeQuery();
+			
+			while(rs.next()){
+				Transaction temp = new Transaction(rs.getInt("id"),rs.getInt("borrower_id"),rs.getInt("book_id"),rs.getTimestamp("borrowed_date"));
+				result.addElement(temp);
+			}
+			
+		}
+		catch(Exception se){
+			System.out.println("ERROR: Error while loading transactions from database.");
+			System.out.println("Details:");
+			System.out.println(se.toString());
 		}
 		return result;
 	}
@@ -239,6 +259,18 @@ public class Librarian{
 			result[i][2]=members.elementAt(i).get_email();
 			result[i][3]=members.elementAt(i).get_semester();
 			result[i][4]=members.elementAt(i).get_no_books_borrowed();
+		}
+		return result;
+	}
+
+	public Object[][] transactions_to_array(Vector<Transaction> transactions){
+		Object[][] result = new Object[transactions.size()][4];
+
+		for(int i=0; i<transactions.size();i++){
+			result[i][0]=transactions.elementAt(i).get_id();
+			result[i][1]=transactions.elementAt(i).get_borrower_id();
+			result[i][2]=transactions.elementAt(i).get_book_id();
+			result[i][3]=transactions.elementAt(i).get_borrowed_date().toString();
 		}
 		return result;
 	}

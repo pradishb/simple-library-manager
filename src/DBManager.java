@@ -17,6 +17,7 @@ public class DBManager{
 	PreparedStatement issue_book_stmt;
 	PreparedStatement get_books_stmt;
 	PreparedStatement get_members_stmt;
+	PreparedStatement get_transactions_stmt;
 
 	public DBManager(){
 		init_database();
@@ -39,7 +40,7 @@ public class DBManager{
 			stmt.execute("USE simple_library_manager");
 			stmt.execute("CREATE TABLE IF NOT EXISTS books(id smallint(6) AUTO_INCREMENT, title varchar(20), author varchar(20), publication varchar(20), PRIMARY KEY (id))");
 			stmt.execute("CREATE TABLE IF NOT EXISTS members(id smallint(6) AUTO_INCREMENT, name varchar(20), semester tinyint(1), email varchar(20), books_borrowed tinyint(4), PRIMARY KEY (id))");
-			stmt.execute("CREATE TABLE IF NOT EXISTS borrows(id smallint(6) AUTO_INCREMENT, borrower_id smallint(6), book_id smallint(6), borrowed_date timestamp, PRIMARY KEY (id))");
+			stmt.execute("CREATE TABLE IF NOT EXISTS transactions(id smallint(6) AUTO_INCREMENT, borrower_id smallint(6), book_id smallint(6), borrowed_date timestamp, PRIMARY KEY (id))");
 			stmt.execute("CREATE TABLE IF NOT EXISTS settings(id smallint(6) AUTO_INCREMENT, password varchar(20), threshold tinyint(4), overdue_duration tinyint(4), PRIMARY KEY (id))");
 			//create prepared statements
 			add_member_stmt = conn.prepareStatement("INSERT INTO members(id, name, semester, email, books_borrowed) VALUES (0,?,?,?,?)");
@@ -51,6 +52,8 @@ public class DBManager{
 			issue_book_stmt = conn.prepareStatement("INSERT INTO borrows(id, borrower_id, book_id, borrowed_date) VALUES (0,?,?,CURRENT_TIMESTAMP)");
 			get_books_stmt = conn.prepareStatement("SELECT * FROM books ORDER BY id");
 			get_members_stmt = conn.prepareStatement("SELECT * FROM members ORDER BY id");
+			get_transactions_stmt = conn.prepareStatement("SELECT * FROM transactions ORDER BY id");
+
 		}catch(SQLException se){
 			System.out.println("ERROR: Error while loading from database.");
 			System.out.println("Details:");

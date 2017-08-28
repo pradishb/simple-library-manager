@@ -21,6 +21,7 @@ public class LibraryInterface extends JFrame{
 	private AddBookDialog abd;
 	private IssueBookPanel ib_panel;
 	private ManageBooksPanel mb_panel;
+	private TransactionsPanel tr_panel;
 
 	public LibraryInterface(Librarian librarian, DBManager db_manager){
 		super("Simple Library Manager");
@@ -40,6 +41,7 @@ public class LibraryInterface extends JFrame{
 		abd = new AddBookDialog();
 		ib_panel = new IssueBookPanel();
 		mb_panel = new ManageBooksPanel();
+		tr_panel = new TransactionsPanel();
 	}
 
 	public void load_interface(){
@@ -54,6 +56,7 @@ public class LibraryInterface extends JFrame{
 		jtp.addTab("Issue Book", ib_panel);
 		jtp.addTab("Managae Books", mb_panel);
 		jtp.addTab("Managae Memberships", mm_panel);
+		jtp.addTab("Transactions", tr_panel);
 		jtp.addChangeListener(new ChangeListener() {
 			public void stateChanged(ChangeEvent e){
 				if(jtp.getSelectedComponent().getName()=="manage_books"){
@@ -61,6 +64,9 @@ public class LibraryInterface extends JFrame{
 				}
 				if(jtp.getSelectedComponent().getName()=="manage_memberships"){
 					librarian.update_table(mm_panel.table, new String[]{"ID","NAME","EMAIL","SEMESTER","BOOKS BORROWED"}, librarian.members_to_array(librarian.get_members()));
+				}
+				if(jtp.getSelectedComponent().getName()=="transactions"){
+					librarian.update_table(tr_panel.table, new String[]{"ID","BOOK","BORROWED BY","BORROWED TIME"}, librarian.transactions_to_array(librarian.get_transactions()));
 				}
 			}
 		});
