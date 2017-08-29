@@ -49,7 +49,7 @@ public class DBManager{
 			add_book_stmt = conn.prepareStatement("INSERT INTO books(id, title, author, publication) VALUES (0,?,?,?)");
 			remove_book_stmt = conn.prepareStatement("DELETE FROM books WHERE id=?");
 			update_book_stmt = conn.prepareStatement("UPDATE books SET id=0,title=?,author=?,publication=?");
-			issue_book_stmt = conn.prepareStatement("INSERT INTO borrows(id, borrower_id, book_id, borrowed_date) VALUES (0,?,?,CURRENT_TIMESTAMP)");
+			issue_book_stmt = conn.prepareStatement("INSERT INTO transactions(id, borrower_id, book_id, borrowed_date) VALUES (0,?,?,CURRENT_TIMESTAMP)");
 			get_books_stmt = conn.prepareStatement("SELECT * FROM books ORDER BY id");
 			get_members_stmt = conn.prepareStatement("SELECT * FROM members ORDER BY id");
 			get_transactions_stmt = conn.prepareStatement("SELECT * FROM transactions ORDER BY id");

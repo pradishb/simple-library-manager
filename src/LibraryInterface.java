@@ -119,6 +119,8 @@ public class LibraryInterface extends JFrame{
 			add(book_id_tf);
 			add(btn);
 
+			btn.addActionListener(this);
+
 			layout = new GroupLayout(this);
 			setLayout(layout);
 			layout.setAutoCreateGaps(true);
@@ -145,7 +147,12 @@ public class LibraryInterface extends JFrame{
 			);
 		}
 		public void actionPerformed(ActionEvent ae){
-
+			try{
+				librarian.issue_book(Integer.parseInt(member_id_tf.getText()),Integer.parseInt(book_id_tf.getText()));
+			}
+			catch(NumberFormatException e){
+				JOptionPane.showMessageDialog(this, "The form is not valid.", "Bad Input", JOptionPane.ERROR_MESSAGE);
+			}
 		}
 	}
 
