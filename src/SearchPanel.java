@@ -3,7 +3,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
-public class SearchPanel extends JPanel{
+public class SearchPanel extends JPanel implements ActionListener{
 		private Librarian librarian;
 		private GroupLayout layout;
 		private JScrollPane table_sp;
@@ -25,6 +25,11 @@ public class SearchPanel extends JPanel{
 			data = new JTextField();
 			group = new ButtonGroup();
 
+			books.setActionCommand("books");
+			members.setActionCommand("members");
+			transactions.setActionCommand("transactions");
+			update_books();
+
     		books.setSelected(true);
     		group.add(books);
     		group.add(members);
@@ -32,9 +37,17 @@ public class SearchPanel extends JPanel{
 
 			setName("search");
 
+			books.addActionListener(this);
+			members.addActionListener(this);
+			transactions.addActionListener(this);
 			data.addKeyListener(new KeyAdapter(){
 				public void keyReleased(KeyEvent e){
-					librarian.update_table(table, new String[]{"ID","TITLE","AUTHER","PUBLICATION"}, librarian.books_to_array(librarian.search_books(data.getText())));
+					if(group.getSelection().getActionCommand().equals("books")){
+						update_books();
+					}
+					else if(group.getSelection().getActionCommand().equals("members")){
+						update_members();
+					}
 				}
 			});
 
@@ -63,8 +76,20 @@ public class SearchPanel extends JPanel{
 				.addComponent(table_sp)
 			);
 		}
-		// public void keyTyped(KeyEvent e){
-		// // public void actionPerformed(ActionEvent ae){
-		// 	librarian.update_table(table, new String[]{"ID","TITLE","AUTHER","PUBLICATION"}, librarian.books_to_array(librarian.search_books(data.getText())));
-		// }
+		
+		public void actionPerformed(ActionEvent e){
+			if(e.getActionCommand().equals("books")){
+						update_books();
+			}
+			else if(e.getActionCommand().equals("members")){
+				update_members();
+			}
+		}
+		public void update_books(){
+			librarian.update_table(table, new String[]{"ID","TITLE","AUTHER","PUBLICATION"}, librarian.books_to_array(librarian.search_books(data.getText())));
+
+		}
+		public void update_members(){
+			librarian.update_table(table, new String[]{"ID","NAME","EMAIL","SEMESTER","BOOKS BORROWED"}, librarian.members_to_array(librarian.search_members(data.getText())));
+		}
 	}

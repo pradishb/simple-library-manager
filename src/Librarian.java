@@ -19,19 +19,20 @@ public class Librarian{
 		this.library_interface = library_interface;
 	}
 
-	public void add_book(Book myBook){
+	public int add_book(Book myBook){
+		int r_affected = 0;
 		try{
 			dm.add_book_stmt.setString(1,myBook.get_title());
 			dm.add_book_stmt.setString(2,myBook.get_author());
 			dm.add_book_stmt.setString(3,myBook.get_publication());
-			int r_affected = dm.add_book_stmt.executeUpdate();
-			System.out.println(r_affected + " book(s) added to database.");
+			r_affected = dm.add_book_stmt.executeUpdate();
 		}
 		catch(Exception se){
 			System.out.println("ERROR: Error while adding books to database.");
 			System.out.println("Details:");
 			System.out.println(se.toString());
 		}
+		return r_affected;
 	}
 
 	public void remove_book(int book_id){
@@ -62,20 +63,21 @@ public class Librarian{
 		}
 	}
 
-	public void add_member(Member myMember){
+	public int add_member(Member myMember){
+		int r_affected = 0;
 		try{
 			dm.add_member_stmt.setString(1,myMember.get_name());
 			dm.add_member_stmt.setInt(2,myMember.get_semester());
 			dm.add_member_stmt.setString(3,myMember.get_email());
 			dm.add_member_stmt.setInt(4,myMember.get_no_books_borrowed());
-			int r_affected = dm.add_member_stmt.executeUpdate();
-			System.out.println(r_affected + " member(s) added to database.");
+			r_affected = dm.add_member_stmt.executeUpdate();
 		}
 		catch(Exception se){
 			System.out.println("ERROR: Error while member book to database.");
 			System.out.println("Details:");
 			System.out.println(se.toString());
 		}
+		return r_affected;
 	}
 
 	public void remove_member(int member_id){
@@ -124,7 +126,6 @@ public class Librarian{
 	public Vector<Book> search_books(String myString){
 		Vector<Book> result = new Vector<Book>();
 		try{
-			System.out.println("Searching for string \""+myString+"\" in books table.");
 			dm.search_books_stmt.setString(1, "%"+myString+"%");
 			dm.search_books_stmt.setString(2, "%"+myString+"%");
 			dm.search_books_stmt.setString(3, "%"+myString+"%");
@@ -137,6 +138,27 @@ public class Librarian{
 		}
 		catch(Exception se){
 			System.out.println("ERROR: Error while searching books.");
+			System.out.println("Details:");
+			System.out.println(se.toString());
+		}
+		return result;
+	}
+
+	public Vector<Member> search_members(String myString){
+		Vector<Member> result = new Vector<Member>();
+		try{
+			dm.search_members_stmt.setString(1, "%"+myString+"%");
+			dm.search_members_stmt.setString(2, "%"+myString+"%");
+			dm.search_members_stmt.setString(3, "%"+myString+"%");
+			dm.search_members_stmt.setString(4, "%"+myString+"%");
+			ResultSet rs = dm.search_members_stmt.executeQuery();
+			while(rs.next()){
+				Member temp = new Member(rs.getInt("id"),rs.getString("name"),rs.getString("email"),rs.getInt("semester"),rs.getInt("books_borrowed"));
+				result.addElement(temp);
+			}
+		}
+		catch(Exception se){
+			System.out.println("ERROR: Error while searching members.");
 			System.out.println("Details:");
 			System.out.println(se.toString());
 		}
@@ -204,6 +226,7 @@ public class Librarian{
 	}
 
 	public void import_books(File myFile) throws InvalidCsvFormatException{
+		int count = 0;
 		try{
 			BufferedReader br=new BufferedReader(new FileReader(myFile));
 			String line="";
@@ -214,7 +237,7 @@ public class Librarian{
 					cells = line.split(",");
 					if(cells.length==3){
 						Book myBook = new Book(0,cells[0],cells[1],cells[2]);
-						add_book(myBook);
+						count += add_book(myBook);
 					}
 					else{
 						throw new InvalidCsvFormatException();		//when the content of CSV is invalid
@@ -229,9 +252,11 @@ public class Librarian{
 			System.out.println("Details:");
 			e.printStackTrace();
 		}
+		System.out.println(count + " book(s) has been added to database.");
 	}
 
 	public void import_members(File myFile) throws InvalidCsvFormatException{
+		int count = 0;
 		try{
 			BufferedReader br=new BufferedReader(new FileReader(myFile));
 			String line="";
@@ -242,7 +267,7 @@ public class Librarian{
 					cells = line.split(",");
 					if(cells.length==3){
 						Member myMember = new Member(0,cells[0],cells[1],Integer.parseInt(cells[2]),0);
-						add_member(myMember);
+						count += add_member(myMember);
 					}
 					else{
 						throw new InvalidCsvFormatException();		//when the content of CSV is invalid
@@ -257,6 +282,7 @@ public class Librarian{
 			System.out.println("Details:");
 			e.printStackTrace();
 		}
+		System.out.println(count + " member(s) added to database.");
 	}
 
 	public Object[][] books_to_array(Vector<Book> books){

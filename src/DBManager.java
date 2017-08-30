@@ -2,10 +2,10 @@ package slm;
 import java.sql.*;
 
 public class DBManager{
-	final String JDBC_DRIVER = "com.mysql.jdbc.Driver";  
-	final String DB_URL = "jdbc:mysql://localhost:3306/?useSSL=false";
-	final String USER = "root";
-	final String PASS = "";
+	private final String JDBC_DRIVER = "com.mysql.jdbc.Driver";  
+	private final String DB_URL = "jdbc:mysql://localhost:3306/?useSSL=false";
+	private final String USER = "root";
+	private final String PASS = "";
 	Connection conn = null;
 	Statement stmt = null;
 	PreparedStatement add_member_stmt;
@@ -19,6 +19,7 @@ public class DBManager{
 	PreparedStatement get_members_stmt;
 	PreparedStatement get_transactions_stmt;
 	PreparedStatement search_books_stmt;
+	PreparedStatement search_members_stmt;
 
 	public DBManager(){
 		init_database();
@@ -39,8 +40,8 @@ public class DBManager{
 			//create database and tables if not exists
 			stmt.execute("CREATE DATABASE IF NOT EXISTS simple_library_manager");
 			stmt.execute("USE simple_library_manager");
-			stmt.execute("CREATE TABLE IF NOT EXISTS books(id smallint(6) AUTO_INCREMENT, title varchar(20), author varchar(20), publication varchar(20), PRIMARY KEY (id))");
-			stmt.execute("CREATE TABLE IF NOT EXISTS members(id smallint(6) AUTO_INCREMENT, name varchar(20), semester tinyint(1), email varchar(20), books_borrowed tinyint(4), PRIMARY KEY (id))");
+			stmt.execute("CREATE TABLE IF NOT EXISTS books(id smallint(6) AUTO_INCREMENT, title varchar(40), author varchar(40), publication varchar(40), PRIMARY KEY (id))");
+			stmt.execute("CREATE TABLE IF NOT EXISTS members(id smallint(6) AUTO_INCREMENT, name varchar(40), semester tinyint(1), email varchar(40), books_borrowed tinyint(4), PRIMARY KEY (id))");
 			stmt.execute("CREATE TABLE IF NOT EXISTS transactions(id smallint(6) AUTO_INCREMENT, borrower_id smallint(6), book_id smallint(6), borrowed_date timestamp, PRIMARY KEY (id))");
 			stmt.execute("CREATE TABLE IF NOT EXISTS settings(id smallint(6) AUTO_INCREMENT, password varchar(20), threshold tinyint(4), overdue_duration tinyint(4), PRIMARY KEY (id))");
 			//create prepared statements
@@ -55,6 +56,7 @@ public class DBManager{
 			get_members_stmt = conn.prepareStatement("SELECT * FROM members ORDER BY id");
 			get_transactions_stmt = conn.prepareStatement("SELECT * FROM transactions ORDER BY id");
 			search_books_stmt = conn.prepareStatement("SELECT * FROM books WHERE id LIKE ? OR title LIKE ? OR author LIKE ? OR publication LIKE ?");
+			search_members_stmt = conn.prepareStatement("SELECT * FROM members WHERE id LIKE ? OR name LIKE ? OR email LIKE ? OR semester LIKE ?");
 
 		}catch(SQLException se){
 			System.out.println("ERROR: Error while loading from database.");
