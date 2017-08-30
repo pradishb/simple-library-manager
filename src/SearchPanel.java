@@ -28,7 +28,6 @@ public class SearchPanel extends JPanel implements ActionListener{
 			books.setActionCommand("books");
 			members.setActionCommand("members");
 			transactions.setActionCommand("transactions");
-			update_books();
 
     		books.setSelected(true);
     		group.add(books);

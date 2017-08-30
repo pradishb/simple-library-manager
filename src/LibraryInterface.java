@@ -59,12 +59,12 @@ public class LibraryInterface extends JFrame{
 			public void stateChanged(ChangeEvent e){
 				if(jtp.getSelectedComponent().getName()=="manage_books"){
 					librarian.update_table(mb_panel.table, new String[]{"ID","TITLE","AUTHER","PUBLICATION"}, librarian.books_to_array(librarian.get_books()));
-				}
-				if(jtp.getSelectedComponent().getName()=="manage_memberships"){
+				}else if(jtp.getSelectedComponent().getName()=="manage_memberships"){
 					librarian.update_table(mm_panel.table, new String[]{"ID","NAME","EMAIL","SEMESTER","BOOKS BORROWED"}, librarian.members_to_array(librarian.get_members()));
-				}
-				if(jtp.getSelectedComponent().getName()=="transactions"){
+				}else if(jtp.getSelectedComponent().getName()=="transactions"){
 					librarian.update_table(tr_panel.table, new String[]{"ID","BOOK","BORROWED BY","BORROWED TIME"}, librarian.transactions_to_array(librarian.get_transactions()));
+				}else if(jtp.getSelectedComponent().getName()=="search"){
+					s_panel.update_books();
 				}
 			}
 		});

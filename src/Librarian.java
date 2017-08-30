@@ -4,6 +4,8 @@ import java.util.*;
 import java.io.*;
 import javax.swing.*;
 import javax.swing.table.*;
+import com.Ostermiller.util.LabeledCSVParser;
+import com.Ostermiller.util.CSVParser;
 
 class InvalidCsvFormatException extends Exception{
 	public InvalidCsvFormatException(){
@@ -228,21 +230,13 @@ public class Librarian{
 	public void import_books(File myFile) throws InvalidCsvFormatException{
 		int count = 0;
 		try{
-			BufferedReader br=new BufferedReader(new FileReader(myFile));
-			String line="";
-			line=br.readLine();
-			String[] cells = line.split(",");
+			LabeledCSVParser lcsvp = new LabeledCSVParser(new CSVParser(new FileReader(myFile)));
+			String[] cells = lcsvp.getLabels();
 			if(cells[0].equals("title") && cells[1].equals("author") && cells[2].equals("publication") && cells.length==3){
-				while((line=br.readLine())!=null){
-					cells = line.split(",");
-					if(cells.length==3){
-						Book myBook = new Book(0,cells[0],cells[1],cells[2]);
-						count += add_book(myBook);
-					}
-					else{
-						throw new InvalidCsvFormatException();		//when the content of CSV is invalid
-					}
-				}
+				while(lcsvp.getLine() != null){
+					Book myBook = new Book(0,lcsvp.getValueByLabel("title"),lcsvp.getValueByLabel("author"),lcsvp.getValueByLabel("publication"));
+					count += add_book(myBook);
+				}	
 			}
 			else{
 				throw new InvalidCsvFormatException();				//when the 1st line of CSV is invalid
@@ -258,21 +252,18 @@ public class Librarian{
 	public void import_members(File myFile) throws InvalidCsvFormatException{
 		int count = 0;
 		try{
-			BufferedReader br=new BufferedReader(new FileReader(myFile));
-			String line="";
-			line=br.readLine();
-			String[] cells = line.split(",");
+			LabeledCSVParser lcsvp = new LabeledCSVParser(new CSVParser(new FileReader(myFile)));
+			String[] cells = lcsvp.getLabels();
 			if(cells[0].equals("name") && cells[1].equals("email") && cells[2].equals("semester") && cells.length==3){
-				while((line=br.readLine())!=null){
-					cells = line.split(",");
-					if(cells.length==3){
-						Member myMember = new Member(0,cells[0],cells[1],Integer.parseInt(cells[2]),0);
+				while(lcsvp.getLine() != null){
+					try{
+						Member myMember = new Member(0,lcsvp.getValueByLabel("name"),lcsvp.getValueByLabel("email"),Integer.parseInt(lcsvp.getValueByLabel("semester")),0);
 						count += add_member(myMember);
 					}
-					else{
-						throw new InvalidCsvFormatException();		//when the content of CSV is invalid
+					catch(NumberFormatException e){
+						throw new InvalidCsvFormatException();		
 					}
-				}
+				}	
 			}
 			else{
 				throw new InvalidCsvFormatException();				//when the 1st line of CSV is invalid
