@@ -17,8 +17,8 @@ public class Librarian{
 	public Librarian(DBManager dm, LibraryInterface library_interface){
 		this.dm = dm;
 		this.library_interface = library_interface;
-
 	}
+
 	public void add_book(Book myBook){
 		try{
 			dm.add_book_stmt.setString(1,myBook.get_title());
@@ -121,6 +121,27 @@ public class Librarian{
 		}
 	}
 
+	public Vector<Book> search_books(String myString){
+		Vector<Book> result = new Vector<Book>();
+		try{
+			System.out.println("Searching for string \""+myString+"\" in books table.");
+			dm.search_books_stmt.setString(1, "%"+myString+"%");
+			dm.search_books_stmt.setString(2, "%"+myString+"%");
+			dm.search_books_stmt.setString(3, "%"+myString+"%");
+			dm.search_books_stmt.setString(4, "%"+myString+"%");
+			ResultSet rs = dm.search_books_stmt.executeQuery();
+			while(rs.next()){
+				Book temp = new Book(rs.getInt("id"),rs.getString("title"),rs.getString("author"),rs.getString("publication"));
+				result.addElement(temp);
+			}
+		}
+		catch(Exception se){
+			System.out.println("ERROR: Error while searching books.");
+			System.out.println("Details:");
+			System.out.println(se.toString());
+		}
+		return result;
+	}
 
 	public Vector<Book> get_books(){
 		Vector<Book> result = new Vector<Book>();
@@ -274,6 +295,7 @@ public class Librarian{
 		}
 		return result;
 	}
+	
 	public void update_table(JTable table, String[] cols, Object[][]  data){
 		table.setModel(new DefaultTableModel(data, cols));
 		table.getColumn("ID").setMaxWidth(30);

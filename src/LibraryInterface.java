@@ -1,6 +1,6 @@
 package slm;
 
-import javax.swing.filechooser.FileNameExtensionFilter;  
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -11,7 +11,7 @@ import javax.swing.event.ChangeListener;
 public class LibraryInterface extends JFrame{
 	private Librarian librarian;
 	private DBManager db_manager;
-	private final int WIDTH = 500;
+	private final int WIDTH = 600;
 	private final int HEIGHT = 500;
 	private JFileChooser chooser;
 	private ManageMembersPanel mm_panel;
@@ -22,6 +22,7 @@ public class LibraryInterface extends JFrame{
 	private IssueBookPanel ib_panel;
 	private ManageBooksPanel mb_panel;
 	private TransactionsPanel tr_panel;
+	private SearchPanel s_panel;
 
 	public LibraryInterface(Librarian librarian, DBManager db_manager){
 		super("Simple Library Manager");
@@ -42,21 +43,18 @@ public class LibraryInterface extends JFrame{
 		ib_panel = new IssueBookPanel();
 		mb_panel = new ManageBooksPanel();
 		tr_panel = new TransactionsPanel();
+		s_panel = new SearchPanel(librarian);
 	}
 
 	public void load_interface(){
 		System.out.println("Loading Interface...");
 
-		//Panel
-		ib_panel.setName("issue_book");
-		mb_panel.setName("manage_books");
-		mm_panel.setName("manage_memberships");
-		
 		//Tabbed Pane
 		jtp.addTab("Issue Book", ib_panel);
-		jtp.addTab("Managae Books", mb_panel);
-		jtp.addTab("Managae Memberships", mm_panel);
+		jtp.addTab("Manage Books", mb_panel);
+		jtp.addTab("Manage Memberships", mm_panel);
 		jtp.addTab("Transactions", tr_panel);
+		jtp.addTab("Search", s_panel);
 		jtp.addChangeListener(new ChangeListener() {
 			public void stateChanged(ChangeEvent e){
 				if(jtp.getSelectedComponent().getName()=="manage_books"){
@@ -76,7 +74,7 @@ public class LibraryInterface extends JFrame{
 		getContentPane().setLayout(layout);
 		setVisible(true);
 		setSize(WIDTH,HEIGHT);
-		setResizable(false);	
+		setResizable(false);
 		add(jtp);
 		addWindowListener(new WindowAdapter(){
 			public void windowClosing(WindowEvent we){
@@ -108,6 +106,8 @@ public class LibraryInterface extends JFrame{
 		private GroupLayout layout;
 
 		IssueBookPanel(){
+			setName("issue_book");
+
 			member_id_label = new JLabel("Enter Member Id");
 			book_id_label = new JLabel("Enter Book Id");
 			member_id_tf = new JTextField();
@@ -165,11 +165,13 @@ public class LibraryInterface extends JFrame{
 		private GroupLayout layout;
 
 		ManageBooksPanel(){
+			setName("manage_books");
+
 			add_book_btn = new JButton("Add Book");
 			remove_book_btn = new JButton("Remove Book");
 			import_books_btn = new JButton("Import Books");
 
-			table = new JTable();		
+			table = new JTable();
 			table.setEnabled(false);
 			table_sp = new JScrollPane(table);
 
@@ -235,11 +237,13 @@ public class LibraryInterface extends JFrame{
 		private GroupLayout layout;
 
 		ManageMembersPanel(){
+			setName("manage_memberships");
+
 			add_member_btn = new JButton("Add Member");
 			remove_member_btn = new JButton("Remove Member");
 			import_members_btn = new JButton("Import Members");
 
-			table = new JTable();		
+			table = new JTable();
 			table.setEnabled(false);
 			table_sp = new JScrollPane(table);
 
@@ -352,7 +356,7 @@ public class LibraryInterface extends JFrame{
 					.addComponent(publication_tf))
 				.addComponent(btn)
 				);
-			
+
 			setSize(400,165);
 			setResizable(false);
 			add(title_label);
@@ -412,7 +416,7 @@ public class LibraryInterface extends JFrame{
 				.addComponent(btn)
 				);
 
-			
+
 			setSize(400,110);
 			setResizable(false);
 			add(book_id_label);
@@ -428,8 +432,7 @@ public class LibraryInterface extends JFrame{
 			catch(NumberFormatException e){
 				System.out.println("ERROR: Book id provided is not valid.");
 				JOptionPane.showMessageDialog(this, "Please enter a valid book id.", "Bad Input", JOptionPane.ERROR_MESSAGE);
-			}		
+			}
 		}
 	}
 }
-

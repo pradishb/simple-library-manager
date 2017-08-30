@@ -18,6 +18,7 @@ public class DBManager{
 	PreparedStatement get_books_stmt;
 	PreparedStatement get_members_stmt;
 	PreparedStatement get_transactions_stmt;
+	PreparedStatement search_books_stmt;
 
 	public DBManager(){
 		init_database();
@@ -53,6 +54,7 @@ public class DBManager{
 			get_books_stmt = conn.prepareStatement("SELECT * FROM books ORDER BY id");
 			get_members_stmt = conn.prepareStatement("SELECT * FROM members ORDER BY id");
 			get_transactions_stmt = conn.prepareStatement("SELECT * FROM transactions ORDER BY id");
+			search_books_stmt = conn.prepareStatement("SELECT * FROM books WHERE id LIKE ? OR title LIKE ? OR author LIKE ? OR publication LIKE ?");
 
 		}catch(SQLException se){
 			System.out.println("ERROR: Error while loading from database.");
