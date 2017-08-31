@@ -42,7 +42,7 @@ public class LibraryInterface extends JFrame{
 		abd = new AddBookDialog();
 		ib_panel = new IssueBookPanel();
 		mb_panel = new ManageBooksPanel();
-		tr_panel = new TransactionsPanel();
+		tr_panel = new TransactionsPanel(librarian);
 		s_panel = new SearchPanel(librarian);
 	}
 
@@ -62,7 +62,7 @@ public class LibraryInterface extends JFrame{
 				}else if(jtp.getSelectedComponent().getName()=="manage_memberships"){
 					librarian.update_table(mm_panel.table, new String[]{"ID","NAME","EMAIL","SEMESTER","BOOKS BORROWED"}, librarian.members_to_array(librarian.get_members()));
 				}else if(jtp.getSelectedComponent().getName()=="transactions"){
-					librarian.update_table(tr_panel.table, new String[]{"ID","BOOK","BORROWED BY","BORROWED TIME"}, librarian.transactions_to_array(librarian.get_transactions()));
+					tr_panel.update_table();
 				}else if(jtp.getSelectedComponent().getName()=="search"){
 					s_panel.update_books();
 				}

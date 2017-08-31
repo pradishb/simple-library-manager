@@ -47,6 +47,9 @@ public class SearchPanel extends JPanel implements ActionListener{
 					else if(group.getSelection().getActionCommand().equals("members")){
 						update_members();
 					}
+					else if(group.getSelection().getActionCommand().equals("transactions")){
+						update_transactions();
+					}
 				}
 			});
 
@@ -83,6 +86,9 @@ public class SearchPanel extends JPanel implements ActionListener{
 			else if(e.getActionCommand().equals("members")){
 				update_members();
 			}
+			else if(e.getActionCommand().equals("transactions")){
+				update_transactions();
+			}
 		}
 		public void update_books(){
 			librarian.update_table(table, new String[]{"ID","TITLE","AUTHER","PUBLICATION"}, librarian.books_to_array(librarian.search_books(data.getText())));
@@ -90,5 +96,8 @@ public class SearchPanel extends JPanel implements ActionListener{
 		}
 		public void update_members(){
 			librarian.update_table(table, new String[]{"ID","NAME","EMAIL","SEMESTER","BOOKS BORROWED"}, librarian.members_to_array(librarian.search_members(data.getText())));
+		}
+		public void update_transactions(){
+			librarian.update_table(table, new String[]{"ID","BOOK","BORROWED BY","BORROWED TIME"}, librarian.transactions_to_array(librarian.search_transactions(data.getText())));
 		}
 	}

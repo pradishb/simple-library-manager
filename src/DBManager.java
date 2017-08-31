@@ -20,6 +20,7 @@ public class DBManager{
 	PreparedStatement get_transactions_stmt;
 	PreparedStatement search_books_stmt;
 	PreparedStatement search_members_stmt;
+	PreparedStatement search_transactions_stmt;
 
 	public DBManager(){
 		init_database();
@@ -54,10 +55,10 @@ public class DBManager{
 			issue_book_stmt = conn.prepareStatement("INSERT INTO transactions(id, borrower_id, book_id, borrowed_date) VALUES (0,?,?,CURRENT_TIMESTAMP)");
 			get_books_stmt = conn.prepareStatement("SELECT * FROM books ORDER BY id");
 			get_members_stmt = conn.prepareStatement("SELECT * FROM members ORDER BY id");
-			get_transactions_stmt = conn.prepareStatement("SELECT * FROM transactions ORDER BY id");
+			get_transactions_stmt = conn.prepareStatement("SELECT transactions.id, books.title, members.name, transactions.borrowed_date FROM transactions, members, books WHERE transactions.borrower_id=members.id && transactions.book_id=books.id ORDER BY transactions.id");
 			search_books_stmt = conn.prepareStatement("SELECT * FROM books WHERE id LIKE ? OR title LIKE ? OR author LIKE ? OR publication LIKE ?");
 			search_members_stmt = conn.prepareStatement("SELECT * FROM members WHERE id LIKE ? OR name LIKE ? OR email LIKE ? OR semester LIKE ?");
-
+			search_transactions_stmt = conn.prepareStatement("SELECT transactions.id, books.title, members.name, transactions.borrowed_date FROM transactions, members, books WHERE transactions.borrower_id=members.id && transactions.book_id=books.id && (transactions.id LIKE ? OR books.title LIKE ? OR members.name LIKE ? OR transactions.borrowed_date LIKE ?)");
 		}catch(SQLException se){
 			System.out.println("ERROR: Error while loading from database.");
 			System.out.println("Details:");

@@ -167,6 +167,27 @@ public class Librarian{
 		return result;
 	}
 
+	public Vector<TransactionDisplay> search_transactions(String myString){
+		Vector<TransactionDisplay> result = new Vector<TransactionDisplay>();
+		try{
+			dm.search_transactions_stmt.setString(1, "%"+myString+"%");
+			dm.search_transactions_stmt.setString(2, "%"+myString+"%");
+			dm.search_transactions_stmt.setString(3, "%"+myString+"%");
+			dm.search_transactions_stmt.setString(4, "%"+myString+"%");
+			ResultSet rs = dm.search_transactions_stmt.executeQuery();
+			while(rs.next()){
+				TransactionDisplay temp = new TransactionDisplay(rs.getInt("id"),rs.getString("title"),rs.getString("name"),rs.getTimestamp("borrowed_date"));
+				result.addElement(temp);
+			}
+		}
+		catch(Exception se){
+			System.out.println("ERROR: Error while searching transactions.");
+			System.out.println("Details:");
+			System.out.println(se.toString());
+		}
+		return result;
+	}
+
 	public Vector<Book> get_books(){
 		Vector<Book> result = new Vector<Book>();
 		
@@ -207,14 +228,14 @@ public class Librarian{
 		return result;
 	}
 
-	public Vector<Transaction> get_transactions(){
-		Vector<Transaction> result = new Vector<Transaction>();
+	public Vector<TransactionDisplay> get_transactions(){
+		Vector<TransactionDisplay> result = new Vector<TransactionDisplay>();
 		
 		try{
 			ResultSet rs = dm.get_transactions_stmt.executeQuery();
 			
 			while(rs.next()){
-				Transaction temp = new Transaction(rs.getInt("id"),rs.getInt("borrower_id"),rs.getInt("book_id"),rs.getTimestamp("borrowed_date"));
+				TransactionDisplay temp = new TransactionDisplay(rs.getInt("id"),rs.getString("title"),rs.getString("name"),rs.getTimestamp("borrowed_date"));
 				result.addElement(temp);
 			}
 			
@@ -301,13 +322,13 @@ public class Librarian{
 		return result;
 	}
 
-	public Object[][] transactions_to_array(Vector<Transaction> transactions){
+	public Object[][] transactions_to_array(Vector<TransactionDisplay> transactions){
 		Object[][] result = new Object[transactions.size()][4];
 
 		for(int i=0; i<transactions.size();i++){
 			result[i][0]=transactions.elementAt(i).get_id();
-			result[i][1]=transactions.elementAt(i).get_borrower_id();
-			result[i][2]=transactions.elementAt(i).get_book_id();
+			result[i][1]=transactions.elementAt(i).get_book_title();
+			result[i][2]=transactions.elementAt(i).get_borrower_name();
 			result[i][3]=transactions.elementAt(i).get_borrowed_date().toString();
 		}
 		return result;
