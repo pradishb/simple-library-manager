@@ -64,6 +64,21 @@ public class IssueBookPanel extends JPanel implements ActionListener{
 
 			btn.addActionListener(this);
 
+			book.addKeyListener(new KeyAdapter(){
+				public void keyReleased(KeyEvent e){
+					try{
+						title.setText(librarian.get_book(Integer.parseInt(book.getText())).get_title());
+						author.setText(librarian.get_book(Integer.parseInt(book.getText())).get_author());
+						pub.setText(librarian.get_book(Integer.parseInt(book.getText())).get_publication());
+					}
+					catch(NumberFormatException ne){
+						title.setText("");
+						author.setText("");
+						pub.setText("");
+					}	
+				}
+			});
+
 			member.addKeyListener(new KeyAdapter(){
 				public void keyReleased(KeyEvent e){
 					try{
@@ -78,7 +93,7 @@ public class IssueBookPanel extends JPanel implements ActionListener{
 						name.setText("");
 						email.setText("");
 						sem.setText("");
-					}
+					}	
 				}
 			});
 

@@ -201,7 +201,23 @@ public class Librarian{
 			System.out.println("ERROR: Error while loading member from database.");
 			System.out.println("Details:");
 			System.out.println(se.toString());
-			se.printStackTrace();
+		}
+		return result;
+	}
+
+	public Book get_book(int id){
+		Book result = new Book(0,"","","");
+		try{
+			dm.get_book_stmt.setInt(1, id);
+			ResultSet rs = dm.get_book_stmt.executeQuery();
+			if(rs.next()){
+				result.update_data(rs.getInt("id"),rs.getString("title"),rs.getString("author"),rs.getString("publication"));
+			}
+		}
+		catch(Exception se){
+			System.out.println("ERROR: Error while loading book from database.");
+			System.out.println("Details:");
+			System.out.println(se.toString());
 		}
 		return result;
 	}
