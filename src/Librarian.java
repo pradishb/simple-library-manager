@@ -222,6 +222,23 @@ public class Librarian{
 		return result;
 	}
 
+	public int get_copies(int id){
+		int result = -1;
+		try{
+			dm.get_copies_stmt.setInt(1, id);
+			ResultSet rs = dm.get_copies_stmt.executeQuery();
+			if(rs.next()){
+				result = rs.getInt("remaining");
+			}
+		}
+		catch(Exception se){
+			System.out.println("ERROR: Error while loading remaining copies from database.");
+			System.out.println("Details:");
+			System.out.println(se.toString());
+		}
+		return result;
+	}
+
 	public Vector<Book> get_books(){
 		Vector<Book> result = new Vector<Book>();
 		
