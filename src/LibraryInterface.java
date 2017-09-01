@@ -40,7 +40,7 @@ public class LibraryInterface extends JFrame{
 		jtp = new JTabbedPane();
 		rbd = new RemoveBookDialog();
 		abd = new AddBookDialog();
-		ib_panel = new IssueBookPanel();
+		ib_panel = new IssueBookPanel(librarian);
 		mb_panel = new ManageBooksPanel();
 		tr_panel = new TransactionsPanel(librarian);
 		s_panel = new SearchPanel(librarian);
@@ -95,65 +95,6 @@ public class LibraryInterface extends JFrame{
 			layout.createSequentialGroup()
 				.addComponent(jtp)
 			);
-	}
-
-	class IssueBookPanel extends JPanel implements ActionListener{
-		private JLabel member_id_label;
-		private JLabel book_id_label;
-		private JTextField member_id_tf;
-		private JTextField book_id_tf;
-		private JButton btn;
-		private GroupLayout layout;
-
-		IssueBookPanel(){
-			setName("issue_book");
-
-			member_id_label = new JLabel("Enter Member Id");
-			book_id_label = new JLabel("Enter Book Id");
-			member_id_tf = new JTextField();
-			book_id_tf = new JTextField();
-			btn = new JButton("Issue Book");
-			add(member_id_label);
-			add(member_id_tf);
-			add(book_id_label);
-			add(book_id_tf);
-			add(btn);
-
-			btn.addActionListener(this);
-
-			layout = new GroupLayout(this);
-			setLayout(layout);
-			layout.setAutoCreateGaps(true);
-			layout.setAutoCreateContainerGaps(true);
-			layout.setHorizontalGroup(
-			layout.createSequentialGroup()
-			.addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-				.addComponent(book_id_label)
-				.addComponent(member_id_label))
-			.addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-				.addComponent(book_id_tf)
-				.addComponent(member_id_tf)
-				.addComponent(btn))
-			);
-			layout.setVerticalGroup(
-				layout.createSequentialGroup()
-				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-					.addComponent(book_id_label)
-					.addComponent(book_id_tf))
-				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-					.addComponent(member_id_label)
-					.addComponent(member_id_tf))
-				.addComponent(btn)
-			);
-		}
-		public void actionPerformed(ActionEvent ae){
-			try{
-				librarian.issue_book(Integer.parseInt(member_id_tf.getText()),Integer.parseInt(book_id_tf.getText()));
-			}
-			catch(NumberFormatException e){
-				JOptionPane.showMessageDialog(this, "The form is not valid.", "Bad Input", JOptionPane.ERROR_MESSAGE);
-			}
-		}
 	}
 
 	class ManageBooksPanel extends JPanel implements ActionListener{

@@ -188,6 +188,24 @@ public class Librarian{
 		return result;
 	}
 
+	public Member get_member(int id){
+		Member result = new Member(0,"","",0,0);
+		try{
+			dm.get_member_stmt.setInt(1, id);
+			ResultSet rs = dm.get_member_stmt.executeQuery();
+			if(rs.next()){
+				result.update_data(rs.getInt("id"),rs.getString("name"),rs.getString("email"),rs.getInt("semester"),rs.getInt("books_borrowed"));
+			}
+		}
+		catch(Exception se){
+			System.out.println("ERROR: Error while loading member from database.");
+			System.out.println("Details:");
+			System.out.println(se.toString());
+			se.printStackTrace();
+		}
+		return result;
+	}
+
 	public Vector<Book> get_books(){
 		Vector<Book> result = new Vector<Book>();
 		
