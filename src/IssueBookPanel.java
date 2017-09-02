@@ -1,9 +1,11 @@
 package slm;
 import javax.swing.*;
+import javax.swing.event.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.*;
 
-public class IssueBookPanel extends JPanel implements ActionListener{
+public class IssueBookPanel extends JPanel implements ActionListener,ListSelectionListener{
 		private Librarian librarian;
 		private JLabel member_id_label;
 		private JLabel book_id_label;
@@ -16,6 +18,7 @@ public class IssueBookPanel extends JPanel implements ActionListener{
 		private JLabel name_lb;
 		private JLabel email_lb;
 		private JLabel sem_lb;
+		private JLabel suggestions;
 		private JTextField member;
 		private JTextField book;
 		private JTextField title;
@@ -25,8 +28,14 @@ public class IssueBookPanel extends JPanel implements ActionListener{
 		private JTextField name;
 		private JTextField email;
 		private JTextField sem;
+		private DefaultListModel<String> listModel;
+		private JList<String> list;
+		private JScrollPane list_s;
+		private Vector<Integer> id_arr;
+		private Boolean mem_sel;
 		private JButton btn;
 		private GroupLayout layout;
+
 
 		public IssueBookPanel(Librarian librarian){
 			this.librarian = librarian;
@@ -43,6 +52,7 @@ public class IssueBookPanel extends JPanel implements ActionListener{
 			name_lb = new JLabel("Name:");
 			email_lb = new JLabel("Email:");
 			sem_lb = new JLabel("Semester:");
+			suggestions = new JLabel("Suggestions:");
 			title = new JTextField();
 			author = new JTextField();
 			pub = new JTextField();
@@ -52,8 +62,15 @@ public class IssueBookPanel extends JPanel implements ActionListener{
 			name = new JTextField();
 			email = new JTextField();
 			sem = new JTextField();
+			id_arr = new Vector<Integer>();
+			mem_sel = new Boolean(true);
 			btn = new JButton("Issue Book");
 			
+			listModel = new DefaultListModel<>();  
+            list = new JList<>(listModel);  
+          	list_s = new JScrollPane(list);
+
+
 			name.setEditable(false);
 			email.setEditable(false);
 			sem.setEditable(false);
@@ -63,16 +80,19 @@ public class IssueBookPanel extends JPanel implements ActionListener{
 			left.setEditable(false);
 
 			btn.addActionListener(this);
+			list.addListSelectionListener(this);
 
 			book.addKeyListener(new KeyAdapter(){
 				public void keyReleased(KeyEvent e){
+					update_book_list();
 					update_book_details();
 				}
 			});
 
 			member.addKeyListener(new KeyAdapter(){
 				public void keyReleased(KeyEvent e){
-					update_memeber_details();
+					update_member_details();
+					update_member_list();
 				}
 			});
 
@@ -110,8 +130,9 @@ public class IssueBookPanel extends JPanel implements ActionListener{
 					.addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
 						.addComponent(name)
 						.addComponent(email)
-						.addComponent(sem))
-					)
+						.addComponent(sem)))
+				.addComponent(suggestions)
+				.addComponent(list_s)
 			);
 			layout.setVerticalGroup(
 				layout.createSequentialGroup()
@@ -122,6 +143,7 @@ public class IssueBookPanel extends JPanel implements ActionListener{
 					.addComponent(member_id_label)
 					.addComponent(member))
 				.addComponent(btn)
+				.addGap(10)
 				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
 					.addComponent(b_details)
 					.addComponent(m_details))
@@ -146,6 +168,9 @@ public class IssueBookPanel extends JPanel implements ActionListener{
 				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
 					.addComponent(left_lb)
 					.addComponent(left))
+				.addGap(20)
+				.addComponent(suggestions)
+				.addComponent(list_s)
 			);
 		}
 		public void actionPerformed(ActionEvent ae){
@@ -162,13 +187,28 @@ public class IssueBookPanel extends JPanel implements ActionListener{
 				else{
 					librarian.issue_book(Integer.parseInt(member.getText()),Integer.parseInt(book.getText()));
 					update_book_details();
-					update_memeber_details();
+					update_member_details();
 					JOptionPane.showMessageDialog(this, "The book has been issued.", "Sucess", JOptionPane.INFORMATION_MESSAGE);
 				}
 			}
 			catch(NumberFormatException e){
 				JOptionPane.showMessageDialog(this, "The form is not valid.", "Bad Input", JOptionPane.ERROR_MESSAGE);
 			}
+		}
+
+		public void valueChanged(ListSelectionEvent le){
+			int index = list.getSelectedIndex();
+			if(index!=-1){
+				if(mem_sel){
+					member.setText(Integer.toString(id_arr.elementAt(index)));
+					update_member_details();
+				}
+				else{
+					book.setText(Integer.toString(id_arr.elementAt(index)));
+					update_book_details();
+				}
+			}
+
 		}
 		public void update_book_details(){
 			try{
@@ -197,7 +237,7 @@ public class IssueBookPanel extends JPanel implements ActionListener{
 			}	
 		}
 
-		public void update_memeber_details(){
+		public void update_member_details(){
 			try{
 				name.setText(librarian.get_member(Integer.parseInt(member.getText())).get_name());
 				email.setText(librarian.get_member(Integer.parseInt(member.getText())).get_email());
@@ -211,5 +251,47 @@ public class IssueBookPanel extends JPanel implements ActionListener{
 				email.setText("");
 				sem.setText("");
 			}	
+		}
+
+		public void update_member_list(){
+			listModel.clear();
+			id_arr.clear();
+			mem_sel = true;
+			if(member.getText().length()>=2){
+				Vector<Member> myMembers = new Vector<Member>();
+				myMembers.addAll(0,librarian.search_members(member.getText()));
+				for(int i=0; i<myMembers.size();i++){
+					String sup = new String();
+					switch(myMembers.elementAt(i).get_semester()){
+						case 1:
+							sup = "st";
+							break;
+						case 2:
+							sup = "nd";
+							break;
+						case 3:
+							sup = "rd";
+							break;
+						default:
+							sup = "th";
+					}
+					id_arr.addElement(myMembers.elementAt(i).get_id());
+					listModel.addElement(myMembers.elementAt(i).get_name()+", "+myMembers.elementAt(i).get_semester()+sup+" semester.");
+				}
+			}
+		}
+
+		public void update_book_list(){
+			listModel.clear();
+			id_arr.clear();
+			mem_sel = false;
+			if(book.getText().length()>=2){
+				Vector<Book> myBooks = new Vector<Book>();
+				myBooks.addAll(0,librarian.search_books(book.getText()));
+				for(int i=0; i<myBooks.size();i++){
+					id_arr.addElement(myBooks.elementAt(i).get_id());
+					listModel.addElement(myBooks.elementAt(i).get_title()+" by "+myBooks.elementAt(i).get_author()+".");
+				}
+			}
 		}
 	}

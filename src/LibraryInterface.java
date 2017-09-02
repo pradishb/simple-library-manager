@@ -74,7 +74,7 @@ public class LibraryInterface extends JFrame{
 		getContentPane().setLayout(layout);
 		setVisible(true);
 		setSize(WIDTH,HEIGHT);
-		setResizable(false);
+		// setResizable(false);
 		add(jtp);
 		addWindowListener(new WindowAdapter(){
 			public void windowClosing(WindowEvent we){
