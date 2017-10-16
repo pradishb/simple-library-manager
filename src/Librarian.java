@@ -222,6 +222,23 @@ public class Librarian{
 		return result;
 	}
 
+	public Transaction get_transaction(int id){
+		Transaction result = new Transaction(0,0,0,new Timestamp(1900,0,1,0,0,0,0));
+		try{
+			dm.get_transaction_stmt.setInt(1, id);
+			ResultSet rs = dm.get_transaction_stmt.executeQuery();
+			if(rs.next()){
+				result.update_data(rs.getInt("id"),rs.getInt("borrower_id"),rs.getInt("book_id"),rs.getTimestamp("borrowed_date"));
+			}
+		}
+		catch(Exception se){
+			System.out.println("ERROR: Error while loading transaction from database.");
+			System.out.println("Details:");
+			System.out.println(se.toString());
+		}
+		return result;
+	}
+
 	public int get_copies(int id){
 		int result = -1;
 		try{
