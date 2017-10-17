@@ -15,6 +15,7 @@ public class DBManager{
 	PreparedStatement remove_book_stmt;
 	PreparedStatement update_book_stmt;
 	PreparedStatement issue_book_stmt;
+	PreparedStatement return_book_stmt;
 	PreparedStatement get_books_stmt;
 	PreparedStatement get_book_stmt;
 	PreparedStatement get_members_stmt;
@@ -59,6 +60,7 @@ public class DBManager{
 			remove_book_stmt = conn.prepareStatement("DELETE FROM books WHERE id=?");
 			update_book_stmt = conn.prepareStatement("UPDATE books SET id=0,title=?,author=?,publication=?");
 			issue_book_stmt = conn.prepareStatement("INSERT INTO transactions(id, borrower_id, book_id, borrowed_date) VALUES (0,?,?,CURRENT_TIMESTAMP)");
+			return_book_stmt = conn.prepareStatement("DELETE FROM transactions WHERE id=?");
 			get_books_stmt = conn.prepareStatement("SELECT * FROM books ORDER BY id");
 			get_book_stmt = conn.prepareStatement("SELECT * FROM books WHERE id=?");
 			get_members_stmt = conn.prepareStatement("SELECT * FROM members ORDER BY id");

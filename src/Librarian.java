@@ -125,6 +125,19 @@ public class Librarian{
 		}
 	}
 
+	public void return_book(int id){
+		try{
+			dm.return_book_stmt.setInt(1,id);
+			int r_affected = dm.return_book_stmt.executeUpdate();
+			System.out.println(r_affected + " book(s) has been returned.");
+		}
+		catch(Exception se){
+			System.out.println("ERROR: Error while removing transaction.");
+			System.out.println("Details:");
+			System.out.println(se.toString());
+		}
+	}
+
 	public Vector<Book> search_books(String myString){
 		Vector<Book> result = new Vector<Book>();
 		try{

@@ -58,7 +58,19 @@ public class TransactionsPanel extends JPanel implements ListSelectionListener,A
 
 			int fine = (yearDiff*365+monthDiff*30+dayDiff-30);
 
-			JOptionPane.showConfirmDialog(null,"The fine amout is Rs."+fine+".\nDo you want to return the book?", "Confirm Dialog", JOptionPane.YES_NO_OPTION);
+			String msg;
+
+			if(fine<=0){
+				msg = "Do you want to return the book?";
+			}
+			else{
+				msg = "The fine amout is Rs. "+fine+".\nDo you want to return the book?";
+			}
+
+			if(JOptionPane.showConfirmDialog(null,msg, "Confirm Dialog", JOptionPane.YES_NO_OPTION)==JOptionPane.YES_OPTION){
+				librarian.return_book(result.get_id());
+				update_table();
+			}
 
 		}
 
