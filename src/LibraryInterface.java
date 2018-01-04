@@ -60,7 +60,7 @@ public class LibraryInterface extends JFrame{
 				if(jtp.getSelectedComponent().getName()=="manage_books"){
 					librarian.update_table(mb_panel.table, new String[]{"ID","TITLE","AUTHER","PUBLICATION"}, librarian.books_to_array(librarian.get_books()));
 				}else if(jtp.getSelectedComponent().getName()=="manage_memberships"){
-					librarian.update_table(mm_panel.table, new String[]{"ID","NAME","EMAIL","SEMESTER","BOOKS BORROWED"}, librarian.members_to_array(librarian.get_members()));
+					librarian.update_table(mm_panel.table, new String[]{"ID","NAME","EMAIL","SEMESTER"}, librarian.members_to_array(librarian.get_members()));
 				}else if(jtp.getSelectedComponent().getName()=="transactions"){
 					tr_panel.update_table();
 				}else if(jtp.getSelectedComponent().getName()=="search"){
@@ -237,7 +237,7 @@ public class LibraryInterface extends JFrame{
 						System.out.println(e.getMessage());
 						JOptionPane.showMessageDialog(LibraryInterface.this, "Some errors occured while import the CSV file.", "Bad Input File", JOptionPane.ERROR_MESSAGE);
 					}
-					librarian.update_table(table, new String[]{"ID","NAME","EMAIL","SEMESTER","BOOKS BORROWED"}, librarian.members_to_array(librarian.get_members()));
+					librarian.update_table(table, new String[]{"ID","NAME","EMAIL","SEMESTER"}, librarian.members_to_array(librarian.get_members()));
 				}
 			}
 		}

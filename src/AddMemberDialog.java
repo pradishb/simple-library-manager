@@ -80,7 +80,7 @@ public class AddMemberDialog extends JDialog implements ActionListener{
 			}
 			else{
 				try{
-					Member myMember = new Member(0,name.getText(),email.getText(),Integer.parseInt(sem.getText()),0);
+					Member myMember = new Member(0,name.getText(),email.getText(),Integer.parseInt(sem.getText()));
 					librarian.add_member(myMember);
 					librarian.update_table(table, new String[]{"ID","TITLE","AUTHER","PUBLICATION"}, librarian.members_to_array(librarian.get_members()));
 					setVisible(false);

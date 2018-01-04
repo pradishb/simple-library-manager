@@ -95,7 +95,7 @@ public class SearchPanel extends JPanel implements ActionListener{
 
 		}
 		public void update_members(){
-			librarian.update_table(table, new String[]{"ID","NAME","EMAIL","SEMESTER","BOOKS BORROWED"}, librarian.members_to_array(librarian.search_members(data.getText())));
+			librarian.update_table(table, new String[]{"ID","NAME","EMAIL","SEMESTER"}, librarian.members_to_array(librarian.search_members(data.getText())));
 		}
 		public void update_transactions(){
 			librarian.update_table(table, new String[]{"ID","BOOK","BORROWED BY","BORROWED TIME"}, librarian.transactions_to_array(librarian.search_transactions(data.getText())));

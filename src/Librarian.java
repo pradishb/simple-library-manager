@@ -71,7 +71,6 @@ public class Librarian{
 			dm.add_member_stmt.setString(1,myMember.get_name());
 			dm.add_member_stmt.setInt(2,myMember.get_semester());
 			dm.add_member_stmt.setString(3,myMember.get_email());
-			dm.add_member_stmt.setInt(4,myMember.get_no_books_borrowed());
 			r_affected = dm.add_member_stmt.executeUpdate();
 		}
 		catch(Exception se){
@@ -100,7 +99,6 @@ public class Librarian{
 			dm.update_member_stmt.setString(1,myMember.get_name());
 			dm.update_member_stmt.setInt(2,myMember.get_semester());
 			dm.update_member_stmt.setString(3,myMember.get_email());
-			dm.update_member_stmt.setInt(3,myMember.get_no_books_borrowed());
 			int r_affected = dm.update_member_stmt.executeUpdate();
 			System.out.println(r_affected + " member(s) updated in database.");
 		}
@@ -168,7 +166,7 @@ public class Librarian{
 			dm.search_members_stmt.setString(4, "%"+myString+"%");
 			ResultSet rs = dm.search_members_stmt.executeQuery();
 			while(rs.next()){
-				Member temp = new Member(rs.getInt("id"),rs.getString("name"),rs.getString("email"),rs.getInt("semester"),rs.getInt("books_borrowed"));
+				Member temp = new Member(rs.getInt("id"),rs.getString("name"),rs.getString("email"),rs.getInt("semester"));
 				result.addElement(temp);
 			}
 		}
@@ -202,12 +200,12 @@ public class Librarian{
 	}
 
 	public Member get_member(int id){
-		Member result = new Member(0,"","",0,0);
+		Member result = new Member(0,"","",0);
 		try{
 			dm.get_member_stmt.setInt(1, id);
 			ResultSet rs = dm.get_member_stmt.executeQuery();
 			if(rs.next()){
-				result.update_data(rs.getInt("id"),rs.getString("name"),rs.getString("email"),rs.getInt("semester"),rs.getInt("books_borrowed"));
+				result.update_data(rs.getInt("id"),rs.getString("name"),rs.getString("email"),rs.getInt("semester"));
 			}
 		}
 		catch(Exception se){
@@ -269,6 +267,23 @@ public class Librarian{
 		return result;
 	}
 
+	public int get_books_borrowed(int id){
+		int result = -1;
+		try{
+			dm.get_books_borrowed_stmt.setInt(1, id);
+			ResultSet rs = dm.get_books_borrowed_stmt.executeQuery();
+			if(rs.next()){
+				result = rs.getInt("books_borrowed");
+			}
+		}
+		catch(Exception se){
+			System.out.println("ERROR: Error while loading number of books borrowed from database.");
+			System.out.println("Details:");
+			System.out.println(se.toString());
+		}
+		return result;
+	}
+
 	public Vector<Book> get_books(){
 		Vector<Book> result = new Vector<Book>();
 		
@@ -296,7 +311,7 @@ public class Librarian{
 			ResultSet rs = dm.get_members_stmt.executeQuery();
 			
 			while(rs.next()){
-				Member temp = new Member(rs.getInt("id"),rs.getString("name"),rs.getString("email"),rs.getInt("semester"),rs.getInt("books_borrowed"));
+				Member temp = new Member(rs.getInt("id"),rs.getString("name"),rs.getString("email"),rs.getInt("semester"));
 				result.addElement(temp);
 			}
 			
@@ -359,7 +374,7 @@ public class Librarian{
 			if(cells[0].equals("name") && cells[1].equals("email") && cells[2].equals("semester") && cells.length==3){
 				while(lcsvp.getLine() != null){
 					try{
-						Member myMember = new Member(0,lcsvp.getValueByLabel("name"),lcsvp.getValueByLabel("email"),Integer.parseInt(lcsvp.getValueByLabel("semester")),0);
+						Member myMember = new Member(0,lcsvp.getValueByLabel("name"),lcsvp.getValueByLabel("email"),Integer.parseInt(lcsvp.getValueByLabel("semester")));
 						count += add_member(myMember);
 					}
 					catch(NumberFormatException e){
@@ -398,7 +413,6 @@ public class Librarian{
 			result[i][1]=members.elementAt(i).get_name();
 			result[i][2]=members.elementAt(i).get_email();
 			result[i][3]=members.elementAt(i).get_semester();
-			result[i][4]=members.elementAt(i).get_no_books_borrowed();
 		}
 		return result;
 	}

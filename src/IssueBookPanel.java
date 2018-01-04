@@ -18,6 +18,7 @@ public class IssueBookPanel extends JPanel implements ActionListener,ListSelecti
 		private JLabel name_lb;
 		private JLabel email_lb;
 		private JLabel sem_lb;
+		private JLabel borrowed_lb;
 		private JLabel suggestions;
 		private JTextField member;
 		private JTextField book;
@@ -28,6 +29,7 @@ public class IssueBookPanel extends JPanel implements ActionListener,ListSelecti
 		private JTextField name;
 		private JTextField email;
 		private JTextField sem;
+		private JTextField borrowed;
 		private DefaultListModel<String> listModel;
 		private JList<String> list;
 		private JScrollPane list_s;
@@ -52,6 +54,7 @@ public class IssueBookPanel extends JPanel implements ActionListener,ListSelecti
 			name_lb = new JLabel("Name:");
 			email_lb = new JLabel("Email:");
 			sem_lb = new JLabel("Semester:");
+			borrowed_lb = new JLabel("Books Borrowed:");
 			suggestions = new JLabel("Suggestions:");
 			title = new JTextField();
 			author = new JTextField();
@@ -62,6 +65,7 @@ public class IssueBookPanel extends JPanel implements ActionListener,ListSelecti
 			name = new JTextField();
 			email = new JTextField();
 			sem = new JTextField();
+			borrowed = new JTextField();
 			id_arr = new Vector<Integer>();
 			mem_sel = new Boolean(true);
 			btn = new JButton("Issue Book");
@@ -74,6 +78,7 @@ public class IssueBookPanel extends JPanel implements ActionListener,ListSelecti
 			name.setEditable(false);
 			email.setEditable(false);
 			sem.setEditable(false);
+			borrowed.setEditable(false);
 			title.setEditable(false);
 			author.setEditable(false);
 			pub.setEditable(false);
@@ -126,11 +131,13 @@ public class IssueBookPanel extends JPanel implements ActionListener,ListSelecti
 						.addComponent(m_details)
 						.addComponent(name_lb)
 						.addComponent(email_lb)
-						.addComponent(sem_lb))
+						.addComponent(sem_lb)
+						.addComponent(borrowed_lb))
 					.addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
 						.addComponent(name)
 						.addComponent(email)
-						.addComponent(sem)))
+						.addComponent(sem)
+						.addComponent(borrowed)))
 				.addComponent(suggestions)
 				.addComponent(list_s)
 			);
@@ -148,24 +155,26 @@ public class IssueBookPanel extends JPanel implements ActionListener,ListSelecti
 					.addComponent(b_details)
 					.addComponent(m_details))
 				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-					.addComponent(name_lb)
-					.addComponent(name)
 					.addComponent(title_lb)
 					.addComponent(title)
+					.addComponent(name_lb)
+					.addComponent(name)
 					)
 				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-					.addComponent(email_lb)
-					.addComponent(email)
 					.addComponent(author_lb)
 					.addComponent(author)
+					.addComponent(email_lb)
+					.addComponent(email)
 					)
 				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-					.addComponent(sem_lb)
-					.addComponent(sem)
 					.addComponent(pub_lb)
 					.addComponent(pub)
+					.addComponent(sem_lb)
+					.addComponent(sem)
 					)
 				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+					.addComponent(borrowed_lb)
+					.addComponent(borrowed)
 					.addComponent(left_lb)
 					.addComponent(left))
 				.addGap(20)
@@ -239,17 +248,29 @@ public class IssueBookPanel extends JPanel implements ActionListener,ListSelecti
 
 		public void update_member_details(){
 			try{
+				int no_books_borrowed = librarian.get_books_borrowed(Integer.parseInt(member.getText()));
 				name.setText(librarian.get_member(Integer.parseInt(member.getText())).get_name());
 				email.setText(librarian.get_member(Integer.parseInt(member.getText())).get_email());
 				sem.setText(Integer.toString(librarian.get_member(Integer.parseInt(member.getText())).get_semester()));
+				borrowed.setText(Integer.toString(no_books_borrowed));
+				borrowed.setBackground(Color.GREEN);
 				if(sem.getText().equals("0")){
 					sem.setText("");
 				}
+				if(no_books_borrowed==-1){
+					borrowed.setBackground(UIManager.getColor(borrowed));
+					borrowed.setText("");
+				}
+				else if(no_books_borrowed>1){
+					borrowed.setBackground(new Color(255,200,0));
+				}
 			}
 			catch(NumberFormatException ne){
+				borrowed.setBackground(UIManager.getColor(borrowed));
 				name.setText("");
 				email.setText("");
 				sem.setText("");
+				borrowed.setText("");
 			}	
 		}
 
