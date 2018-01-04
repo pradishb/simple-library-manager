@@ -88,7 +88,7 @@ public class LibraryInterface extends JFrame{
 		layout.setAutoCreateGaps(true);
 		layout.setAutoCreateContainerGaps(true);
 		layout.setHorizontalGroup(
-			layout.createSequentialGroup()
+			layout.createParallelGroup(GroupLayout.Alignment.LEADING)
 				.addComponent(jtp)
 			);
 		layout.setVerticalGroup(
