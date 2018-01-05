@@ -47,21 +47,42 @@ public class LibraryInterface extends JFrame{
 			int x = rs.getInt("settings_exists");
 
 			if(x==0){
-				String s = (String)JOptionPane.showInputDialog(this,"Set new password:","Password not set", JOptionPane.PLAIN_MESSAGE);
-
+				JLabel lb = new JLabel("Enter a new password:");
+        		JTextField pass = new JPasswordField(20);
+        		Object[] ob = {lb,pass};
+        		int result = JOptionPane.showConfirmDialog(this, ob, "Password not set", JOptionPane.OK_CANCEL_OPTION,JOptionPane.WARNING_MESSAGE);
+		        if (result == JOptionPane.OK_OPTION) {
+		            db_manager.stmt.execute("INSERT INTO settings VALUES (\"1\",\""+security_manager.sha1(pass.getText())+"\",5,30)");
+		        }
+		        else{
+		        	db_manager.close_database();
+					dispose();
+					System.exit(0);
+		        }
+				// String s = (String)JOptionPane.showInputDialog(this,"Set new password:","Password not set", JOptionPane.PLAIN_MESSAGE);
 				// System.out.println(security_manager.sha1(s));
-				db_manager.stmt.execute("INSERT INTO settings VALUES (\"1\",\""+security_manager.sha1(s)+"\",5,30)");
+				
 			}
 			else{
-				String input;
-				String pass;
+				JLabel lb = new JLabel("Password:");
+        		JTextField input = new JPasswordField(20);
+        		Object[] ob = {lb,input};
+        		String pass = new String();
 				do{
-					input = (String)JOptionPane.showInputDialog(this,"Enter the password.","Login", JOptionPane.PLAIN_MESSAGE);
-					ResultSet rs1 = db_manager.stmt.executeQuery("SELECT password FROM settings WHERE id=1");
-					rs1.next();
-					pass = rs1.getString("password");
+					input.setText("");
+					int result = JOptionPane.showConfirmDialog(this, ob, "Login", JOptionPane.OK_CANCEL_OPTION,JOptionPane.PLAIN_MESSAGE);
+		        	if (result == JOptionPane.OK_OPTION) {
+		        		ResultSet rs1 = db_manager.stmt.executeQuery("SELECT password FROM settings WHERE id=1");
+						rs1.next();
+						pass = rs1.getString("password");
+					}
+					else{
+						db_manager.close_database();
+						dispose();
+						System.exit(0);
+					}
 				}
-				while(!security_manager.sha1(input).equals(pass));
+				while(!security_manager.sha1(input.getText()).equals(pass));
 			}
 		}
 		catch(SQLException se){
