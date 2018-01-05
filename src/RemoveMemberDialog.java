@@ -45,6 +45,7 @@ public class RemoveMemberDialog extends JDialog implements ActionListener{
 
 			
 			setSize(400,110);
+			setLocationRelativeTo(null);
 			setResizable(false);
 			add(member_id_label);
 			add(member_id_tf);

@@ -64,6 +64,7 @@ public class AddMemberDialog extends JDialog implements ActionListener{
 
 			
 			setSize(400,165);
+			setLocationRelativeTo(null);
 			setResizable(false);
 			add(name_lb);
 			add(email_lb);

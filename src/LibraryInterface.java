@@ -48,7 +48,7 @@ public class LibraryInterface extends JFrame{
 
 			if(x==0){
 				JLabel lb = new JLabel("Enter a new password:");
-        		JTextField pass = new JPasswordField(20);
+        		JTextField pass = new JPasswordField();
         		Object[] ob = {lb,pass};
         		int result = JOptionPane.showConfirmDialog(this, ob, "Password not set", JOptionPane.OK_CANCEL_OPTION,JOptionPane.WARNING_MESSAGE);
 		        if (result == JOptionPane.OK_OPTION) {
@@ -65,7 +65,7 @@ public class LibraryInterface extends JFrame{
 			}
 			else{
 				JLabel lb = new JLabel("Password:");
-        		JTextField input = new JPasswordField(20);
+        		JTextField input = new JPasswordField();
         		Object[] ob = {lb,input};
         		String pass = new String();
 				do{
@@ -133,8 +133,10 @@ public class LibraryInterface extends JFrame{
 		//Frame
 		layout = new GroupLayout(getContentPane());
 		getContentPane().setLayout(layout);
+
 		setVisible(true);
 		setSize(WIDTH,HEIGHT);
+		setLocationRelativeTo(null);
 		// setResizable(false);
 		add(jtp);
 		addWindowListener(new WindowAdapter(){
@@ -360,6 +362,7 @@ public class LibraryInterface extends JFrame{
 				);
 
 			setSize(400,165);
+			setLocationRelativeTo(null);
 			setResizable(false);
 			add(title_label);
 			add(title_tf);
@@ -420,6 +423,7 @@ public class LibraryInterface extends JFrame{
 
 
 			setSize(400,110);
+			setLocationRelativeTo(null);
 			setResizable(false);
 			add(book_id_label);
 			add(book_id_tf);
