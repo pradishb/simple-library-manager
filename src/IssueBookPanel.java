@@ -37,6 +37,7 @@ public class IssueBookPanel extends JPanel implements ActionListener,ListSelecti
 		private Boolean mem_sel;
 		private JButton btn;
 		private GroupLayout layout;
+		private int no_books_borrowed;
 
 
 		public IssueBookPanel(Librarian librarian){
@@ -188,10 +189,13 @@ public class IssueBookPanel extends JPanel implements ActionListener,ListSelecti
 					JOptionPane.showMessageDialog(this, "Book not found.", "Bad Input", JOptionPane.ERROR_MESSAGE);
 				}
 				else if(left.getText().equals("0")){
-					JOptionPane.showMessageDialog(this, "There is no books remaining.", "Bad Input", JOptionPane.ERROR_MESSAGE);	
+					JOptionPane.showMessageDialog(this, "There is no books remaining.", "Information", JOptionPane.ERROR_MESSAGE);	
 				}
 				else if(name.getText().equals("")){
 					JOptionPane.showMessageDialog(this, "Member not found.", "Bad Input", JOptionPane.ERROR_MESSAGE);
+				}
+				else if(no_books_borrowed>=Settings.threshold){
+					JOptionPane.showMessageDialog(this, "Maximum book borrow limit reached.", "Information", JOptionPane.ERROR_MESSAGE);
 				}
 				else{
 					librarian.issue_book(Integer.parseInt(member.getText()),Integer.parseInt(book.getText()));
@@ -248,7 +252,7 @@ public class IssueBookPanel extends JPanel implements ActionListener,ListSelecti
 
 		public void update_member_details(){
 			try{
-				int no_books_borrowed = librarian.get_books_borrowed(Integer.parseInt(member.getText()));
+				no_books_borrowed = librarian.get_books_borrowed(Integer.parseInt(member.getText()));
 				name.setText(librarian.get_member(Integer.parseInt(member.getText())).get_name());
 				email.setText(librarian.get_member(Integer.parseInt(member.getText())).get_email());
 				sem.setText(Integer.toString(librarian.get_member(Integer.parseInt(member.getText())).get_semester()));
@@ -261,7 +265,7 @@ public class IssueBookPanel extends JPanel implements ActionListener,ListSelecti
 					borrowed.setBackground(UIManager.getColor(borrowed));
 					borrowed.setText("");
 				}
-				else if(no_books_borrowed>1){
+				else if(no_books_borrowed>=Settings.threshold){
 					borrowed.setBackground(new Color(255,200,0));
 				}
 			}

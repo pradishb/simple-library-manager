@@ -33,12 +33,13 @@ public class LibraryInterface extends JFrame{
 		this.librarian = librarian;
 		this.db_manager = db_manager;
 		this.security_manager = security_manager;
-		fetch_settings();
+		check_password();
+		Settings.update(db_manager);
 		init_interface();
 		load_interface();
 	}
 
-	public void fetch_settings(){
+	public void check_password(){
 		//fetch settings
 		try{
 			//check if the password exists
@@ -128,6 +129,10 @@ public class LibraryInterface extends JFrame{
 					s_panel.update_books();
 				}else if(jtp.getSelectedComponent().getName()=="settings"){
 					set_panel.update_panel();
+				}else if(jtp.getSelectedComponent().getName()=="issue_book"){
+					ib_panel.update_book_details();
+					ib_panel.update_member_details();
+					ib_panel.update_book_list();
 				}
 			}
 		});
