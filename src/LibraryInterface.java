@@ -2,16 +2,19 @@ package slm;
 
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.*;
+import java.sql.*;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.table.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import java.security.spec.MGF1ParameterSpec;
 
 public class LibraryInterface extends JFrame{
 	private Librarian librarian;
 	private DBManager db_manager;
-	private final int WIDTH = 600;
+	private SecurityManager security_manager;
+	private final int WIDTH = 650;
 	private final int HEIGHT = 500;
 	private JFileChooser chooser;
 	private ManageMembersPanel mm_panel;
@@ -23,13 +26,49 @@ public class LibraryInterface extends JFrame{
 	private ManageBooksPanel mb_panel;
 	private TransactionsPanel tr_panel;
 	private SearchPanel s_panel;
+	private SettingsPanel set_panel;
 
-	public LibraryInterface(Librarian librarian, DBManager db_manager){
+	public LibraryInterface(Librarian librarian, DBManager db_manager,SecurityManager security_manager){
 		super("Simple Library Manager");
 		this.librarian = librarian;
 		this.db_manager = db_manager;
+		this.security_manager = security_manager;
+		fetch_settings();
 		init_interface();
 		load_interface();
+	}
+
+	public void fetch_settings(){
+		//fetch settings
+		try{
+			//check if the password exists
+			ResultSet rs = db_manager.stmt.executeQuery("SELECT count(id) AS settings_exists FROM settings");
+			rs.next();
+			int x = rs.getInt("settings_exists");
+
+			if(x==0){
+				String s = (String)JOptionPane.showInputDialog(this,"Set new password:","Password not set", JOptionPane.PLAIN_MESSAGE);
+
+				// System.out.println(security_manager.sha1(s));
+				db_manager.stmt.execute("INSERT INTO settings VALUES (\"1\",\""+security_manager.sha1(s)+"\",5,30)");
+			}
+			else{
+				String input;
+				String pass;
+				do{
+					input = (String)JOptionPane.showInputDialog(this,"Enter the password.","Login", JOptionPane.PLAIN_MESSAGE);
+					ResultSet rs1 = db_manager.stmt.executeQuery("SELECT password FROM settings WHERE id=1");
+					rs1.next();
+					pass = rs1.getString("password");
+				}
+				while(!security_manager.sha1(input).equals(pass));
+			}
+		}
+		catch(SQLException se){
+			System.out.println("ERROR: Error while fetching settings from database.");
+			System.out.println("Details:");
+			System.out.println(se.toString());
+		}
 	}
 
 	public void init_interface(){
@@ -44,10 +83,10 @@ public class LibraryInterface extends JFrame{
 		mb_panel = new ManageBooksPanel();
 		tr_panel = new TransactionsPanel(librarian);
 		s_panel = new SearchPanel(librarian);
+		set_panel = new SettingsPanel();
 	}
 
 	public void load_interface(){
-		System.out.println("Loading Interface...");
 
 		//Tabbed Pane
 		jtp.addTab("Issue Book", ib_panel);
@@ -55,6 +94,7 @@ public class LibraryInterface extends JFrame{
 		jtp.addTab("Manage Memberships", mm_panel);
 		jtp.addTab("Transactions", tr_panel);
 		jtp.addTab("Search", s_panel);
+		jtp.addTab("Settings", set_panel);
 		jtp.addChangeListener(new ChangeListener() {
 			public void stateChanged(ChangeEvent e){
 				if(jtp.getSelectedComponent().getName()=="manage_books"){
