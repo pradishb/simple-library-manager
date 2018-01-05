@@ -52,7 +52,7 @@ public class LibraryInterface extends JFrame{
         		Object[] ob = {lb,pass};
         		int result = JOptionPane.showConfirmDialog(this, ob, "Password not set", JOptionPane.OK_CANCEL_OPTION,JOptionPane.WARNING_MESSAGE);
 		        if (result == JOptionPane.OK_OPTION) {
-		            db_manager.stmt.execute("INSERT INTO settings VALUES (\"1\",\""+security_manager.sha1(pass.getText())+"\",5,30)");
+		            db_manager.stmt.execute("INSERT INTO settings VALUES (\"1\",\""+security_manager.sha1(pass.getText())+"\",5,30,1)");
 		        }
 		        else{
 		        	db_manager.close_database();
@@ -104,7 +104,7 @@ public class LibraryInterface extends JFrame{
 		mb_panel = new ManageBooksPanel();
 		tr_panel = new TransactionsPanel(librarian);
 		s_panel = new SearchPanel(librarian);
-		set_panel = new SettingsPanel();
+		set_panel = new SettingsPanel(db_manager,security_manager);
 	}
 
 	public void load_interface(){
@@ -126,6 +126,8 @@ public class LibraryInterface extends JFrame{
 					tr_panel.update_table();
 				}else if(jtp.getSelectedComponent().getName()=="search"){
 					s_panel.update_books();
+				}else if(jtp.getSelectedComponent().getName()=="settings"){
+					set_panel.update_panel();
 				}
 			}
 		});
