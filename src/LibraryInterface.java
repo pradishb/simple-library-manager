@@ -97,15 +97,15 @@ public class LibraryInterface extends JFrame{
 		System.out.println("Initializing Interface...");
 		//Initialization
 		chooser = new JFileChooser();
-		mm_panel = new ManageMembersPanel();
-		jtp = new JTabbedPane();
 		rbd = new RemoveBookDialog();
 		abd = new AddBookDialog();
+		mm_panel = new ManageMembersPanel();
 		ib_panel = new IssueBookPanel(librarian);
 		mb_panel = new ManageBooksPanel();
 		tr_panel = new TransactionsPanel(librarian);
 		s_panel = new SearchPanel(librarian);
 		set_panel = new SettingsPanel(db_manager,security_manager);
+		jtp = new JTabbedPane();
 	}
 
 	public void load_interfaces(){
@@ -152,7 +152,6 @@ public class LibraryInterface extends JFrame{
 				dispose();
 			}
 		});
-
 		//Layout Configuration
 		layout.setAutoCreateGaps(true);
 		layout.setAutoCreateContainerGaps(true);
