@@ -5,10 +5,10 @@ import javax.swing.*;
 import java.sql.*;
 import java.awt.*;
 import java.awt.event.*;
+import javax.swing.event.*;
 import javax.swing.table.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import java.security.spec.MGF1ParameterSpec;
 
 public class LibraryInterface extends JFrame{
 	private Librarian librarian;
@@ -36,7 +36,7 @@ public class LibraryInterface extends JFrame{
 		check_password();
 		Settings.update(db_manager);
 		init_interface();
-		load_interface();
+		load_interfaces();
 	}
 
 	public void check_password(){
@@ -108,15 +108,14 @@ public class LibraryInterface extends JFrame{
 		set_panel = new SettingsPanel(db_manager,security_manager);
 	}
 
-	public void load_interface(){
-
-		//Tabbed Pane
+	public void load_interfaces(){
 		jtp.addTab("Issue Book", ib_panel);
 		jtp.addTab("Manage Books", mb_panel);
 		jtp.addTab("Manage Memberships", mm_panel);
 		jtp.addTab("Transactions", tr_panel);
 		jtp.addTab("Search", s_panel);
 		jtp.addTab("Settings", set_panel);
+		
 		jtp.addChangeListener(new ChangeListener() {
 			public void stateChanged(ChangeEvent e){
 				if(jtp.getSelectedComponent().getName()=="manage_books"){
@@ -169,31 +168,33 @@ public class LibraryInterface extends JFrame{
 
 	class ManageBooksPanel extends JPanel implements ActionListener{
 		private JButton add_book_btn;
+		private JButton remove_book_by_id_btn;
 		private JButton remove_book_btn;
 		private JButton import_books_btn;
 		private JTable table;
 		private JScrollPane table_sp;
 		private GroupLayout layout;
-
+		private Object[][] data;
 		ManageBooksPanel(){
 			setName("manage_books");
 
 			add_book_btn = new JButton("Add Book");
+			remove_book_by_id_btn = new JButton("Remove Book By Id");
 			remove_book_btn = new JButton("Remove Book");
 			import_books_btn = new JButton("Import Books");
 
 			table = new JTable();
-			table.setEnabled(false);
 			table_sp = new JScrollPane(table);
 
 			add(table_sp);
 			add(add_book_btn);
 			add(import_books_btn);
-			add(remove_book_btn);
+			add(remove_book_by_id_btn);
 
 			add_book_btn.addActionListener(this);
-			remove_book_btn.addActionListener(this);
+			remove_book_by_id_btn.addActionListener(this);
 			import_books_btn.addActionListener(this);
+			remove_book_btn.addActionListener(this);
 
 			layout = new GroupLayout(this);
 			setLayout(layout);
@@ -205,6 +206,7 @@ public class LibraryInterface extends JFrame{
 				.addGroup(layout.createSequentialGroup()
 					.addComponent(add_book_btn)
 					.addComponent(import_books_btn)
+					.addComponent(remove_book_by_id_btn)
 					.addComponent(remove_book_btn))
 			);
 			layout.setVerticalGroup(
@@ -213,6 +215,7 @@ public class LibraryInterface extends JFrame{
 				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
 					.addComponent(add_book_btn)
 					.addComponent(import_books_btn)
+					.addComponent(remove_book_by_id_btn)
 					.addComponent(remove_book_btn))
 			);
 		}
@@ -220,8 +223,17 @@ public class LibraryInterface extends JFrame{
 			if(ae.getSource()==add_book_btn){
 				 abd.setVisible(true);
 			}
-			else if(ae.getSource()==remove_book_btn){
+			else if(ae.getSource()==remove_book_by_id_btn){
 				rbd.setVisible(true);
+			}
+			else if(ae.getSource()==remove_book_btn){
+				data = librarian.books_to_array(librarian.get_books());
+				int[] selectedRows = table.getSelectedRows();
+				for(int x:selectedRows){
+					librarian.remove_book((int)data[x][0]);
+				}
+				librarian.update_table(table, new String[]{"ID","TITLE","AUTHER","PUBLICATION"}, librarian.books_to_array(librarian.get_books()));
+				
 			}
 			else{
 				chooser.setFileFilter(new FileNameExtensionFilter("CSV Files", "csv"));
@@ -241,31 +253,35 @@ public class LibraryInterface extends JFrame{
 
 	class ManageMembersPanel extends JPanel implements ActionListener{
 		private JButton add_member_btn;
-		private JButton remove_member_btn;
+		private JButton remove_member_by_id_btn;
+		private JButton remove_btn;
 		private JButton import_members_btn;
 		private JTable table;
 		private JScrollPane table_sp;
 		private GroupLayout layout;
+		private Object[][] data;
 
 		ManageMembersPanel(){
 			setName("manage_memberships");
 
 			add_member_btn = new JButton("Add Member");
-			remove_member_btn = new JButton("Remove Member");
+			remove_member_by_id_btn = new JButton("Remove Member By Id");
+			remove_btn = new JButton("Remove");
 			import_members_btn = new JButton("Import Members");
 
 			table = new JTable();
-			table.setEnabled(false);
 			table_sp = new JScrollPane(table);
 
 			add(table_sp);
 			add(add_member_btn);
 			add(import_members_btn);
-			add(remove_member_btn);
+			add(remove_member_by_id_btn);
 
 			add_member_btn.addActionListener(this);
-			remove_member_btn.addActionListener(this);
+			remove_member_by_id_btn.addActionListener(this);
 			import_members_btn.addActionListener(this);
+			remove_btn.addActionListener(this);
+			// table.getSelectionModel().addListSelectionListener(this);
 
 			layout = new GroupLayout(this);
 			setLayout(layout);
@@ -277,7 +293,8 @@ public class LibraryInterface extends JFrame{
 				.addGroup(layout.createSequentialGroup()
 					.addComponent(add_member_btn)
 					.addComponent(import_members_btn)
-					.addComponent(remove_member_btn))
+					.addComponent(remove_member_by_id_btn)
+					.addComponent(remove_btn))
 			);
 			layout.setVerticalGroup(
 				layout.createSequentialGroup()
@@ -285,7 +302,8 @@ public class LibraryInterface extends JFrame{
 				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
 					.addComponent(add_member_btn)
 					.addComponent(import_members_btn)
-					.addComponent(remove_member_btn))
+					.addComponent(remove_member_by_id_btn)
+					.addComponent(remove_btn))
 			);
 		}
 		public void actionPerformed(ActionEvent ae){
@@ -293,9 +311,18 @@ public class LibraryInterface extends JFrame{
 				AddMemberDialog amd = new AddMemberDialog(LibraryInterface.this,librarian,mm_panel.table);
 				amd.setVisible(true);
 			}
-			else if(ae.getSource()==remove_member_btn){
+			else if(ae.getSource()==remove_member_by_id_btn){
 				RemoveMemberDialog rmd = new RemoveMemberDialog(LibraryInterface.this,librarian,mm_panel.table);
 				rmd.setVisible(true);
+			}
+			else if(ae.getSource()==remove_btn){
+				data = librarian.members_to_array(librarian.get_members());
+				int[] selectedRows = table.getSelectedRows();
+				for(int x:selectedRows){
+					librarian.remove_member((int)data[x][0]);
+				}
+				librarian.update_table(table, new String[]{"ID","NAME","EMAIL","SEMESTER"}, librarian.members_to_array(librarian.get_members()));
+				
 			}
 			else{
 				chooser.setFileFilter(new FileNameExtensionFilter("CSV Files", "csv"));
