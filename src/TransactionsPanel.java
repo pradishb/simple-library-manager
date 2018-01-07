@@ -56,7 +56,7 @@ public class TransactionsPanel extends JPanel implements ListSelectionListener,A
 			int monthDiff = LocalDateTime.now().getMonthValue()-result.get_borrowed_date().toLocalDateTime().getMonthValue();
 			int dayDiff = LocalDateTime.now().getDayOfMonth()-result.get_borrowed_date().toLocalDateTime().getDayOfMonth();
 
-			int fine = (yearDiff*365+monthDiff*30+dayDiff-30);
+			int fine = (yearDiff*365+monthDiff*30+dayDiff-Settings.due);
 
 			String msg;
 
@@ -64,7 +64,7 @@ public class TransactionsPanel extends JPanel implements ListSelectionListener,A
 				msg = "Do you want to return the book?";
 			}
 			else{
-				msg = "The fine amout is Rs. "+fine+".\nDo you want to return the book?";
+				msg = "The fine amout is "+fine+" x "+Settings.price+" = Rs. "+fine*Settings.price+".\nDo you want to return the book?";
 			}
 
 			if(JOptionPane.showConfirmDialog(null,msg, "Confirm Dialog", JOptionPane.YES_NO_OPTION)==JOptionPane.YES_OPTION){
