@@ -228,11 +228,13 @@ public class LibraryInterface extends JFrame{
 			else if(ae.getSource()==remove_book_btn){
 				data = librarian.books_to_array(librarian.get_books());
 				int[] selectedRows = table.getSelectedRows();
-				for(int x:selectedRows){
-					librarian.remove_book((int)data[x][0]);
+				int result = JOptionPane.showConfirmDialog(this, "Do you really want to remove "+selectedRows.length+" book(s)?","Confirm",JOptionPane.OK_CANCEL_OPTION);
+				if(result == JOptionPane.OK_OPTION){
+					for(int x:selectedRows){
+						librarian.remove_book((int)data[x][0]);
+					}
+					librarian.update_table(table, new String[]{"ID","TITLE","AUTHER","PUBLICATION"}, librarian.books_to_array(librarian.get_books()));
 				}
-				librarian.update_table(table, new String[]{"ID","TITLE","AUTHER","PUBLICATION"}, librarian.books_to_array(librarian.get_books()));
-				
 			}
 			else{
 				chooser.setFileFilter(new FileNameExtensionFilter("CSV Files", "csv"));
@@ -317,11 +319,13 @@ public class LibraryInterface extends JFrame{
 			else if(ae.getSource()==remove_btn){
 				data = librarian.members_to_array(librarian.get_members());
 				int[] selectedRows = table.getSelectedRows();
-				for(int x:selectedRows){
-					librarian.remove_member((int)data[x][0]);
+				int result = JOptionPane.showConfirmDialog(this, "Do you really want to remove "+selectedRows.length+" member(s)?","Confirm",JOptionPane.OK_CANCEL_OPTION);
+				if(result == JOptionPane.OK_OPTION){
+					for(int x:selectedRows){
+						librarian.remove_member((int)data[x][0]);
+					}
+					librarian.update_table(table, new String[]{"ID","NAME","EMAIL","SEMESTER"}, librarian.members_to_array(librarian.get_members()));
 				}
-				librarian.update_table(table, new String[]{"ID","NAME","EMAIL","SEMESTER"}, librarian.members_to_array(librarian.get_members()));
-				
 			}
 			else{
 				chooser.setFileFilter(new FileNameExtensionFilter("CSV Files", "csv"));
