@@ -119,7 +119,7 @@ public class LibraryInterface extends JFrame{
 		jtp.addChangeListener(new ChangeListener() {
 			public void stateChanged(ChangeEvent e){
 				if(jtp.getSelectedComponent().getName()=="manage_books"){
-					librarian.update_table(mb_panel.table, new String[]{"ID","TITLE","AUTHER","PUBLICATION"}, librarian.books_to_array(librarian.get_books()));
+					librarian.update_table(mb_panel.table, new String[]{"ID","TITLE","AUTHER","PUBLICATION","COPIES"}, librarian.books_to_array(librarian.get_books()));
 				}else if(jtp.getSelectedComponent().getName()=="manage_memberships"){
 					librarian.update_table(mm_panel.table, new String[]{"ID","NAME","EMAIL","SEMESTER"}, librarian.members_to_array(librarian.get_members()));
 				}else if(jtp.getSelectedComponent().getName()=="transactions"){
@@ -233,7 +233,7 @@ public class LibraryInterface extends JFrame{
 					for(int x:selectedRows){
 						librarian.remove_book((int)data[x][0]);
 					}
-					librarian.update_table(table, new String[]{"ID","TITLE","AUTHER","PUBLICATION"}, librarian.books_to_array(librarian.get_books()));
+					librarian.update_table(table, new String[]{"ID","TITLE","AUTHER","PUBLICATION","COPIES"}, librarian.books_to_array(librarian.get_books()));
 				}
 			}
 			else{
@@ -246,7 +246,7 @@ public class LibraryInterface extends JFrame{
 						System.out.println(e.getMessage());
 						JOptionPane.showMessageDialog(LibraryInterface.this, "Some errors occured while import the CSV file.", "Bad Input File", JOptionPane.ERROR_MESSAGE);
 					}
-					librarian.update_table(table, new String[]{"ID","TITLE","AUTHER","PUBLICATION"}, librarian.books_to_array(librarian.get_books()));
+					librarian.update_table(table, new String[]{"ID","TITLE","AUTHER","PUBLICATION","COPIES"}, librarian.books_to_array(librarian.get_books()));
 				}
 			}
 		}
@@ -415,9 +415,9 @@ public class LibraryInterface extends JFrame{
 				JOptionPane.showMessageDialog(this, "Form is not complete.", "Bad Input", JOptionPane.ERROR_MESSAGE);
 			}
 			else{
-				Book myBook = new Book(0,title_tf.getText(),author_tf.getText(),publication_tf.getText());
+				Book myBook = new Book(0,title_tf.getText(),author_tf.getText(),publication_tf.getText(),1);
 				librarian.add_book(myBook);
-				librarian.update_table(mb_panel.table, new String[]{"ID","TITLE","AUTHER","PUBLICATION"}, librarian.books_to_array(librarian.get_books()));
+				librarian.update_table(mb_panel.table, new String[]{"ID","TITLE","AUTHER","PUBLICATION","COPIES"}, librarian.books_to_array(librarian.get_books()));
 				setVisible(false);
 			}
 		}
@@ -469,7 +469,7 @@ public class LibraryInterface extends JFrame{
 		public void actionPerformed(ActionEvent ae){
 			try{
 				librarian.remove_book(Integer.parseInt(book_id_tf.getText()));
-				librarian.update_table(mb_panel.table, new String[]{"ID","TITLE","AUTHER","PUBLICATION"}, librarian.books_to_array(librarian.get_books()));
+				librarian.update_table(mb_panel.table, new String[]{"ID","TITLE","AUTHER","PUBLICATION","COPIES"}, librarian.books_to_array(librarian.get_books()));
 				setVisible(false);
 			}
 			catch(NumberFormatException e){

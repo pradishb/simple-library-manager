@@ -52,14 +52,14 @@ public class DBManager{
 			stmt.execute("CREATE TABLE IF NOT EXISTS members(id smallint(6) AUTO_INCREMENT, name varchar(40), semester tinyint(1), email varchar(40), PRIMARY KEY (id))");
 			stmt.execute("CREATE TABLE IF NOT EXISTS transactions(id smallint(6) AUTO_INCREMENT, borrower_id smallint(6), book_id smallint(6), borrowed_date timestamp, PRIMARY KEY (id))");
 			stmt.execute("CREATE TABLE IF NOT EXISTS settings(id smallint(6), password varchar(40), threshold smallint(6), overdue_duration smallint(6), fine_per_day tinyint(4),PRIMARY KEY (id))");
-			stmt.execute("CREATE OR REPLACE VIEW copies AS SELECT books.id, 1-(SELECT COUNT(id) FROM transactions WHERE books.id=transactions.book_id) AS remaining FROM books");
+			stmt.execute("CREATE OR REPLACE VIEW copies AS SELECT books.id, books.copies-(SELECT COUNT(id) FROM transactions WHERE books.id=transactions.book_id) AS remaining FROM books");
 			stmt.execute("CREATE OR REPLACE VIEW books_borrowed AS SELECT members.id, (SELECT COUNT(id) FROM transactions WHERE members.id=transactions.borrower_id) AS books_borrowed FROM members");
 
 			//create prepared statements
 			add_member_stmt = conn.prepareStatement("INSERT INTO members(id, name, semester, email) VALUES (0,?,?,?)");
 			remove_member_stmt = conn.prepareStatement("DELETE FROM members WHERE id=?");
 			update_member_stmt = conn.prepareStatement("UPDATE members SET id=0,name=?,semester=?,email=?,books_borrowed=?");
-			add_book_stmt = conn.prepareStatement("INSERT INTO books(id, title, author, publication) VALUES (0,?,?,?)");
+			add_book_stmt = conn.prepareStatement("INSERT INTO books(id, title, author, publication, copies) VALUES (0,?,?,?,?)");
 			remove_book_stmt = conn.prepareStatement("DELETE FROM books WHERE id=?");
 			update_book_stmt = conn.prepareStatement("UPDATE books SET id=0,title=?,author=?,publication=?");
 			issue_book_stmt = conn.prepareStatement("INSERT INTO transactions(id, borrower_id, book_id, borrowed_date) VALUES (0,?,?,CURRENT_TIMESTAMP)");
