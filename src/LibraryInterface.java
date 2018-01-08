@@ -21,7 +21,6 @@ public class LibraryInterface extends JFrame{
 	private JTabbedPane jtp;
 	private GroupLayout layout;
 	private RemoveBookDialog rbd;
-	private AddBookDialog abd;
 	private IssueBookPanel ib_panel;
 	private ManageBooksPanel mb_panel;
 	private TransactionsPanel tr_panel;
@@ -98,7 +97,6 @@ public class LibraryInterface extends JFrame{
 		//Initialization
 		chooser = new JFileChooser();
 		rbd = new RemoveBookDialog();
-		abd = new AddBookDialog();
 		mm_panel = new ManageMembersPanel();
 		ib_panel = new IssueBookPanel(librarian);
 		mb_panel = new ManageBooksPanel();
@@ -220,7 +218,33 @@ public class LibraryInterface extends JFrame{
 		}
 		public void actionPerformed(ActionEvent ae){
 			if(ae.getSource()==add_book_btn){
-				 abd.setVisible(true);
+		 		JLabel title_label = new JLabel("Title:");
+				JLabel author_label = new JLabel("Author:");
+				JLabel publication_label = new JLabel("Publication:");
+				JLabel copies_label = new JLabel("No. of copies:");
+				JTextField title_tf = new JTextField();
+				JTextField author_tf = new JTextField();	
+				JTextField publication_tf = new JTextField();
+				JTextField copies_tf = new JTextField();
+
+				Object[] ob = {title_label,title_tf,author_label,author_tf,publication_label,publication_tf,copies_label,copies_tf};
+				int result = JOptionPane.showConfirmDialog(this, ob,"Add Book Form",JOptionPane.OK_CANCEL_OPTION);
+
+				if(result == JOptionPane.OK_OPTION){
+					if(title_tf.getText().equals("") || author_tf.getText().equals("") || publication_tf.getText().equals("")){
+						JOptionPane.showMessageDialog(this, "Form is not complete.", "Bad Input", JOptionPane.ERROR_MESSAGE);
+					}
+					else{
+						try{
+							Book myBook = new Book(0,title_tf.getText(),author_tf.getText(),publication_tf.getText(),Integer.parseInt(copies_tf.getText()));
+							librarian.add_book(myBook);
+							librarian.update_table(mb_panel.table, new String[]{"ID","TITLE","AUTHER","PUBLICATION","COPIES"}, librarian.books_to_array(librarian.get_books()));
+						}
+						catch(NumberFormatException e){
+							JOptionPane.showMessageDialog(this, "No. of copies is not a number.", "Bad Input", JOptionPane.ERROR_MESSAGE);
+						}
+					}
+				}
 			}
 			else if(ae.getSource()==remove_book_by_id_btn){
 				rbd.setVisible(true);
@@ -234,6 +258,7 @@ public class LibraryInterface extends JFrame{
 						librarian.remove_book((int)data[x][0]);
 					}
 					librarian.update_table(table, new String[]{"ID","TITLE","AUTHER","PUBLICATION","COPIES"}, librarian.books_to_array(librarian.get_books()));
+					System.out.println(selectedRows.length + " book(s) removed from database.");
 				}
 			}
 			else{
@@ -325,6 +350,7 @@ public class LibraryInterface extends JFrame{
 						librarian.remove_member((int)data[x][0]);
 					}
 					librarian.update_table(table, new String[]{"ID","NAME","EMAIL","SEMESTER"}, librarian.members_to_array(librarian.get_members()));
+					System.out.println(selectedRows.length + " book(s) removed from database.");
 				}
 			}
 			else{
@@ -339,86 +365,6 @@ public class LibraryInterface extends JFrame{
 					}
 					librarian.update_table(table, new String[]{"ID","NAME","EMAIL","SEMESTER"}, librarian.members_to_array(librarian.get_members()));
 				}
-			}
-		}
-	}
-
-	class AddBookDialog extends JDialog implements ActionListener{
-		private JLabel title_label;
-		private JLabel author_label;
-		private JLabel publication_label;
-		private JTextField title_tf;
-		private JTextField author_tf;
-		private JTextField publication_tf;
-		private JButton btn;
-		private GroupLayout layout;
-
-		AddBookDialog(){
-			super(LibraryInterface.this,"Add Book Form",true);
-
-			title_label = new JLabel("Title:");
-			author_label = new JLabel("Author:");
-			publication_label = new JLabel("Publication:");
-			title_tf = new JTextField();
-			author_tf = new JTextField();
-			publication_tf = new JTextField();
-			btn = new JButton("Add Book");
-
-			layout = new GroupLayout(getContentPane());
-			getContentPane().setLayout(layout);
-
-			btn.addActionListener(this);
-
-			layout.setAutoCreateGaps(true);
-			layout.setAutoCreateContainerGaps(true);
-
-			layout.setHorizontalGroup(
-			layout.createSequentialGroup()
-			.addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-				.addComponent(title_label)
-				.addComponent(author_label)
-				.addComponent(publication_label))
-			.addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-				.addComponent(title_tf)
-				.addComponent(author_tf)
-				.addComponent(publication_tf)
-				.addComponent(btn))
-				);
-			layout.setVerticalGroup(
-				layout.createSequentialGroup()
-				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-					.addComponent(title_label)
-					.addComponent(title_tf))
-				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-					.addComponent(author_label)
-					.addComponent(author_tf))
-				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-					.addComponent(publication_label)
-					.addComponent(publication_tf))
-				.addComponent(btn)
-				);
-
-			setSize(400,165);
-			setLocationRelativeTo(null);
-			setResizable(false);
-			add(title_label);
-			add(title_tf);
-			add(author_label);
-			add(author_tf);
-			add(publication_label);
-			add(publication_tf);
-			add(btn);
-		}
-		public void actionPerformed(ActionEvent ae){
-			if(title_tf.getText().equals("") || author_tf.getText().equals("") || publication_tf.getText().equals("")){
-				System.out.println("ERROR: Some fields are empty in add book form.");
-				JOptionPane.showMessageDialog(this, "Form is not complete.", "Bad Input", JOptionPane.ERROR_MESSAGE);
-			}
-			else{
-				Book myBook = new Book(0,title_tf.getText(),author_tf.getText(),publication_tf.getText(),1);
-				librarian.add_book(myBook);
-				librarian.update_table(mb_panel.table, new String[]{"ID","TITLE","AUTHER","PUBLICATION","COPIES"}, librarian.books_to_array(librarian.get_books()));
-				setVisible(false);
 			}
 		}
 	}
