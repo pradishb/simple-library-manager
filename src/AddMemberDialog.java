@@ -89,7 +89,7 @@ public class AddMemberDialog extends JDialog implements ActionListener{
 				}
 				catch(NumberFormatException e){
 					System.out.println("ERROR: Semester provided is not valid.");
-					JOptionPane.showMessageDialog(this, "Please enter a valid member id.", "Bad Input", JOptionPane.ERROR_MESSAGE);
+					JOptionPane.showMessageDialog(this, "Please enter a valid semester.", "Bad Input", JOptionPane.ERROR_MESSAGE);
 				}
 			}
 		}

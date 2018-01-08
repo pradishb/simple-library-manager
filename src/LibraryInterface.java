@@ -20,7 +20,6 @@ public class LibraryInterface extends JFrame{
 	private ManageMembersPanel mm_panel;
 	private JTabbedPane jtp;
 	private GroupLayout layout;
-	private RemoveBookDialog rbd;
 	private IssueBookPanel ib_panel;
 	private ManageBooksPanel mb_panel;
 	private TransactionsPanel tr_panel;
@@ -96,10 +95,9 @@ public class LibraryInterface extends JFrame{
 		System.out.println("Initializing Interface...");
 		//Initialization
 		chooser = new JFileChooser();
-		rbd = new RemoveBookDialog();
 		mm_panel = new ManageMembersPanel();
 		ib_panel = new IssueBookPanel(librarian);
-		mb_panel = new ManageBooksPanel();
+		mb_panel = new ManageBooksPanel(librarian);
 		tr_panel = new TransactionsPanel(librarian);
 		s_panel = new SearchPanel(librarian);
 		set_panel = new SettingsPanel(db_manager,security_manager);
@@ -117,7 +115,7 @@ public class LibraryInterface extends JFrame{
 		jtp.addChangeListener(new ChangeListener() {
 			public void stateChanged(ChangeEvent e){
 				if(jtp.getSelectedComponent().getName()=="manage_books"){
-					librarian.update_table(mb_panel.table, new String[]{"ID","TITLE","AUTHER","PUBLICATION","COPIES"}, librarian.books_to_array(librarian.get_books()));
+					mb_panel.update_table();
 				}else if(jtp.getSelectedComponent().getName()=="manage_memberships"){
 					librarian.update_table(mm_panel.table, new String[]{"ID","NAME","EMAIL","SEMESTER"}, librarian.members_to_array(librarian.get_members()));
 				}else if(jtp.getSelectedComponent().getName()=="transactions"){
@@ -161,120 +159,6 @@ public class LibraryInterface extends JFrame{
 			layout.createSequentialGroup()
 				.addComponent(jtp)
 			);
-	}
-
-	class ManageBooksPanel extends JPanel implements ActionListener{
-		private JButton add_book_btn;
-		private JButton remove_book_by_id_btn;
-		private JButton remove_book_btn;
-		private JButton import_books_btn;
-		private JTable table;
-		private JScrollPane table_sp;
-		private GroupLayout layout;
-		private Object[][] data;
-		ManageBooksPanel(){
-			setName("manage_books");
-
-			add_book_btn = new JButton("Add Book");
-			remove_book_by_id_btn = new JButton("Remove Book By Id");
-			remove_book_btn = new JButton("Remove Book");
-			import_books_btn = new JButton("Import Books");
-
-			table = new JTable();
-			table_sp = new JScrollPane(table);
-
-			add(table_sp);
-			add(add_book_btn);
-			add(import_books_btn);
-			add(remove_book_by_id_btn);
-
-			add_book_btn.addActionListener(this);
-			remove_book_by_id_btn.addActionListener(this);
-			import_books_btn.addActionListener(this);
-			remove_book_btn.addActionListener(this);
-
-			layout = new GroupLayout(this);
-			setLayout(layout);
-			layout.setAutoCreateGaps(true);
-			layout.setAutoCreateContainerGaps(true);
-			layout.setHorizontalGroup(
-			layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-				.addComponent(table_sp)
-				.addGroup(layout.createSequentialGroup()
-					.addComponent(add_book_btn)
-					.addComponent(import_books_btn)
-					.addComponent(remove_book_by_id_btn)
-					.addComponent(remove_book_btn))
-			);
-			layout.setVerticalGroup(
-				layout.createSequentialGroup()
-				.addComponent(table_sp)
-				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-					.addComponent(add_book_btn)
-					.addComponent(import_books_btn)
-					.addComponent(remove_book_by_id_btn)
-					.addComponent(remove_book_btn))
-			);
-		}
-		public void actionPerformed(ActionEvent ae){
-			if(ae.getSource()==add_book_btn){
-		 		JLabel title_label = new JLabel("Title:");
-				JLabel author_label = new JLabel("Author:");
-				JLabel publication_label = new JLabel("Publication:");
-				JLabel copies_label = new JLabel("No. of copies:");
-				JTextField title_tf = new JTextField();
-				JTextField author_tf = new JTextField();	
-				JTextField publication_tf = new JTextField();
-				JTextField copies_tf = new JTextField();
-
-				Object[] ob = {title_label,title_tf,author_label,author_tf,publication_label,publication_tf,copies_label,copies_tf};
-				int result = JOptionPane.showConfirmDialog(this, ob,"Add Book Form",JOptionPane.OK_CANCEL_OPTION);
-
-				if(result == JOptionPane.OK_OPTION){
-					if(title_tf.getText().equals("") || author_tf.getText().equals("") || publication_tf.getText().equals("")){
-						JOptionPane.showMessageDialog(this, "Form is not complete.", "Bad Input", JOptionPane.ERROR_MESSAGE);
-					}
-					else{
-						try{
-							Book myBook = new Book(0,title_tf.getText(),author_tf.getText(),publication_tf.getText(),Integer.parseInt(copies_tf.getText()));
-							librarian.add_book(myBook);
-							librarian.update_table(mb_panel.table, new String[]{"ID","TITLE","AUTHER","PUBLICATION","COPIES"}, librarian.books_to_array(librarian.get_books()));
-						}
-						catch(NumberFormatException e){
-							JOptionPane.showMessageDialog(this, "No. of copies is not a number.", "Bad Input", JOptionPane.ERROR_MESSAGE);
-						}
-					}
-				}
-			}
-			else if(ae.getSource()==remove_book_by_id_btn){
-				rbd.setVisible(true);
-			}
-			else if(ae.getSource()==remove_book_btn){
-				data = librarian.books_to_array(librarian.get_books());
-				int[] selectedRows = table.getSelectedRows();
-				int result = JOptionPane.showConfirmDialog(this, "Do you really want to remove "+selectedRows.length+" book(s)?","Confirm",JOptionPane.OK_CANCEL_OPTION);
-				if(result == JOptionPane.OK_OPTION){
-					for(int x:selectedRows){
-						librarian.remove_book((int)data[x][0]);
-					}
-					librarian.update_table(table, new String[]{"ID","TITLE","AUTHER","PUBLICATION","COPIES"}, librarian.books_to_array(librarian.get_books()));
-					System.out.println(selectedRows.length + " book(s) removed from database.");
-				}
-			}
-			else{
-				chooser.setFileFilter(new FileNameExtensionFilter("CSV Files", "csv"));
-				int returnVal = chooser.showOpenDialog(LibraryInterface.this);
-				if(returnVal == JFileChooser.APPROVE_OPTION){
-					try{
-						librarian.import_books(chooser.getSelectedFile());
-					}catch(InvalidCsvFormatException e){
-						System.out.println(e.getMessage());
-						JOptionPane.showMessageDialog(LibraryInterface.this, "Some errors occured while import the CSV file.", "Bad Input File", JOptionPane.ERROR_MESSAGE);
-					}
-					librarian.update_table(table, new String[]{"ID","TITLE","AUTHER","PUBLICATION","COPIES"}, librarian.books_to_array(librarian.get_books()));
-				}
-			}
-		}
 	}
 
 	class ManageMembersPanel extends JPanel implements ActionListener{
@@ -369,59 +253,59 @@ public class LibraryInterface extends JFrame{
 		}
 	}
 
-	class RemoveBookDialog extends JDialog implements ActionListener{
-		private JLabel book_id_label;
-		private JTextField book_id_tf;
-		private JButton btn;
-		private GroupLayout layout;
+	// class RemoveBookDialog extends JDialog implements ActionListener{
+	// 	private JLabel book_id_label;
+	// 	private JTextField book_id_tf;
+	// 	private JButton btn;
+	// 	private GroupLayout layout;
 
-		RemoveBookDialog(){
-			super(LibraryInterface.this,"Remove Book Form",true);
+	// 	RemoveBookDialog(){
+	// 		super(LibraryInterface.this,"Remove Book Form",true);
 
-			book_id_tf = new JTextField();
-			btn = new JButton("Remove Book");
-			book_id_label = new JLabel("Book Id:");
-			layout = new GroupLayout(getContentPane());
-			getContentPane().setLayout(layout);
+	// 		book_id_tf = new JTextField();
+	// 		btn = new JButton("Remove Book");
+	// 		book_id_label = new JLabel("Book Id:");
+	// 		layout = new GroupLayout(getContentPane());
+	// 		getContentPane().setLayout(layout);
 
-			btn.addActionListener(this);
+	// 		btn.addActionListener(this);
 
-			layout.setAutoCreateGaps(true);
-			layout.setAutoCreateContainerGaps(true);
-			layout.setHorizontalGroup(
-				layout.createSequentialGroup()
-				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-					.addComponent(book_id_label))
-				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-					.addComponent(book_id_tf)
-					.addComponent(btn))
-				);
-			layout.setVerticalGroup(
-				layout.createSequentialGroup()
-				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-					.addComponent(book_id_label)
-					.addComponent(book_id_tf))
-				.addComponent(btn)
-				);
+	// 		layout.setAutoCreateGaps(true);
+	// 		layout.setAutoCreateContainerGaps(true);
+	// 		layout.setHorizontalGroup(
+	// 			layout.createSequentialGroup()
+	// 			.addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+	// 				.addComponent(book_id_label))
+	// 			.addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+	// 				.addComponent(book_id_tf)
+	// 				.addComponent(btn))
+	// 			);
+	// 		layout.setVerticalGroup(
+	// 			layout.createSequentialGroup()
+	// 			.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+	// 				.addComponent(book_id_label)
+	// 				.addComponent(book_id_tf))
+	// 			.addComponent(btn)
+	// 			);
 
 
-			setSize(400,110);
-			setLocationRelativeTo(null);
-			setResizable(false);
-			add(book_id_label);
-			add(book_id_tf);
-			add(btn);
-		}
-		public void actionPerformed(ActionEvent ae){
-			try{
-				librarian.remove_book(Integer.parseInt(book_id_tf.getText()));
-				librarian.update_table(mb_panel.table, new String[]{"ID","TITLE","AUTHER","PUBLICATION","COPIES"}, librarian.books_to_array(librarian.get_books()));
-				setVisible(false);
-			}
-			catch(NumberFormatException e){
-				System.out.println("ERROR: Book id provided is not valid.");
-				JOptionPane.showMessageDialog(this, "Please enter a valid book id.", "Bad Input", JOptionPane.ERROR_MESSAGE);
-			}
-		}
-	}
+	// 		setSize(400,110);
+	// 		setLocationRelativeTo(null);
+	// 		setResizable(false);
+	// 		add(book_id_label);
+	// 		add(book_id_tf);
+	// 		add(btn);
+	// 	}
+	// 	public void actionPerformed(ActionEvent ae){
+	// 		try{
+	// 			librarian.remove_book(Integer.parseInt(book_id_tf.getText()));
+	// 			mb_panel.update_table();
+	// 			setVisible(false);
+	// 		}
+	// 		catch(NumberFormatException e){
+	// 			System.out.println("ERROR: Book id provided is not valid.");
+	// 			JOptionPane.showMessageDialog(this, "Please enter a valid book id.", "Bad Input", JOptionPane.ERROR_MESSAGE);
+	// 		}
+	// 	}
+	// }
 }

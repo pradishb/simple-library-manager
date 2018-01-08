@@ -4,6 +4,8 @@ import java.util.*;
 import java.io.*;
 import javax.swing.*;
 import javax.swing.table.*;
+import java.awt.*;
+import javax.swing.event.*;
 import com.Ostermiller.util.LabeledCSVParser;
 import com.Ostermiller.util.CSVParser;
 
@@ -439,7 +441,7 @@ public class Librarian{
 		return result;
 	}
 	
-	public void update_table(JTable table, String[] cols, Object[][]  data){
+	public void update_table(JTable table, String[] cols, Object[][] data){
 		table.setModel(new DefaultTableModel(data, cols));
 		table.getColumn("ID").setMaxWidth(30);
 	}
