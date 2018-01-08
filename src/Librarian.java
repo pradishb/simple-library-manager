@@ -42,6 +42,7 @@ public class Librarian{
 		try{
 			dm.remove_book_stmt.setInt(1,book_id);
 			int r_affected = dm.remove_book_stmt.executeUpdate();
+			dm.stmt.execute("DELETE FROM transactions WHERE book_id="+book_id);
 			System.out.println(r_affected + " book(s) removed from database.");
 		}
 		catch(Exception se){
@@ -86,6 +87,7 @@ public class Librarian{
 		try{
 			dm.remove_member_stmt.setInt(1,member_id);
 			int r_affected = dm.remove_member_stmt.executeUpdate();
+			dm.stmt.execute("DELETE FROM transactions WHERE borrower_id="+member_id);
 			System.out.println(r_affected + " member(s) removed from database.");
 		}
 		catch(Exception se){
