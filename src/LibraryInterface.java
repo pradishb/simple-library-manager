@@ -161,7 +161,7 @@ public class LibraryInterface extends JFrame{
 			);
 	}
 
-	class ManageMembersPanel extends JPanel implements ActionListener{
+	class ManageMembersPanel extends JPanel implements ListSelectionListener,ActionListener{
 		private JButton add_member_btn;
 		private JButton remove_member_by_id_btn;
 		private JButton remove_btn;
@@ -191,7 +191,8 @@ public class LibraryInterface extends JFrame{
 			remove_member_by_id_btn.addActionListener(this);
 			import_members_btn.addActionListener(this);
 			remove_btn.addActionListener(this);
-			// table.getSelectionModel().addListSelectionListener(this);
+			table.getSelectionModel().addListSelectionListener(this);
+			remove_btn.setEnabled(false);	
 
 			layout = new GroupLayout(this);
 			setLayout(layout);
@@ -215,6 +216,14 @@ public class LibraryInterface extends JFrame{
 					.addComponent(remove_member_by_id_btn)
 					.addComponent(remove_btn))
 			);
+		}
+		public void valueChanged(ListSelectionEvent le){
+			if(table.getSelectedRow()!=-1){
+				remove_btn.setEnabled(true);
+			}
+			else{
+				remove_btn.setEnabled(false);	
+			}
 		}
 		public void actionPerformed(ActionEvent ae){
 			if(ae.getSource()==add_member_btn){
@@ -253,59 +262,4 @@ public class LibraryInterface extends JFrame{
 		}
 	}
 
-	// class RemoveBookDialog extends JDialog implements ActionListener{
-	// 	private JLabel book_id_label;
-	// 	private JTextField book_id_tf;
-	// 	private JButton btn;
-	// 	private GroupLayout layout;
-
-	// 	RemoveBookDialog(){
-	// 		super(LibraryInterface.this,"Remove Book Form",true);
-
-	// 		book_id_tf = new JTextField();
-	// 		btn = new JButton("Remove Book");
-	// 		book_id_label = new JLabel("Book Id:");
-	// 		layout = new GroupLayout(getContentPane());
-	// 		getContentPane().setLayout(layout);
-
-	// 		btn.addActionListener(this);
-
-	// 		layout.setAutoCreateGaps(true);
-	// 		layout.setAutoCreateContainerGaps(true);
-	// 		layout.setHorizontalGroup(
-	// 			layout.createSequentialGroup()
-	// 			.addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-	// 				.addComponent(book_id_label))
-	// 			.addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-	// 				.addComponent(book_id_tf)
-	// 				.addComponent(btn))
-	// 			);
-	// 		layout.setVerticalGroup(
-	// 			layout.createSequentialGroup()
-	// 			.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-	// 				.addComponent(book_id_label)
-	// 				.addComponent(book_id_tf))
-	// 			.addComponent(btn)
-	// 			);
-
-
-	// 		setSize(400,110);
-	// 		setLocationRelativeTo(null);
-	// 		setResizable(false);
-	// 		add(book_id_label);
-	// 		add(book_id_tf);
-	// 		add(btn);
-	// 	}
-	// 	public void actionPerformed(ActionEvent ae){
-	// 		try{
-	// 			librarian.remove_book(Integer.parseInt(book_id_tf.getText()));
-	// 			mb_panel.update_table();
-	// 			setVisible(false);
-	// 		}
-	// 		catch(NumberFormatException e){
-	// 			System.out.println("ERROR: Book id provided is not valid.");
-	// 			JOptionPane.showMessageDialog(this, "Please enter a valid book id.", "Bad Input", JOptionPane.ERROR_MESSAGE);
-	// 		}
-	// 	}
-	// }
 }

@@ -75,6 +75,11 @@ public class TransactionsPanel extends JPanel implements ListSelectionListener,A
 		}
 
 		public void valueChanged(ListSelectionEvent le){
-			btn.setEnabled(true);
+			if(table.getSelectedRow()!=-1){
+				btn.setEnabled(true);
+			}
+			else{
+				btn.setEnabled(false);	
+			}
 		}
 	}

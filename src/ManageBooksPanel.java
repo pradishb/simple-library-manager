@@ -6,7 +6,7 @@ import java.awt.event.*;
 import javax.swing.event.*;
 import javax.swing.table.*;
 
-public class ManageBooksPanel extends JPanel implements ActionListener{
+public class ManageBooksPanel extends JPanel implements ListSelectionListener,ActionListener{
 	private JButton add_book_btn;
 	private JButton remove_book_by_id_btn;
 	private JButton remove_book_btn;
@@ -40,7 +40,9 @@ public class ManageBooksPanel extends JPanel implements ActionListener{
 		remove_book_by_id_btn.addActionListener(this);
 		import_books_btn.addActionListener(this);
 		remove_book_btn.addActionListener(this);
-		
+		table.getSelectionModel().addListSelectionListener(this);
+		remove_book_btn.setEnabled(false);
+
 		layout = new GroupLayout(this);
 		setLayout(layout);
 		layout.setAutoCreateGaps(true);
@@ -70,6 +72,14 @@ public class ManageBooksPanel extends JPanel implements ActionListener{
 	}
 	public void tableChanged(TableModelEvent e){
 		System.out.println("Changes");
+	}
+	public void valueChanged(ListSelectionEvent le){
+		if(table.getSelectedRow()!=-1){
+			remove_book_btn.setEnabled(true);
+		}
+		else{
+			remove_book_btn.setEnabled(false);	
+		}
 	}
 	public void actionPerformed(ActionEvent ae){
 		if(ae.getSource()==add_book_btn){
