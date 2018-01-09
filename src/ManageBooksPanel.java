@@ -103,14 +103,16 @@ public class ManageBooksPanel extends JPanel implements ActionListener{
 		}
 		else if(ae.getSource()==remove_book_by_id_btn){
 			String inputValue = JOptionPane.showInputDialog("Enter book id");
-			try{
-				librarian.remove_book(Integer.parseInt(inputValue));
-				update_table();
+			if(inputValue!=null){
+				try{
+					librarian.remove_book(Integer.parseInt(inputValue));
+					update_table();
+				}
+				catch(NumberFormatException e){
+					System.out.println("ERROR: Book id provided is not valid.");
+					JOptionPane.showMessageDialog(this, "Please enter a valid book id.", "Bad Input", JOptionPane.ERROR_MESSAGE);
+				} 
 			}
-			catch(NumberFormatException e){
-				System.out.println("ERROR: Book id provided is not valid.");
-				JOptionPane.showMessageDialog(this, "Please enter a valid book id.", "Bad Input", JOptionPane.ERROR_MESSAGE);
-			} 
 		}
 		else if(ae.getSource()==remove_book_btn){
 			data = librarian.books_to_array(librarian.get_books());
