@@ -442,7 +442,13 @@ public class Librarian{
 	}
 	
 	public void update_table(JTable table, String[] cols, Object[][] data){
-		table.setModel(new DefaultTableModel(data, cols));
+		DefaultTableModel tableModel = new DefaultTableModel(data, cols) {
+			@Override
+			public boolean isCellEditable(int row, int column) {
+				return false;
+			}
+		};
+		table.setModel(tableModel);
 		table.getColumn("ID").setMaxWidth(30);
 	}
 }

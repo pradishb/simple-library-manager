@@ -1,6 +1,5 @@
 package slm;
 
-import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.*;
 import java.sql.*;
 import java.awt.*;
@@ -16,7 +15,6 @@ public class LibraryInterface extends JFrame{
 	private SecurityManager security_manager;
 	private final int WIDTH = 650;
 	private final int HEIGHT = 500;
-	private JFileChooser chooser;
 	private ManageMembersPanel mm_panel;
 	private JTabbedPane jtp;
 	private GroupLayout layout;
@@ -94,8 +92,7 @@ public class LibraryInterface extends JFrame{
 	public void init_interface(){
 		System.out.println("Initializing Interface...");
 		//Initialization
-		chooser = new JFileChooser();
-		mm_panel = new ManageMembersPanel();
+		mm_panel = new ManageMembersPanel(librarian);
 		ib_panel = new IssueBookPanel(librarian);
 		mb_panel = new ManageBooksPanel(librarian);
 		tr_panel = new TransactionsPanel(librarian);
@@ -117,7 +114,7 @@ public class LibraryInterface extends JFrame{
 				if(jtp.getSelectedComponent().getName()=="manage_books"){
 					mb_panel.update_table();
 				}else if(jtp.getSelectedComponent().getName()=="manage_memberships"){
-					librarian.update_table(mm_panel.table, new String[]{"ID","NAME","EMAIL","SEMESTER"}, librarian.members_to_array(librarian.get_members()));
+					mm_panel.update_table();
 				}else if(jtp.getSelectedComponent().getName()=="transactions"){
 					tr_panel.update_table();
 				}else if(jtp.getSelectedComponent().getName()=="search"){
@@ -159,107 +156,6 @@ public class LibraryInterface extends JFrame{
 			layout.createSequentialGroup()
 				.addComponent(jtp)
 			);
-	}
-
-	class ManageMembersPanel extends JPanel implements ListSelectionListener,ActionListener{
-		private JButton add_member_btn;
-		private JButton remove_member_by_id_btn;
-		private JButton remove_btn;
-		private JButton import_members_btn;
-		private JTable table;
-		private JScrollPane table_sp;
-		private GroupLayout layout;
-		private Object[][] data;
-
-		ManageMembersPanel(){
-			setName("manage_memberships");
-
-			add_member_btn = new JButton("Add Member");
-			remove_member_by_id_btn = new JButton("Remove Member By Id");
-			remove_btn = new JButton("Remove");
-			import_members_btn = new JButton("Import Members");
-
-			table = new JTable();
-			table_sp = new JScrollPane(table);
-
-			add(table_sp);
-			add(add_member_btn);
-			add(import_members_btn);
-			add(remove_member_by_id_btn);
-
-			add_member_btn.addActionListener(this);
-			remove_member_by_id_btn.addActionListener(this);
-			import_members_btn.addActionListener(this);
-			remove_btn.addActionListener(this);
-			table.getSelectionModel().addListSelectionListener(this);
-			remove_btn.setEnabled(false);	
-
-			layout = new GroupLayout(this);
-			setLayout(layout);
-			layout.setAutoCreateGaps(true);
-			layout.setAutoCreateContainerGaps(true);
-			layout.setHorizontalGroup(
-			layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-				.addComponent(table_sp)
-				.addGroup(layout.createSequentialGroup()
-					.addComponent(add_member_btn)
-					.addComponent(import_members_btn)
-					.addComponent(remove_member_by_id_btn)
-					.addComponent(remove_btn))
-			);
-			layout.setVerticalGroup(
-				layout.createSequentialGroup()
-				.addComponent(table_sp)
-				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-					.addComponent(add_member_btn)
-					.addComponent(import_members_btn)
-					.addComponent(remove_member_by_id_btn)
-					.addComponent(remove_btn))
-			);
-		}
-		public void valueChanged(ListSelectionEvent le){
-			if(table.getSelectedRow()!=-1){
-				remove_btn.setEnabled(true);
-			}
-			else{
-				remove_btn.setEnabled(false);	
-			}
-		}
-		public void actionPerformed(ActionEvent ae){
-			if(ae.getSource()==add_member_btn){
-				AddMemberDialog amd = new AddMemberDialog(LibraryInterface.this,librarian,mm_panel.table);
-				amd.setVisible(true);
-			}
-			else if(ae.getSource()==remove_member_by_id_btn){
-				RemoveMemberDialog rmd = new RemoveMemberDialog(LibraryInterface.this,librarian,mm_panel.table);
-				rmd.setVisible(true);
-			}
-			else if(ae.getSource()==remove_btn){
-				data = librarian.members_to_array(librarian.get_members());
-				int[] selectedRows = table.getSelectedRows();
-				int result = JOptionPane.showConfirmDialog(this, "Do you really want to remove "+selectedRows.length+" member(s)?","Confirm",JOptionPane.OK_CANCEL_OPTION);
-				if(result == JOptionPane.OK_OPTION){
-					for(int x:selectedRows){
-						librarian.remove_member((int)data[x][0]);
-					}
-					librarian.update_table(table, new String[]{"ID","NAME","EMAIL","SEMESTER"}, librarian.members_to_array(librarian.get_members()));
-					System.out.println(selectedRows.length + " book(s) removed from database.");
-				}
-			}
-			else{
-				chooser.setFileFilter(new FileNameExtensionFilter("CSV Files", "csv"));
-				int returnVal = chooser.showOpenDialog(LibraryInterface.this);
-				if(returnVal == JFileChooser.APPROVE_OPTION){
-					try{
-						librarian.import_members(chooser.getSelectedFile());
-					}catch(InvalidCsvFormatException e){
-						System.out.println(e.getMessage());
-						JOptionPane.showMessageDialog(LibraryInterface.this, "Some errors occured while import the CSV file.", "Bad Input File", JOptionPane.ERROR_MESSAGE);
-					}
-					librarian.update_table(table, new String[]{"ID","NAME","EMAIL","SEMESTER"}, librarian.members_to_array(librarian.get_members()));
-				}
-			}
-		}
 	}
 
 }

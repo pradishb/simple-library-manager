@@ -41,7 +41,7 @@ public class ManageBooksPanel extends JPanel implements ListSelectionListener,Ac
 		import_books_btn.addActionListener(this);
 		remove_book_btn.addActionListener(this);
 		table.getSelectionModel().addListSelectionListener(this);
-		remove_book_btn.setEnabled(false);
+		remove_book_btn.setEnabled(false);	
 
 		layout = new GroupLayout(this);
 		setLayout(layout);
@@ -70,9 +70,7 @@ public class ManageBooksPanel extends JPanel implements ListSelectionListener,Ac
 	public void update_table(){
 		librarian.update_table(table, new String[]{"ID","TITLE","AUTHER","PUBLICATION","COPIES"}, librarian.books_to_array(librarian.get_books()));
 	}
-	public void tableChanged(TableModelEvent e){
-		System.out.println("Changes");
-	}
+
 	public void valueChanged(ListSelectionEvent le){
 		if(table.getSelectedRow()!=-1){
 			remove_book_btn.setEnabled(true);

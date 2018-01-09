@@ -17,7 +17,7 @@ public class SearchPanel extends JPanel implements ActionListener{
 		SearchPanel(Librarian librarian){
 			this.librarian = librarian;
 			table = new JTable();
-			table.setEnabled(false);
+			// table.setEnabled(false);
 			table_sp = new JScrollPane(table);
 			books = new JRadioButton("books");
 			members = new JRadioButton("members");
