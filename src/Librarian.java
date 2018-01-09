@@ -90,8 +90,8 @@ public class Librarian{
 	public void remove_member(int member_id){
 		try{
 			dm.remove_member_stmt.setInt(1,member_id);
-			int r_affected = dm.remove_member_stmt.executeUpdate();
 			dm.stmt.execute("DELETE FROM transactions WHERE borrower_id="+member_id);
+			int r_affected = dm.remove_member_stmt.executeUpdate();
 		}
 		catch(Exception se){
 			System.out.println("ERROR: Error while removing members from database.");
