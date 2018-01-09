@@ -13,11 +13,11 @@ public class LibraryInterface extends JFrame{
 	private Librarian librarian;
 	private DBManager db_manager;
 	private SecurityManager security_manager;
-	private final int WIDTH = 650;
+	private final int WIDTH = 700;
 	private final int HEIGHT = 500;
-	private ManageMembersPanel mm_panel;
 	private JTabbedPane jtp;
 	private GroupLayout layout;
+	private ManageMembersPanel mm_panel;
 	private IssueBookPanel ib_panel;
 	private ManageBooksPanel mb_panel;
 	private TransactionsPanel tr_panel;

@@ -11,6 +11,7 @@ public class ManageMembersPanel extends JPanel implements ListSelectionListener,
 	private JButton add_member_btn;
 	private JButton remove_member_by_id_btn;
 	private JButton remove_btn;
+	private JButton update_btn;
 	private JButton import_members_btn;
 	private JFileChooser chooser;
 	private JTable table;
@@ -27,6 +28,7 @@ public class ManageMembersPanel extends JPanel implements ListSelectionListener,
 		add_member_btn = new JButton("Add Member");
 		remove_member_by_id_btn = new JButton("Remove Member By Id");
 		remove_btn = new JButton("Remove");
+		update_btn = new JButton("Update Member");
 		import_members_btn = new JButton("Import Members");
 
 		chooser = new JFileChooser();
@@ -42,8 +44,10 @@ public class ManageMembersPanel extends JPanel implements ListSelectionListener,
 		remove_member_by_id_btn.addActionListener(this);
 		import_members_btn.addActionListener(this);
 		remove_btn.addActionListener(this);
+		update_btn.addActionListener(this);
 		table.getSelectionModel().addListSelectionListener(this);
 		remove_btn.setEnabled(false);	
+		update_btn.setEnabled(false);	
 
 		layout = new GroupLayout(this);
 		setLayout(layout);
@@ -55,6 +59,7 @@ public class ManageMembersPanel extends JPanel implements ListSelectionListener,
 			.addGroup(layout.createSequentialGroup()
 				.addComponent(add_member_btn)
 				.addComponent(import_members_btn)
+				.addComponent(update_btn)
 				.addComponent(remove_member_by_id_btn)
 				.addComponent(remove_btn))
 		);
@@ -64,6 +69,7 @@ public class ManageMembersPanel extends JPanel implements ListSelectionListener,
 			.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
 				.addComponent(add_member_btn)
 				.addComponent(import_members_btn)
+				.addComponent(update_btn)
 				.addComponent(remove_member_by_id_btn)
 				.addComponent(remove_btn))
 		);
@@ -77,6 +83,13 @@ public class ManageMembersPanel extends JPanel implements ListSelectionListener,
 		}
 		else{
 			remove_btn.setEnabled(false);	
+		}
+
+		if(table.getSelectedRowCount()==1){
+			update_btn.setEnabled(true);
+		}
+		else{
+			update_btn.setEnabled(false);	
 		}
 	}
 	public void actionPerformed(ActionEvent ae){
@@ -108,6 +121,36 @@ public class ManageMembersPanel extends JPanel implements ListSelectionListener,
 			}
 
 			}
+		}
+		else if(ae.getSource()==update_btn){
+			int id = (int)table.getValueAt(table.getSelectedRow(), 0);
+			Member myMember = librarian.get_member(id);
+
+			JLabel name_lb = new JLabel("Name:");
+			JLabel email_lb = new JLabel("Email:");
+			JLabel sem_lb = new JLabel("Semester:");
+			JTextField name = new JTextField(myMember.get_name());
+			JTextField email = new JTextField(myMember.get_email());
+			JTextField sem = new JTextField(Integer.toString(myMember.get_semester()));
+			Object[] ob = {name_lb,name,email_lb,email,sem_lb,sem};
+			int result = JOptionPane.showConfirmDialog(this, ob,"Update Member Form",JOptionPane.OK_CANCEL_OPTION);
+
+			if(result == JOptionPane.OK_OPTION){
+				if(name.getText().equals("") || email.getText().equals("") || sem.getText().equals("")){
+				JOptionPane.showMessageDialog(this, "Form is not complete.", "Bad Input", JOptionPane.ERROR_MESSAGE);
+				}
+				else{
+					try{
+						myMember.update_data(myMember.get_id(),name.getText(),email.getText(),Integer.parseInt(sem.getText()));
+						librarian.update_member(myMember);
+						update_table();
+					}
+					catch(NumberFormatException e){
+						JOptionPane.showMessageDialog(this, "No. of copies is not a number.", "Bad Input", JOptionPane.ERROR_MESSAGE);
+					}
+				}
+			}
+
 		}
 		else if(ae.getSource()==remove_member_by_id_btn){
 			String inputValue = JOptionPane.showInputDialog("Enter member id");

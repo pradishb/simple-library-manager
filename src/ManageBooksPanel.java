@@ -10,6 +10,7 @@ public class ManageBooksPanel extends JPanel implements ListSelectionListener,Ac
 	private JButton add_book_btn;
 	private JButton remove_book_by_id_btn;
 	private JButton remove_book_btn;
+	private JButton update_book_btn;
 	private JButton import_books_btn;
 	private JTable table;
 	private JScrollPane table_sp;
@@ -25,6 +26,7 @@ public class ManageBooksPanel extends JPanel implements ListSelectionListener,Ac
 		add_book_btn = new JButton("Add Book");
 		remove_book_by_id_btn = new JButton("Remove Book By Id");
 		remove_book_btn = new JButton("Remove Book");
+		update_book_btn = new JButton("Update Book");
 		import_books_btn = new JButton("Import Books");
 
 		table = new JTable();
@@ -40,8 +42,10 @@ public class ManageBooksPanel extends JPanel implements ListSelectionListener,Ac
 		remove_book_by_id_btn.addActionListener(this);
 		import_books_btn.addActionListener(this);
 		remove_book_btn.addActionListener(this);
+		update_book_btn.addActionListener(this);
 		table.getSelectionModel().addListSelectionListener(this);
 		remove_book_btn.setEnabled(false);	
+		update_book_btn.setEnabled(false);	
 
 		layout = new GroupLayout(this);
 		setLayout(layout);
@@ -53,6 +57,7 @@ public class ManageBooksPanel extends JPanel implements ListSelectionListener,Ac
 			.addGroup(layout.createSequentialGroup()
 				.addComponent(add_book_btn)
 				.addComponent(import_books_btn)
+				.addComponent(update_book_btn)
 				.addComponent(remove_book_by_id_btn)
 				.addComponent(remove_book_btn))
 		);
@@ -62,6 +67,7 @@ public class ManageBooksPanel extends JPanel implements ListSelectionListener,Ac
 			.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
 				.addComponent(add_book_btn)
 				.addComponent(import_books_btn)
+				.addComponent(update_book_btn)
 				.addComponent(remove_book_by_id_btn)
 				.addComponent(remove_book_btn))
 		);
@@ -78,7 +84,15 @@ public class ManageBooksPanel extends JPanel implements ListSelectionListener,Ac
 		else{
 			remove_book_btn.setEnabled(false);	
 		}
+
+		if(table.getSelectedRowCount()==1){
+			update_book_btn.setEnabled(true);
+		}
+		else{
+			update_book_btn.setEnabled(false);	
+		}
 	}
+	
 	public void actionPerformed(ActionEvent ae){
 		if(ae.getSource()==add_book_btn){
 	 		JLabel title_label = new JLabel("Title:");
@@ -101,6 +115,38 @@ public class ManageBooksPanel extends JPanel implements ListSelectionListener,Ac
 					try{
 						Book myBook = new Book(0,title_tf.getText(),author_tf.getText(),publication_tf.getText(),Integer.parseInt(copies_tf.getText()));
 						librarian.add_book(myBook);
+						update_table();
+					}
+					catch(NumberFormatException e){
+						JOptionPane.showMessageDialog(this, "No. of copies is not a number.", "Bad Input", JOptionPane.ERROR_MESSAGE);
+					}
+				}
+			}
+		}
+		else if(ae.getSource()==update_book_btn){
+			int id = (int)table.getValueAt(table.getSelectedRow(), 0);
+			Book myBook = librarian.get_book(id);
+
+			JLabel title_label = new JLabel("Title:");
+			JLabel author_label = new JLabel("Author:");
+			JLabel publication_label = new JLabel("Publication:");
+			JLabel copies_label = new JLabel("No. of copies:");
+			JTextField title_tf = new JTextField(myBook.get_title());
+			JTextField author_tf = new JTextField(myBook.get_author());	
+			JTextField publication_tf = new JTextField(myBook.get_publication());
+			JTextField copies_tf = new JTextField(Integer.toString(myBook.get_copies()));
+
+			Object[] ob = {title_label,title_tf,author_label,author_tf,publication_label,publication_tf,copies_label,copies_tf};
+			int result = JOptionPane.showConfirmDialog(this, ob,"Update Book Form",JOptionPane.OK_CANCEL_OPTION);
+
+			if(result == JOptionPane.OK_OPTION){
+				if(title_tf.getText().equals("") || author_tf.getText().equals("") || publication_tf.getText().equals("")){
+					JOptionPane.showMessageDialog(this, "Form is not complete.", "Bad Input", JOptionPane.ERROR_MESSAGE);
+				}
+				else{
+					try{
+						myBook.update_data(myBook.get_id(),title_tf.getText(),author_tf.getText(),publication_tf.getText(),Integer.parseInt(copies_tf.getText()));
+						librarian.update_book(myBook);
 						update_table();
 					}
 					catch(NumberFormatException e){

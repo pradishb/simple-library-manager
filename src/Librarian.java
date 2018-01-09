@@ -44,8 +44,8 @@ public class Librarian{
 	public void remove_book(int book_id){
 		try{
 			dm.remove_book_stmt.setInt(1,book_id);
-			int r_affected = dm.remove_book_stmt.executeUpdate();
 			dm.stmt.execute("DELETE FROM transactions WHERE book_id="+book_id);
+			int r_affected = dm.remove_book_stmt.executeUpdate();
 		}
 		catch(Exception se){
 			System.out.println("ERROR: Error while removing books from database.");
@@ -59,6 +59,8 @@ public class Librarian{
 			dm.update_book_stmt.setString(1,myBook.get_title());
 			dm.update_book_stmt.setString(2,myBook.get_author());
 			dm.update_book_stmt.setString(3,myBook.get_publication());
+			dm.update_book_stmt.setInt(4,myBook.get_copies());
+			dm.update_book_stmt.setInt(5,myBook.get_id());
 			int r_affected = dm.update_book_stmt.executeUpdate();
 			System.out.println(r_affected + " book(s) updated in database.");
 		}
@@ -103,6 +105,7 @@ public class Librarian{
 			dm.update_member_stmt.setString(1,myMember.get_name());
 			dm.update_member_stmt.setInt(2,myMember.get_semester());
 			dm.update_member_stmt.setString(3,myMember.get_email());
+			dm.update_member_stmt.setInt(4,myMember.get_id());
 			int r_affected = dm.update_member_stmt.executeUpdate();
 			System.out.println(r_affected + " member(s) updated in database.");
 		}

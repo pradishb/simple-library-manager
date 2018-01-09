@@ -19,12 +19,10 @@ public class SettingsPanel extends JPanel implements ActionListener{
 	private DBManager db_manager;
 	private SecurityManager security_manager;
 
-
 	SettingsPanel(DBManager db_manager,SecurityManager security_manager){
 		this.db_manager = db_manager;
 		this.security_manager = security_manager;
 		setName("settings");
-
 
 		//initialize components
 		thresholdlb = new JLabel("Maximum Threshold (Per Member)");

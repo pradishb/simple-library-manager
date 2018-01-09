@@ -1,4 +1,5 @@
 package slm;
+
 import java.sql.*;
 
 public class DBManager{
@@ -58,10 +59,10 @@ public class DBManager{
 			//create prepared statements
 			add_member_stmt = conn.prepareStatement("INSERT INTO members(id, name, semester, email) VALUES (0,?,?,?)");
 			remove_member_stmt = conn.prepareStatement("DELETE FROM members WHERE id=?");
-			update_member_stmt = conn.prepareStatement("UPDATE members SET id=0,name=?,semester=?,email=?,books_borrowed=?");
+			update_member_stmt = conn.prepareStatement("UPDATE members SET name=?,semester=?,email=? WHERE id=?");
 			add_book_stmt = conn.prepareStatement("INSERT INTO books(id, title, author, publication, copies) VALUES (0,?,?,?,?)");
 			remove_book_stmt = conn.prepareStatement("DELETE FROM books WHERE id=?");
-			update_book_stmt = conn.prepareStatement("UPDATE books SET id=0,title=?,author=?,publication=?");
+			update_book_stmt = conn.prepareStatement("UPDATE books SET title=?,author=?,publication=?,copies=? WHERE id=?");
 			issue_book_stmt = conn.prepareStatement("INSERT INTO transactions(id, borrower_id, book_id, borrowed_date) VALUES (0,?,?,CURRENT_TIMESTAMP)");
 			return_book_stmt = conn.prepareStatement("DELETE FROM transactions WHERE id=?");
 			get_books_stmt = conn.prepareStatement("SELECT * FROM books ORDER BY id");

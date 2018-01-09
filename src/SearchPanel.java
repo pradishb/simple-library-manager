@@ -81,7 +81,7 @@ public class SearchPanel extends JPanel implements ActionListener{
 		
 		public void actionPerformed(ActionEvent e){
 			if(e.getActionCommand().equals("books")){
-						update_books();
+				update_books();
 			}
 			else if(e.getActionCommand().equals("members")){
 				update_members();
