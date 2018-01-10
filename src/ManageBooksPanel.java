@@ -130,7 +130,7 @@ public class ManageBooksPanel extends JPanel implements ListSelectionListener,Ac
 			}
 		}
 		else if(ae.getSource()==add_using_barcode_btn){
-	 		BarCodeReaderDialog dialog = new BarCodeReaderDialog((JFrame) SwingUtilities.getWindowAncestor(this));
+	 		BarcodeReaderDialog dialog = new BarcodeReaderDialog((JFrame) SwingUtilities.getWindowAncestor(this));
 		}
 		else if(ae.getSource()==update_book_btn){
 			int id = (int)table.getValueAt(table.getSelectedRow(), 0);
