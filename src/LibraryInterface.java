@@ -23,6 +23,7 @@ public class LibraryInterface extends JFrame{
 	private TransactionsPanel tr_panel;
 	private SearchPanel s_panel;
 	private SettingsPanel set_panel;
+	private MyMenuBar menu;
 
 	public LibraryInterface(Librarian librarian, DBManager db_manager,SecurityManager security_manager){
 		super("Simple Library Manager");
@@ -98,6 +99,7 @@ public class LibraryInterface extends JFrame{
 		tr_panel = new TransactionsPanel(librarian);
 		s_panel = new SearchPanel(librarian);
 		set_panel = new SettingsPanel(db_manager,security_manager);
+		menu = new MyMenuBar();
 		jtp = new JTabbedPane();
 	}
 
@@ -136,6 +138,7 @@ public class LibraryInterface extends JFrame{
 		setVisible(true);
 		setSize(WIDTH,HEIGHT);
 		setLocationRelativeTo(null);
+		setJMenuBar(menu);
 		// setResizable(false);
 		add(jtp);
 		addWindowListener(new WindowAdapter(){
