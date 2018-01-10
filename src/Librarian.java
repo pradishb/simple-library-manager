@@ -351,7 +351,7 @@ public class Librarian{
 		return result;
 	}
 
-	public void import_books(File myFile) throws InvalidCsvFormatException{
+	public int import_books(File myFile) throws InvalidCsvFormatException{
 		int count = 0;
 		try{
 			LabeledCSVParser lcsvp = new LabeledCSVParser(new CSVParser(new FileReader(myFile)));
@@ -367,7 +367,7 @@ public class Librarian{
 						System.out.println("Details:");
 						System.out.println(e.toString());
 					}
-				}	
+				}
 			}
 			else{
 				throw new InvalidCsvFormatException();				//when the 1st line of CSV is invalid
@@ -378,6 +378,7 @@ public class Librarian{
 			e.printStackTrace();
 		}
 		System.out.println(count + " book(s) has been added to database.");
+		return count;
 	}
 
 	public void import_members(File myFile) throws InvalidCsvFormatException{

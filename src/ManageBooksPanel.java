@@ -8,6 +8,7 @@ import javax.swing.table.*;
 
 public class ManageBooksPanel extends JPanel implements ListSelectionListener,ActionListener{
 	private JButton add_book_btn;
+	private JButton add_using_barcode_btn;
 	private JButton remove_book_by_id_btn;
 	private JButton remove_book_btn;
 	private JButton update_book_btn;
@@ -24,6 +25,7 @@ public class ManageBooksPanel extends JPanel implements ListSelectionListener,Ac
 		this.librarian = librarian;
 
 		add_book_btn = new JButton("Add Book");
+		add_using_barcode_btn = new JButton("Add Using Barcode");
 		remove_book_by_id_btn = new JButton("Remove Book By Id");
 		remove_book_btn = new JButton("Remove Book");
 		update_book_btn = new JButton("Update Book");
@@ -39,6 +41,7 @@ public class ManageBooksPanel extends JPanel implements ListSelectionListener,Ac
 		add(remove_book_by_id_btn);
 
 		add_book_btn.addActionListener(this);
+		add_using_barcode_btn.addActionListener(this);
 		remove_book_by_id_btn.addActionListener(this);
 		import_books_btn.addActionListener(this);
 		remove_book_btn.addActionListener(this);
@@ -56,6 +59,7 @@ public class ManageBooksPanel extends JPanel implements ListSelectionListener,Ac
 			.addComponent(table_sp)
 			.addGroup(layout.createSequentialGroup()
 				.addComponent(add_book_btn)
+				.addComponent(add_using_barcode_btn)
 				.addComponent(import_books_btn)
 				.addComponent(update_book_btn)
 				.addComponent(remove_book_by_id_btn)
@@ -66,6 +70,7 @@ public class ManageBooksPanel extends JPanel implements ListSelectionListener,Ac
 			.addComponent(table_sp)
 			.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
 				.addComponent(add_book_btn)
+				.addComponent(add_using_barcode_btn)
 				.addComponent(import_books_btn)
 				.addComponent(update_book_btn)
 				.addComponent(remove_book_by_id_btn)
@@ -116,12 +121,16 @@ public class ManageBooksPanel extends JPanel implements ListSelectionListener,Ac
 						Book myBook = new Book(0,title_tf.getText(),author_tf.getText(),publication_tf.getText(),Integer.parseInt(copies_tf.getText()));
 						librarian.add_book(myBook);
 						update_table();
+						JOptionPane.showMessageDialog(this, "Book has been added.");
 					}
 					catch(NumberFormatException e){
 						JOptionPane.showMessageDialog(this, "No. of copies is not a number.", "Bad Input", JOptionPane.ERROR_MESSAGE);
 					}
 				}
 			}
+		}
+		else if(ae.getSource()==add_using_barcode_btn){
+	 		BarCodeReaderDialog dialog = new BarCodeReaderDialog((JFrame) SwingUtilities.getWindowAncestor(this));
 		}
 		else if(ae.getSource()==update_book_btn){
 			int id = (int)table.getValueAt(table.getSelectedRow(), 0);
@@ -185,12 +194,15 @@ public class ManageBooksPanel extends JPanel implements ListSelectionListener,Ac
 			int returnVal = chooser.showOpenDialog(this);
 			if(returnVal == JFileChooser.APPROVE_OPTION){
 				try{
-					librarian.import_books(chooser.getSelectedFile());
+					int imported = librarian.import_books(chooser.getSelectedFile());
+					if(imported!=0){
+						update_table();
+						JOptionPane.showMessageDialog(this, imported+" book(s) has been added.");
+					}
 				}catch(InvalidCsvFormatException e){
 					System.out.println(e.getMessage());
 					JOptionPane.showMessageDialog(this, "Some errors occured while import the CSV file.", "Bad Input File", JOptionPane.ERROR_MESSAGE);
 				}
-				update_table();
 			}
 		}
 	}
