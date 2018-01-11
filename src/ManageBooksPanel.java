@@ -108,30 +108,38 @@ public class ManageBooksPanel extends JPanel implements ListSelectionListener,Ac
 			JLabel author_label = new JLabel("Author:");
 			JLabel publication_label = new JLabel("Publication:");
 			JLabel copies_label = new JLabel("No. of copies:");
-			JTextField title_tf = new JTextField();
-			JTextField author_tf = new JTextField();	
-			JTextField publication_tf = new JTextField();
-			JTextField copies_tf = new JTextField();
+			JTextField title_tf = new JTextField(20);
+			JTextField author_tf = new JTextField(20);	
+			JTextField publication_tf = new JTextField(20);
+			JTextField copies_tf = new JTextField(20);
+			int result;
+			do{
+				title_tf.setText("");
+				author_tf.setText("");
+				publication_tf.setText("");
+				copies_tf.setText("");
+				Object[] ob = {title_label,title_tf,author_label,author_tf,publication_label,publication_tf,copies_label,copies_tf};
+				Object[] options = {"Add","Add & Continue","Cancel"};
+				result = JOptionPane.showOptionDialog(this,ob,"Add Book Form",JOptionPane.DEFAULT_OPTION,JOptionPane.PLAIN_MESSAGE,null,options,null);
 
-			Object[] ob = {title_label,title_tf,author_label,author_tf,publication_label,publication_tf,copies_label,copies_tf};
-			int result = JOptionPane.showConfirmDialog(this, ob,"Add Book Form",JOptionPane.OK_CANCEL_OPTION);
-
-			if(result == JOptionPane.OK_OPTION){
-				if(title_tf.getText().equals("") || author_tf.getText().equals("") || publication_tf.getText().equals("")){
-					JOptionPane.showMessageDialog(this, "Form is not complete.", "Bad Input", JOptionPane.ERROR_MESSAGE);
-				}
-				else{
-					try{
-						Book myBook = new Book(0,title_tf.getText(),author_tf.getText(),publication_tf.getText(),Integer.parseInt(copies_tf.getText()));
-						librarian.add_book(myBook);
-						update_table();
-						JOptionPane.showMessageDialog(this, "Book has been added.");
+				if(result == 0 || result == 1){
+					if(title_tf.getText().equals("") || author_tf.getText().equals("") || publication_tf.getText().equals("")){
+						JOptionPane.showMessageDialog(this, "Form is not complete.", "Bad Input", JOptionPane.ERROR_MESSAGE);
 					}
-					catch(NumberFormatException e){
-						JOptionPane.showMessageDialog(this, "No. of copies is not a number.", "Bad Input", JOptionPane.ERROR_MESSAGE);
+					else{
+						try{
+							Book myBook = new Book(0,title_tf.getText(),author_tf.getText(),publication_tf.getText(),Integer.parseInt(copies_tf.getText()));
+							librarian.add_book(myBook);
+							update_table();
+							JOptionPane.showMessageDialog(this, "Book has been added.");
+						}
+						catch(NumberFormatException e){
+							JOptionPane.showMessageDialog(this, "No. of copies is not a number.", "Bad Input", JOptionPane.ERROR_MESSAGE);
+						}
 					}
 				}
 			}
+			while(result==1);
 		}
 		else if(ae.getSource()==add_using_barcode_btn){
 	 		BarcodeReaderDialog dialog = new BarcodeReaderDialog((JFrame) SwingUtilities.getWindowAncestor(this),librarian,this);
