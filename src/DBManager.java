@@ -49,7 +49,7 @@ public class DBManager{
 			//create database and tables if not exists
 			stmt.execute("CREATE DATABASE IF NOT EXISTS simple_library_manager");
 			stmt.execute("USE simple_library_manager");
-			stmt.execute("CREATE TABLE IF NOT EXISTS books(id smallint(6) AUTO_INCREMENT, title varchar(100), author varchar(40), publication varchar(40), copies smallint(6), PRIMARY KEY (id))ENGINE=InnoDB");
+			stmt.execute("CREATE TABLE IF NOT EXISTS books(id smallint(6) AUTO_INCREMENT, title varchar(100), author varchar(150), publication varchar(40), copies smallint(6), PRIMARY KEY (id))ENGINE=InnoDB");
 			stmt.execute("CREATE TABLE IF NOT EXISTS members(id smallint(6) AUTO_INCREMENT, name varchar(40), semester tinyint(1), email varchar(40), PRIMARY KEY (id))ENGINE=InnoDB");
 			stmt.execute("CREATE TABLE IF NOT EXISTS transactions(id smallint(6) AUTO_INCREMENT, borrower_id smallint(6), book_id smallint(6), borrowed_date timestamp, PRIMARY KEY (id), FOREIGN KEY(borrower_id) REFERENCES members(id), FOREIGN KEY(book_id) REFERENCES books(id))ENGINE=InnoDB");
 			stmt.execute("CREATE TABLE IF NOT EXISTS settings(id smallint(6), password varchar(40), threshold smallint(6), overdue_duration smallint(6), fine_per_day tinyint(4),PRIMARY KEY (id))");

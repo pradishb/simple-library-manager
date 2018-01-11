@@ -20,7 +20,7 @@ public class BarcodeReader{
     public BarcodeReader() {
         KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(new KeyEventDispatcher() {
             @Override
-            public boolean dispatchKeyEvent(KeyEvent e) {
+            public boolean dispatchKeyEvent(KeyEvent e){
                 if (e.getID() != KeyEvent.KEY_RELEASED) {
                     return false;
                 }

@@ -6,7 +6,7 @@ import java.awt.event.*;
 import javax.swing.event.*;
 import javax.swing.table.*;
 
-public class ManageBooksPanel extends JPanel implements ListSelectionListener,ActionListener{
+public class ManageBooksPanel extends JPanel implements ListSelectionListener,ActionListener,BarcodeReaderDialog.Updater{
 	private JButton add_book_btn;
 	private JButton add_using_barcode_btn;
 	private JButton remove_book_by_id_btn;
@@ -82,6 +82,10 @@ public class ManageBooksPanel extends JPanel implements ListSelectionListener,Ac
 		librarian.update_table(table, new String[]{"ID","TITLE","AUTHER","PUBLICATION","COPIES"}, librarian.books_to_array(librarian.get_books()));
 	}
 
+	public void on_update_table(){
+		update_table();
+	}
+
 	public void valueChanged(ListSelectionEvent le){
 		if(table.getSelectedRow()!=-1){
 			remove_book_btn.setEnabled(true);
@@ -130,7 +134,7 @@ public class ManageBooksPanel extends JPanel implements ListSelectionListener,Ac
 			}
 		}
 		else if(ae.getSource()==add_using_barcode_btn){
-	 		BarcodeReaderDialog dialog = new BarcodeReaderDialog((JFrame) SwingUtilities.getWindowAncestor(this));
+	 		BarcodeReaderDialog dialog = new BarcodeReaderDialog((JFrame) SwingUtilities.getWindowAncestor(this),librarian,this);
 		}
 		else if(ae.getSource()==update_book_btn){
 			int id = (int)table.getValueAt(table.getSelectedRow(), 0);
