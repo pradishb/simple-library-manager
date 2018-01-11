@@ -6,12 +6,12 @@ class SLM{
 	private static Librarian librarian;
 	private static LibraryInterface library_interface;
 	private static SecurityManager security_manager;
+	private static CSVExporter csv;
 	public static void main(String[] args) {
-		// BarCodeReader.ISBN_to_book("9780073523323");
-		// // System.out.println(BarCodeReader.read_from_url("d"));
 		db_manager = new DBManager();
 		security_manager = new SecurityManager();
 		librarian = new Librarian(db_manager, library_interface);
+		csv = new CSVExporter(librarian);
 
 		EventQueue.invokeLater(new Runnable(){
 		public void run() {
