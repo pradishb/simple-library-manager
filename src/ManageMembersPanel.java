@@ -100,27 +100,36 @@ public class ManageMembersPanel extends JPanel implements ListSelectionListener,
 			JTextField name = new JTextField();
 			JTextField email = new JTextField();
 			JTextField sem = new JTextField();
-			Object[] ob = {name_lb,name,email_lb,email,sem_lb,sem};
-			int result = JOptionPane.showConfirmDialog(this, ob,"Add Member Form",JOptionPane.OK_CANCEL_OPTION);
 
-			if(result == JOptionPane.OK_OPTION){
-				if(name.getText().equals("") || email.getText().equals("") || sem.getText().equals("")){
-				System.out.println("ERROR: Some fields are empty in add member form.");
-				JOptionPane.showMessageDialog(this, "Form is not complete.", "Bad Input", JOptionPane.ERROR_MESSAGE);
-			}
-			else{
-				try{
-					Member myMember = new Member(0,name.getText(),email.getText(),Integer.parseInt(sem.getText()));
-					librarian.add_member(myMember);
-					update_table();
-				}
-				catch(NumberFormatException e){
-					System.out.println("ERROR: Semester provided is not valid.");
-					JOptionPane.showMessageDialog(this, "Please enter a valid semester.", "Bad Input", JOptionPane.ERROR_MESSAGE);
-				}
-			}
+			int result;
+			do{
+				name.setText("");
+				email.setText("");
+				sem.setText("");
+				Object[] ob = {name_lb,name,email_lb,email,sem_lb,sem};
+				Object[] options = {"Add","Add & Continue","Cancel"};
+				result = JOptionPane.showOptionDialog(this,ob,"Add Member Form",JOptionPane.DEFAULT_OPTION,JOptionPane.PLAIN_MESSAGE,null,options,null);
 
+				if(result == 0 || result == 1){
+					if(name.getText().equals("") || email.getText().equals("") || sem.getText().equals("")){
+						System.out.println("ERROR: Some fields are empty in add member form.");
+						JOptionPane.showMessageDialog(this, "Form is not complete.", "Bad Input", JOptionPane.ERROR_MESSAGE);
+					}
+					else{
+						try{
+							Member myMember = new Member(0,name.getText(),email.getText(),Integer.parseInt(sem.getText()));
+							librarian.add_member(myMember);
+							update_table();
+							JOptionPane.showMessageDialog(this, "Member has been added.");
+						}
+						catch(NumberFormatException e){
+							System.out.println("ERROR: Semester provided is not valid.");
+							JOptionPane.showMessageDialog(this, "Please enter a valid semester.", "Bad Input", JOptionPane.ERROR_MESSAGE);
+						}
+					}
+				}
 			}
+			while(result==1);
 		}
 		else if(ae.getSource()==update_btn){
 			int id = (int)table.getValueAt(table.getSelectedRow(), 0);
