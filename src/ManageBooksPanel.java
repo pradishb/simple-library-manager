@@ -205,7 +205,7 @@ public class ManageBooksPanel extends JPanel implements ListSelectionListener,Ac
 					}
 				}catch(InvalidCsvFormatException e){
 					System.out.println(e.getMessage());
-					JOptionPane.showMessageDialog(this, "Some errors occured while import the CSV file.", "Bad Input File", JOptionPane.ERROR_MESSAGE);
+					JOptionPane.showMessageDialog(this, "The following columns were not found in the CSV file :\n"+String.join(", ", e.get_missing_cols()), "Bad Input File", JOptionPane.ERROR_MESSAGE);
 				}
 			}
 		}

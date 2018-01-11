@@ -10,8 +10,13 @@ import com.Ostermiller.util.LabeledCSVParser;
 import com.Ostermiller.util.CSVParser;
 
 class InvalidCsvFormatException extends Exception{
-	public InvalidCsvFormatException(){
+	private Vector<String> cols;
+	public InvalidCsvFormatException(Vector<String> cols){
 		super("ERROR: The CSV file is not valid.");
+		this.cols = cols;
+	}
+	public Vector<String> get_missing_cols(){
+		return cols;
 	}
 }
 
@@ -355,8 +360,8 @@ public class Librarian{
 		int count = 0;
 		try{
 			LabeledCSVParser lcsvp = new LabeledCSVParser(new CSVParser(new FileReader(myFile)));
-			String[] cells = lcsvp.getLabels();
-			if(cells[0].equals("title") && cells[1].equals("author") && cells[2].equals("publication") && cells[3].equals("copies") && cells.length==4){
+
+			if(lcsvp.getLabelIdx("title")!=-1 && lcsvp.getLabelIdx("author")!=-1 && lcsvp.getLabelIdx("publication")!=-1 && lcsvp.getLabelIdx("copies")!=-1){
 				while(lcsvp.getLine() != null){
 					try{
 						Book myBook = new Book(0,lcsvp.getValueByLabel("title"),lcsvp.getValueByLabel("author"),lcsvp.getValueByLabel("publication"),Integer.parseInt(lcsvp.getValueByLabel("copies")));
@@ -370,7 +375,16 @@ public class Librarian{
 				}
 			}
 			else{
-				throw new InvalidCsvFormatException();				//when the 1st line of CSV is invalid
+				Vector<String> cols = new Vector<String>();
+				if(lcsvp.getLabelIdx("title")==-1)
+					cols.addElement("title");
+				if(lcsvp.getLabelIdx("author")==-1)
+					cols.addElement("author");
+				if(lcsvp.getLabelIdx("publication")==-1)
+					cols.addElement("publication");
+				if(lcsvp.getLabelIdx("copies")==-1)
+					cols.addElement("copies");
+				throw new InvalidCsvFormatException(cols);				//when the 1st line of CSV is invalid
 			}
 		}catch(IOException e){
 			System.out.println("ERROR: Error while importing books.");
@@ -385,20 +399,28 @@ public class Librarian{
 		int count = 0;
 		try{
 			LabeledCSVParser lcsvp = new LabeledCSVParser(new CSVParser(new FileReader(myFile)));
-			String[] cells = lcsvp.getLabels();
-			if(cells[0].equals("name") && cells[1].equals("email") && cells[2].equals("semester") && cells.length==3){
+			if(lcsvp.getLabelIdx("name")!=-1 && lcsvp.getLabelIdx("email")!=-1 && lcsvp.getLabelIdx("semester")!=-1){
 				while(lcsvp.getLine() != null){
 					try{
 						Member myMember = new Member(0,lcsvp.getValueByLabel("name"),lcsvp.getValueByLabel("email"),Integer.parseInt(lcsvp.getValueByLabel("semester")));
 						count += add_member(myMember);
 					}
 					catch(NumberFormatException e){
-						throw new InvalidCsvFormatException();		
+						System.out.println("ERROR: There was an invalid value of copies in the CSV file.");
+						System.out.println("Details:");
+						System.out.println(e.toString());
 					}
 				}	
 			}
 			else{
-				throw new InvalidCsvFormatException();				//when the 1st line of CSV is invalid
+				Vector<String> cols = new Vector<String>();
+				if(lcsvp.getLabelIdx("name")==-1)
+					cols.addElement("name");
+				if(lcsvp.getLabelIdx("email")==-1)
+					cols.addElement("email");
+				if(lcsvp.getLabelIdx("semester")==-1)
+					cols.addElement("semester");
+				throw new InvalidCsvFormatException(cols);				//when the 1st line of CSV is invalid
 			}
 		}catch(IOException e){
 			System.out.println("ERROR: Error while importing members.");
