@@ -13,6 +13,7 @@ public class ManageMembersPanel extends JPanel implements ListSelectionListener,
 	private JButton remove_btn;
 	private JButton update_btn;
 	private JButton import_members_btn;
+	private JButton end_session_btn;
 	private JFileChooser chooser;
 	private JTable table;
 	private JScrollPane table_sp;
@@ -30,21 +31,18 @@ public class ManageMembersPanel extends JPanel implements ListSelectionListener,
 		remove_btn = new JButton("Remove");
 		update_btn = new JButton("Update Member");
 		import_members_btn = new JButton("Import Members");
+		end_session_btn = new JButton("End Session");
 
 		chooser = new JFileChooser();
 		table = new JTable();
 		table_sp = new JScrollPane(table);
-
-		add(table_sp);
-		add(add_member_btn);
-		add(import_members_btn);
-		add(remove_member_by_id_btn);
 
 		add_member_btn.addActionListener(this);
 		remove_member_by_id_btn.addActionListener(this);
 		import_members_btn.addActionListener(this);
 		remove_btn.addActionListener(this);
 		update_btn.addActionListener(this);
+		end_session_btn.addActionListener(this);
 		table.getSelectionModel().addListSelectionListener(this);
 		remove_btn.setEnabled(false);	
 		update_btn.setEnabled(false);	
@@ -61,7 +59,8 @@ public class ManageMembersPanel extends JPanel implements ListSelectionListener,
 				.addComponent(import_members_btn)
 				.addComponent(update_btn)
 				.addComponent(remove_member_by_id_btn)
-				.addComponent(remove_btn))
+				.addComponent(remove_btn)
+				.addComponent(end_session_btn))
 		);
 		layout.setVerticalGroup(
 			layout.createSequentialGroup()
@@ -71,7 +70,8 @@ public class ManageMembersPanel extends JPanel implements ListSelectionListener,
 				.addComponent(import_members_btn)
 				.addComponent(update_btn)
 				.addComponent(remove_member_by_id_btn)
-				.addComponent(remove_btn))
+				.addComponent(remove_btn)
+				.addComponent(end_session_btn))
 		);
 	}
 	public void update_table(){
@@ -184,6 +184,14 @@ public class ManageMembersPanel extends JPanel implements ListSelectionListener,
 				}
 				update_table();
 				System.out.println(selectedRows.length + " book(s) removed from database.");
+			}
+		}
+		else if(ae.getSource()==end_session_btn){
+			int result = JOptionPane.showConfirmDialog(this,"You are manipulating the semester value of all members. Do you want to continue?","End Session",JOptionPane.YES_NO_OPTION);
+			if(result==JOptionPane.YES_OPTION){
+				DBManipulator.increment_semester();
+				update_table();
+				JOptionPane.showMessageDialog(this, "The semester value of all members are incresed.");
 			}
 		}
 		else{

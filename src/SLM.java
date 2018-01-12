@@ -7,11 +7,13 @@ class SLM{
 	private static LibraryInterface library_interface;
 	private static SecurityManager security_manager;
 	private static CSVExporter csv;
+	private static DBManipulator dbm;
 	public static void main(String[] args) {
 		db_manager = new DBManager();
 		security_manager = new SecurityManager();
 		librarian = new Librarian(db_manager, library_interface);
 		csv = new CSVExporter(librarian);
+		dbm = new DBManipulator(db_manager);
 
 		EventQueue.invokeLater(new Runnable(){
 		public void run() {
