@@ -5,8 +5,10 @@ import javax.swing.event.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
-public class IssueBookPanel extends JPanel implements ActionListener,ListSelectionListener{
+public class IssueBookPanel extends JPanel implements ActionListener,ListSelectionListener,ItemListener,BarcodeListener{
 		private Librarian librarian;
 		private JLabel member_id_label;
 		private JLabel book_id_label;
@@ -33,6 +35,7 @@ public class IssueBookPanel extends JPanel implements ActionListener,ListSelecti
 		private JTextField email;
 		private JTextField sem;
 		private JTextField borrowed;
+		private JCheckBox reader;
 		private DefaultListModel<String> listModel;
 		private JList<String> list;
 		private JScrollPane list_s;
@@ -41,6 +44,7 @@ public class IssueBookPanel extends JPanel implements ActionListener,ListSelecti
 		private JButton btn;
 		private GroupLayout layout;
 		private int no_books_borrowed;
+		private BarcodeReader b_reader;
 
 
 		public IssueBookPanel(Librarian librarian){
@@ -72,6 +76,7 @@ public class IssueBookPanel extends JPanel implements ActionListener,ListSelecti
 			email = new JTextField();
 			sem = new JTextField();
 			borrowed = new JTextField();
+			reader = new JCheckBox("Enable barcode reader", true);
 			id_arr = new Vector<Integer>();
 			mem_sel = new Boolean(true);
 			btn = new JButton("Issue Book");
@@ -79,6 +84,7 @@ public class IssueBookPanel extends JPanel implements ActionListener,ListSelecti
 			listModel = new DefaultListModel<>();  
             list = new JList<>(listModel);  
           	list_s = new JScrollPane(list);
+          	b_reader = new BarcodeReader();
 
 
 			name.setEditable(false);
@@ -93,6 +99,8 @@ public class IssueBookPanel extends JPanel implements ActionListener,ListSelecti
 
 			btn.addActionListener(this);
 			list.addListSelectionListener(this);
+			reader.addItemListener(this);
+			b_reader.addBarcodeListener(this);
 
 			book.addKeyListener(new KeyAdapter(){
 				public void keyReleased(KeyEvent e){
@@ -149,6 +157,7 @@ public class IssueBookPanel extends JPanel implements ActionListener,ListSelecti
 						.addComponent(borrowed, GroupLayout.PREFERRED_SIZE, 185,GroupLayout.PREFERRED_SIZE)))
 				.addComponent(suggestions)
 				.addComponent(list_s)
+				.addComponent(reader)
 			);
 			layout.setVerticalGroup(
 				layout.createSequentialGroup()
@@ -192,6 +201,7 @@ public class IssueBookPanel extends JPanel implements ActionListener,ListSelecti
 				.addGap(20)
 				.addComponent(suggestions)
 				.addComponent(list_s)
+				.addComponent(reader)
 			);
 		}
 		public void actionPerformed(ActionEvent ae){
@@ -233,6 +243,39 @@ public class IssueBookPanel extends JPanel implements ActionListener,ListSelecti
 				}
 			}
 
+		}
+		@Override
+		public void itemStateChanged(ItemEvent e){
+			if(!reader.isSelected()){
+				b_reader.removeBarcodeListener(this);
+			}
+			else{
+				b_reader.addBarcodeListener(this);	
+			}
+		}
+		@Override
+		public void onBarcodeRead(String barcode){
+			try{
+				if(barcode.length()==13){
+					ResultSet rs = DBManager.stmt.executeQuery("SELECT * FROM books WHERE isbn=\""+barcode+"\"");
+					if(rs.next()){
+						isbn.setText(barcode);
+						book.setText(rs.getString("id"));
+						title.setText(rs.getString("title"));
+						author.setText(rs.getString("author"));
+						pub.setText(rs.getString("publication"));
+						rs = DBManager.stmt.executeQuery("SELECT remaining FROM copies WHERE id="+book.getText());
+						if(rs.next())
+							left.setText(rs.getString("remaining"));
+					}
+					else{
+						JOptionPane.showMessageDialog(this, "Book not found in the database.", "Bad Input", JOptionPane.ERROR_MESSAGE);
+					}
+				}
+			}
+			catch(SQLException e){
+				System.out.println(e.toString());	
+			}
 		}
 		public void update_book_details(){
 			try{

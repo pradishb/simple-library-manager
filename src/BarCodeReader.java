@@ -5,13 +5,14 @@ import java.awt.event.*;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+interface BarcodeListener{
+    void onBarcodeRead(String barcode);
+}
+
+
 public class BarcodeReader{
     private static final long THRESHOLD = 100;
     private static final int MIN_BARCODE_LENGTH = 8;
-
-    public interface BarcodeListener{
-        void onBarcodeRead(String barcode);
-    }
 
     private final StringBuffer barcode = new StringBuffer();
     private final List<BarcodeListener> listeners = new CopyOnWriteArrayList<BarcodeListener>();

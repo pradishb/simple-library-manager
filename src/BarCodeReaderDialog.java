@@ -4,7 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
-public class BarcodeReaderDialog extends JDialog implements BarcodeReader.BarcodeListener{
+public class BarcodeReaderDialog extends JDialog implements BarcodeListener{
 	JLabel msg;
 	String isbn;
 	private Librarian librarian;
