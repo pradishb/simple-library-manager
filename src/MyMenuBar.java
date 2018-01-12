@@ -10,8 +10,10 @@ public class MyMenuBar extends JMenuBar implements ItemListener{
 
 	JCheckBox books;
 	JCheckBox members;
+	JOptionPane pane;
 
 	JButton btn;
+	JDialog export_dialog;
 	public MyMenuBar(){
 		file = new JMenu("File");
 		export = new JMenuItem("Export CSV");
@@ -21,6 +23,11 @@ public class MyMenuBar extends JMenuBar implements ItemListener{
 
 		books = new JCheckBox("Books", true);
 		members = new JCheckBox("Members", true);
+
+		Object[] ob = {books,members};
+		Object[] options = {btn,"Cancel"};
+
+		pane =  new JOptionPane(ob,JOptionPane.DEFAULT_OPTION,JOptionPane.PLAIN_MESSAGE,null,options,null);
 		chooser = new JFileChooser();
 		chooser.setDialogTitle("Select Export Folder");
     	chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
@@ -33,21 +40,23 @@ public class MyMenuBar extends JMenuBar implements ItemListener{
 		add(file);
 		add(about);
 
+		btn.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent a){
+				export_dialog.dispose();
+				int returnVal = chooser.showOpenDialog((JFrame) SwingUtilities.getWindowAncestor(MyMenuBar.this));
+				if(returnVal == JFileChooser.APPROVE_OPTION){
+					if(books.isSelected())
+						CSVExporter.export_books(chooser.getSelectedFile().toString());
+					if(members.isSelected())
+						CSVExporter.export_members(chooser.getSelectedFile().toString());
+				}
+			}
+		});
+
 		export.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent a){
-				Object[] ob = {books,members};
-				Object[] options = {btn,"Cancel"};
-				int result = JOptionPane.showOptionDialog((JFrame) SwingUtilities.getWindowAncestor(MyMenuBar.this),ob,"Export CSV",JOptionPane.DEFAULT_OPTION,JOptionPane.PLAIN_MESSAGE,null,options,null);
-
-				if(result==0){
-					int returnVal = chooser.showOpenDialog((JFrame) SwingUtilities.getWindowAncestor(MyMenuBar.this));
-					if(returnVal == JFileChooser.APPROVE_OPTION){
-						if(books.isSelected())
-							CSVExporter.export_books(chooser.getSelectedFile().toString());
-						if(members.isSelected())
-							CSVExporter.export_members(chooser.getSelectedFile().toString());
-					}
-				}
+				export_dialog = pane.createDialog("Export CSV");
+				export_dialog.setVisible(true);
 			}
 		});
 
