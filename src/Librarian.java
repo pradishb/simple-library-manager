@@ -32,10 +32,11 @@ public class Librarian{
 	public int add_book(Book myBook){
 		int r_affected = 0;
 		try{
-			dm.add_book_stmt.setString(1,myBook.get_title());
-			dm.add_book_stmt.setString(2,myBook.get_author());
-			dm.add_book_stmt.setString(3,myBook.get_publication());
-			dm.add_book_stmt.setInt(4,myBook.get_copies());
+			dm.add_book_stmt.setString(1,myBook.get_isbn());
+			dm.add_book_stmt.setString(2,myBook.get_title());
+			dm.add_book_stmt.setString(3,myBook.get_author());
+			dm.add_book_stmt.setString(4,myBook.get_publication());
+			dm.add_book_stmt.setInt(5,myBook.get_copies());
 			r_affected = dm.add_book_stmt.executeUpdate();
 		}
 		catch(Exception se){
@@ -61,11 +62,12 @@ public class Librarian{
 
 	public void update_book(Book myBook){
 		try{
-			dm.update_book_stmt.setString(1,myBook.get_title());
-			dm.update_book_stmt.setString(2,myBook.get_author());
-			dm.update_book_stmt.setString(3,myBook.get_publication());
-			dm.update_book_stmt.setInt(4,myBook.get_copies());
-			dm.update_book_stmt.setInt(5,myBook.get_id());
+			dm.update_book_stmt.setString(1,myBook.get_isbn());
+			dm.update_book_stmt.setString(2,myBook.get_title());
+			dm.update_book_stmt.setString(3,myBook.get_author());
+			dm.update_book_stmt.setString(4,myBook.get_publication());
+			dm.update_book_stmt.setInt(5,myBook.get_copies());
+			dm.update_book_stmt.setInt(6,myBook.get_id());
 			int r_affected = dm.update_book_stmt.executeUpdate();
 			System.out.println(r_affected + " book(s) updated in database.");
 		}
@@ -85,7 +87,7 @@ public class Librarian{
 			r_affected = dm.add_member_stmt.executeUpdate();
 		}
 		catch(Exception se){
-			System.out.println("ERROR: Error while member book to database.");
+			System.out.println("ERROR: Error while member to database.");
 			System.out.println("Details:");
 			System.out.println(se.toString());
 		}
@@ -155,9 +157,10 @@ public class Librarian{
 			dm.search_books_stmt.setString(2, "%"+myString+"%");
 			dm.search_books_stmt.setString(3, "%"+myString+"%");
 			dm.search_books_stmt.setString(4, "%"+myString+"%");
+			dm.search_books_stmt.setString(5, "%"+myString+"%");
 			ResultSet rs = dm.search_books_stmt.executeQuery();
 			while(rs.next()){
-				Book temp = new Book(rs.getInt("id"),rs.getString("title"),rs.getString("author"),rs.getString("publication"),rs.getInt("copies"));
+				Book temp = new Book(rs.getInt("id"),rs.getString("isbn"),rs.getString("title"),rs.getString("author"),rs.getString("publication"),rs.getInt("copies"));
 				result.addElement(temp);
 			}
 		}
@@ -229,12 +232,12 @@ public class Librarian{
 	}
 
 	public Book get_book(int id){
-		Book result = new Book(0,"","","",0);
+		Book result = new Book(0,"","","","",0);
 		try{
 			dm.get_book_stmt.setInt(1, id);
 			ResultSet rs = dm.get_book_stmt.executeQuery();
 			if(rs.next()){
-				result.update_data(rs.getInt("id"),rs.getString("title"),rs.getString("author"),rs.getString("publication"),rs.getInt("copies"));
+				result.update_data(rs.getInt("id"),rs.getString("isbn"),rs.getString("title"),rs.getString("author"),rs.getString("publication"),rs.getInt("copies"));
 			}
 		}
 		catch(Exception se){
@@ -303,7 +306,7 @@ public class Librarian{
 			ResultSet rs = dm.get_books_stmt.executeQuery();
 			
 			while(rs.next()){
-				Book temp = new Book(rs.getInt("id"),rs.getString("title"),rs.getString("author"),rs.getString("publication"),rs.getInt("copies"));
+				Book temp = new Book(rs.getInt("id"),rs.getString("isbn"),rs.getString("title"),rs.getString("author"),rs.getString("publication"),rs.getInt("copies"));
 				result.addElement(temp);
 			}
 			
@@ -361,10 +364,10 @@ public class Librarian{
 		try{
 			LabeledCSVParser lcsvp = new LabeledCSVParser(new CSVParser(new FileReader(myFile)));
 
-			if(lcsvp.getLabelIdx("title")!=-1 && lcsvp.getLabelIdx("author")!=-1 && lcsvp.getLabelIdx("publication")!=-1 && lcsvp.getLabelIdx("copies")!=-1){
+			if(lcsvp.getLabelIdx("isbn")!=-1 && lcsvp.getLabelIdx("title")!=-1 && lcsvp.getLabelIdx("author")!=-1 && lcsvp.getLabelIdx("publication")!=-1 && lcsvp.getLabelIdx("copies")!=-1){
 				while(lcsvp.getLine() != null){
 					try{
-						Book myBook = new Book(0,lcsvp.getValueByLabel("title"),lcsvp.getValueByLabel("author"),lcsvp.getValueByLabel("publication"),Integer.parseInt(lcsvp.getValueByLabel("copies")));
+						Book myBook = new Book(0,lcsvp.getValueByLabel("isbn"),lcsvp.getValueByLabel("title"),lcsvp.getValueByLabel("author"),lcsvp.getValueByLabel("publication"),Integer.parseInt(lcsvp.getValueByLabel("copies")));
 						count += add_book(myBook);
 					}
 					catch(NumberFormatException e){
@@ -376,6 +379,8 @@ public class Librarian{
 			}
 			else{
 				Vector<String> cols = new Vector<String>();
+				if(lcsvp.getLabelIdx("isbn")==-1)
+					cols.addElement("isbn");
 				if(lcsvp.getLabelIdx("title")==-1)
 					cols.addElement("title");
 				if(lcsvp.getLabelIdx("author")==-1)
@@ -431,14 +436,15 @@ public class Librarian{
 	}
 
 	public Object[][] books_to_array(Vector<Book> books){
-		Object[][] result = new Object[books.size()][5];
+		Object[][] result = new Object[books.size()][6];
 
 		for(int i=0; i<books.size();i++){
 			result[i][0]=books.elementAt(i).get_id();
-			result[i][1]=books.elementAt(i).get_title();
-			result[i][2]=books.elementAt(i).get_author();
-			result[i][3]=books.elementAt(i).get_publication();
-			result[i][4]=books.elementAt(i).get_copies();
+			result[i][1]=books.elementAt(i).get_isbn();
+			result[i][2]=books.elementAt(i).get_title();
+			result[i][3]=books.elementAt(i).get_author();
+			result[i][4]=books.elementAt(i).get_publication();
+			result[i][5]=books.elementAt(i).get_copies();
 		}
 		return result;
 	}

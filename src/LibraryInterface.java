@@ -21,7 +21,7 @@ public class LibraryInterface extends JFrame{
 	private IssueBookPanel ib_panel;
 	private ManageBooksPanel mb_panel;
 	private TransactionsPanel tr_panel;
-	private SearchPanel s_panel;
+	// private SearchPanel s_panel;
 	private SettingsPanel set_panel;
 	private MyMenuBar menu;
 
@@ -97,7 +97,7 @@ public class LibraryInterface extends JFrame{
 		ib_panel = new IssueBookPanel(librarian);
 		mb_panel = new ManageBooksPanel(librarian);
 		tr_panel = new TransactionsPanel(librarian);
-		s_panel = new SearchPanel(librarian);
+		// s_panel = new SearchPanel(librarian);
 		set_panel = new SettingsPanel(db_manager,security_manager);
 		menu = new MyMenuBar();
 		jtp = new JTabbedPane();
@@ -108,7 +108,7 @@ public class LibraryInterface extends JFrame{
 		jtp.addTab("Manage Books", mb_panel);
 		jtp.addTab("Manage Memberships", mm_panel);
 		jtp.addTab("Transactions", tr_panel);
-		jtp.addTab("Search", s_panel);
+		// jtp.addTab("Search", s_panel);
 		jtp.addTab("Settings", set_panel);
 		
 		jtp.addChangeListener(new ChangeListener() {
@@ -119,8 +119,6 @@ public class LibraryInterface extends JFrame{
 					mm_panel.update_table();
 				}else if(jtp.getSelectedComponent().getName()=="transactions"){
 					tr_panel.update_table();
-				}else if(jtp.getSelectedComponent().getName()=="search"){
-					s_panel.update_books();
 				}else if(jtp.getSelectedComponent().getName()=="settings"){
 					set_panel.update_panel();
 				}else if(jtp.getSelectedComponent().getName()=="issue_book"){

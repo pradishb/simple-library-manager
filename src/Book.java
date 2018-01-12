@@ -2,13 +2,15 @@ package slm;
 
 public class Book{
 	private int id;
+	private String isbn;
 	private String title;
 	private String author;
 	private String publication;
 	private int copies;
 
-	public Book(int i, String t, String a, String p, int c){
+	public Book(int i, String is, String t, String a, String p, int c){
 		id = i;
+		isbn = is;
 		title = t;
 		author = a;
 		publication = p;
@@ -16,8 +18,9 @@ public class Book{
 
 	}
 
-	public void update_data(int i, String t, String a, String p, int c){
+	public void update_data(int i, String is, String t, String a, String p, int c){
 		id = i;
+		isbn = is;
 		title = t;
 		author = a;
 		publication = p;
@@ -26,6 +29,10 @@ public class Book{
 
 	public int get_id(){
 		return id;
+	}
+
+	public String get_isbn(){
+		return isbn;
 	}
 
 	public String get_title(){

@@ -79,7 +79,7 @@ public class ManageBooksPanel extends JPanel implements ListSelectionListener,Ac
 	}
 
 	public void update_table(){
-		librarian.update_table(table, new String[]{"ID","TITLE","AUTHER","PUBLICATION","COPIES"}, librarian.books_to_array(librarian.get_books()));
+		librarian.update_table(table, new String[]{"ID","ISBN","TITLE","AUTHOR","PUBLICATION","COPIES"}, librarian.books_to_array(librarian.get_books()));
 	}
 
 	public void on_update_table(){
@@ -105,30 +105,33 @@ public class ManageBooksPanel extends JPanel implements ListSelectionListener,Ac
 	public void actionPerformed(ActionEvent ae){
 		if(ae.getSource()==add_book_btn){
 	 		JLabel title_label = new JLabel("Title:");
+	 		JLabel isbn_label = new JLabel("ISBN:");
 			JLabel author_label = new JLabel("Author:");
 			JLabel publication_label = new JLabel("Publication:");
 			JLabel copies_label = new JLabel("No. of copies:");
+			JTextField isbn_tf = new JTextField(20);
 			JTextField title_tf = new JTextField(20);
 			JTextField author_tf = new JTextField(20);	
 			JTextField publication_tf = new JTextField(20);
 			JTextField copies_tf = new JTextField(20);
 			int result;
 			do{
+				isbn_tf.setText("");
 				title_tf.setText("");
 				author_tf.setText("");
 				publication_tf.setText("");
 				copies_tf.setText("");
-				Object[] ob = {title_label,title_tf,author_label,author_tf,publication_label,publication_tf,copies_label,copies_tf};
+				Object[] ob = {isbn_label,isbn_tf,title_label,title_tf,author_label,author_tf,publication_label,publication_tf,copies_label,copies_tf};
 				Object[] options = {"Add","Add & Continue","Cancel"};
 				result = JOptionPane.showOptionDialog(this,ob,"Add Book Form",JOptionPane.DEFAULT_OPTION,JOptionPane.PLAIN_MESSAGE,null,options,null);
 
 				if(result == 0 || result == 1){
-					if(title_tf.getText().equals("") || author_tf.getText().equals("") || publication_tf.getText().equals("")){
+					if(isbn_tf.getText().equals("") || title_tf.getText().equals("") || author_tf.getText().equals("") || publication_tf.getText().equals("")){
 						JOptionPane.showMessageDialog(this, "Form is not complete.", "Bad Input", JOptionPane.ERROR_MESSAGE);
 					}
 					else{
 						try{
-							Book myBook = new Book(0,title_tf.getText(),author_tf.getText(),publication_tf.getText(),Integer.parseInt(copies_tf.getText()));
+							Book myBook = new Book(0,isbn_tf.getText(),title_tf.getText(),author_tf.getText(),publication_tf.getText(),Integer.parseInt(copies_tf.getText()));
 							librarian.add_book(myBook);
 							update_table();
 							JOptionPane.showMessageDialog(this, "Book has been added.");
@@ -148,25 +151,27 @@ public class ManageBooksPanel extends JPanel implements ListSelectionListener,Ac
 			int id = (int)table.getValueAt(table.getSelectedRow(), 0);
 			Book myBook = librarian.get_book(id);
 
+			JLabel isbn_label = new JLabel("ISBN:");
 			JLabel title_label = new JLabel("Title:");
 			JLabel author_label = new JLabel("Author:");
 			JLabel publication_label = new JLabel("Publication:");
 			JLabel copies_label = new JLabel("No. of copies:");
+			JTextField isbn_tf = new JTextField(myBook.get_isbn());
 			JTextField title_tf = new JTextField(myBook.get_title());
 			JTextField author_tf = new JTextField(myBook.get_author());	
 			JTextField publication_tf = new JTextField(myBook.get_publication());
 			JTextField copies_tf = new JTextField(Integer.toString(myBook.get_copies()));
 
-			Object[] ob = {title_label,title_tf,author_label,author_tf,publication_label,publication_tf,copies_label,copies_tf};
+			Object[] ob = {isbn_label,isbn_tf,title_label,title_tf,author_label,author_tf,publication_label,publication_tf,copies_label,copies_tf};
 			int result = JOptionPane.showConfirmDialog(this, ob,"Update Book Form",JOptionPane.OK_CANCEL_OPTION);
 
 			if(result == JOptionPane.OK_OPTION){
-				if(title_tf.getText().equals("") || author_tf.getText().equals("") || publication_tf.getText().equals("")){
+				if(isbn_tf.getText().equals("") || title_tf.getText().equals("") || author_tf.getText().equals("") || publication_tf.getText().equals("")){
 					JOptionPane.showMessageDialog(this, "Form is not complete.", "Bad Input", JOptionPane.ERROR_MESSAGE);
 				}
 				else{
 					try{
-						myBook.update_data(myBook.get_id(),title_tf.getText(),author_tf.getText(),publication_tf.getText(),Integer.parseInt(copies_tf.getText()));
+						myBook.update_data(myBook.get_id(),isbn_tf.getText(),title_tf.getText(),author_tf.getText(),publication_tf.getText(),Integer.parseInt(copies_tf.getText()));
 						librarian.update_book(myBook);
 						update_table();
 					}

@@ -12,6 +12,7 @@ public class IssueBookPanel extends JPanel implements ActionListener,ListSelecti
 		private JLabel book_id_label;
 		private JLabel m_details;
 		private JLabel b_details;
+		private JLabel isbn_lb;
 		private JLabel title_lb;
 		private JLabel author_lb;
 		private JLabel pub_lb;
@@ -23,6 +24,7 @@ public class IssueBookPanel extends JPanel implements ActionListener,ListSelecti
 		private JLabel suggestions;
 		private JTextField member;
 		private JTextField book;
+		private JTextField isbn;
 		private JTextField title;
 		private JTextField author;
 		private JTextField pub;
@@ -49,6 +51,7 @@ public class IssueBookPanel extends JPanel implements ActionListener,ListSelecti
 			book_id_label = new JLabel("Enter Book Id");
 			m_details = new JLabel("Member Details:");
 			b_details = new JLabel("Book Details:");
+			isbn_lb = new JLabel("ISBN:");
 			title_lb = new JLabel("Title:");
 			author_lb = new JLabel("Author:");
 			pub_lb = new JLabel("Publication:");
@@ -58,6 +61,7 @@ public class IssueBookPanel extends JPanel implements ActionListener,ListSelecti
 			sem_lb = new JLabel("Semester:");
 			borrowed_lb = new JLabel("Books Borrowed:");
 			suggestions = new JLabel("Suggestions:");
+			isbn = new JTextField();
 			title = new JTextField();
 			author = new JTextField();
 			pub = new JTextField();
@@ -81,6 +85,7 @@ public class IssueBookPanel extends JPanel implements ActionListener,ListSelecti
 			email.setEditable(false);
 			sem.setEditable(false);
 			borrowed.setEditable(false);
+			isbn.setEditable(false);
 			title.setEditable(false);
 			author.setEditable(false);
 			pub.setEditable(false);
@@ -120,11 +125,13 @@ public class IssueBookPanel extends JPanel implements ActionListener,ListSelecti
 				.addGroup(layout.createSequentialGroup()
 					.addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
 						.addComponent(b_details)
+						.addComponent(isbn_lb)
 						.addComponent(title_lb)
 						.addComponent(author_lb)
 						.addComponent(pub_lb)
 						.addComponent(left_lb))
 					.addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+						.addComponent(isbn, GroupLayout.PREFERRED_SIZE, 185,GroupLayout.PREFERRED_SIZE)
 						.addComponent(title, GroupLayout.PREFERRED_SIZE, 185,GroupLayout.PREFERRED_SIZE)
 						.addComponent(author, GroupLayout.PREFERRED_SIZE, 185,GroupLayout.PREFERRED_SIZE)
 						.addComponent(pub, GroupLayout.PREFERRED_SIZE, 185,GroupLayout.PREFERRED_SIZE)
@@ -157,26 +164,29 @@ public class IssueBookPanel extends JPanel implements ActionListener,ListSelecti
 					.addComponent(b_details)
 					.addComponent(m_details))
 				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-					.addComponent(title_lb)
-					.addComponent(title)
+					.addComponent(isbn_lb)
+					.addComponent(isbn)
 					.addComponent(name_lb)
 					.addComponent(name)
 					)
 				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-					.addComponent(author_lb)
-					.addComponent(author)
+					.addComponent(title_lb)
+					.addComponent(title)
 					.addComponent(email_lb)
 					.addComponent(email)
 					)
 				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-					.addComponent(pub_lb)
-					.addComponent(pub)
+					.addComponent(author_lb)
+					.addComponent(author)
 					.addComponent(sem_lb)
 					.addComponent(sem)
 					)
 				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+					.addComponent(pub_lb)
+					.addComponent(pub)
 					.addComponent(borrowed_lb)
-					.addComponent(borrowed)
+					.addComponent(borrowed))
+				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
 					.addComponent(left_lb)
 					.addComponent(left))
 				.addGap(20)
@@ -227,6 +237,7 @@ public class IssueBookPanel extends JPanel implements ActionListener,ListSelecti
 		public void update_book_details(){
 			try{
 				int remaining;
+				isbn.setText(librarian.get_book(Integer.parseInt(book.getText())).get_isbn());
 				title.setText(librarian.get_book(Integer.parseInt(book.getText())).get_title());
 				author.setText(librarian.get_book(Integer.parseInt(book.getText())).get_author());
 				pub.setText(librarian.get_book(Integer.parseInt(book.getText())).get_publication());

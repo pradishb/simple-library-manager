@@ -184,7 +184,7 @@ public class ManageMembersPanel extends JPanel implements ListSelectionListener,
 					librarian.remove_member((int)data[x][0]);
 				}
 				update_table();
-				System.out.println(selectedRows.length + " book(s) removed from database.");
+				System.out.println(selectedRows.length + " member(s) removed from database.");
 			}
 		}
 		else if(ae.getSource()==end_session_btn){

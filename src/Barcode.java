@@ -62,7 +62,7 @@ public class Barcode{
 		catch(IOException e){
 			throw new ConnectionException();
 		}
-		Book myBook = new Book(0,title,author,publication,0);
+		Book myBook = new Book(0,isbn,title,author,publication,0);
 		return myBook;
 	}
 

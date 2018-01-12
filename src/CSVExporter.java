@@ -19,16 +19,17 @@ public class CSVExporter{
 
 			Vector<Book> books = librarian.get_books();
 
-			String[][] output = new String[books.size()][5];
+			String[][] output = new String[books.size()][6];
 
 			for(int i=0; i<books.size();i++){
 				output[i][0]=Integer.toString(books.elementAt(i).get_id());
-				output[i][1]=books.elementAt(i).get_title();
-				output[i][2]=books.elementAt(i).get_author();
-				output[i][3]=books.elementAt(i).get_publication();
-				output[i][4]=Integer.toString(books.elementAt(i).get_copies());
+				output[i][1]=books.elementAt(i).get_isbn();
+				output[i][2]=books.elementAt(i).get_title();
+				output[i][3]=books.elementAt(i).get_author();
+				output[i][4]=books.elementAt(i).get_publication();
+				output[i][5]=Integer.toString(books.elementAt(i).get_copies());
 			}
-			cprinter.println(new String[]{"id","title","author","publication","copies"});
+			cprinter.println(new String[]{"id","isbn","title","author","publication","copies"});
 			cprinter.println(output);
 			os.close();
 			System.out.println(books.size()+" books exported to \""+dir+"\\books.csv\".");
