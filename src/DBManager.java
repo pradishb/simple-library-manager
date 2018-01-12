@@ -7,8 +7,8 @@ public class DBManager{
 	private final String DB_URL = "jdbc:mysql://localhost:3306/?useSSL=false";
 	private final String USER = "root";
 	private final String PASS = "";
-	Connection conn = null;
-	Statement stmt = null;
+	static Connection conn = null;
+	static Statement stmt = null;
 	PreparedStatement add_member_stmt;
 	PreparedStatement remove_member_stmt;
 	PreparedStatement update_member_stmt;

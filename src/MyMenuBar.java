@@ -2,6 +2,8 @@ package slm;
 
 import javax.swing.*;
 import java.awt.event.*;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 public class MyMenuBar extends JMenuBar implements ItemListener{
 	JMenu about, file;
@@ -10,6 +12,7 @@ public class MyMenuBar extends JMenuBar implements ItemListener{
 
 	JCheckBox books;
 	JCheckBox members;
+	JCheckBox barcodes;
 	JOptionPane pane;
 
 	JButton btn;
@@ -23,8 +26,9 @@ public class MyMenuBar extends JMenuBar implements ItemListener{
 
 		books = new JCheckBox("Books", true);
 		members = new JCheckBox("Members", true);
+		barcodes = new JCheckBox("Barcode for members", true);
 
-		Object[] ob = {books,members};
+		Object[] ob = {books,members,barcodes};
 		Object[] options = {btn,"Cancel"};
 
 		pane =  new JOptionPane(ob,JOptionPane.DEFAULT_OPTION,JOptionPane.PLAIN_MESSAGE,null,options,null);
@@ -49,6 +53,21 @@ public class MyMenuBar extends JMenuBar implements ItemListener{
 						CSVExporter.export_books(chooser.getSelectedFile().toString());
 					if(members.isSelected())
 						CSVExporter.export_members(chooser.getSelectedFile().toString());
+					if(barcodes.isSelected()){
+						int count = 0;
+						try{
+							ResultSet rs = DBManager.stmt.executeQuery("SELECT id FROM members");
+							BarcodeWriter w = new BarcodeWriter();
+							while(rs.next()){
+								w.write(chooser.getSelectedFile().toString(),String.format("%07d", rs.getInt("id")));
+							}
+							count++;
+						}
+						catch(SQLException e){
+							System.out.println(e.toString());	
+						}
+						System.out.println(count+" barcodes exported to \""+chooser.getSelectedFile().toString()+".");
+					}
 				}
 			}
 		});
@@ -69,7 +88,7 @@ public class MyMenuBar extends JMenuBar implements ItemListener{
 
 	@Override
 	public void itemStateChanged(ItemEvent e) {
-       if(!books.isSelected() && !members.isSelected()){
+       if(!books.isSelected() && !members.isSelected() && !barcodes.isSelected()){
        		btn.setEnabled(false);
        }
        else{

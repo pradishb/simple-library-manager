@@ -6,6 +6,7 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.event.*;
 import javax.swing.table.*;
+import java.sql.SQLException;
 
 public class ManageMembersPanel extends JPanel implements ListSelectionListener,ActionListener{
 	private JButton add_member_btn;
@@ -189,9 +190,14 @@ public class ManageMembersPanel extends JPanel implements ListSelectionListener,
 		else if(ae.getSource()==end_session_btn){
 			int result = JOptionPane.showConfirmDialog(this,"You are manipulating the semester value of all members. Do you want to continue?","End Session",JOptionPane.YES_NO_OPTION);
 			if(result==JOptionPane.YES_OPTION){
-				DBManipulator.increment_semester();
-				update_table();
-				JOptionPane.showMessageDialog(this, "The semester value of all members are incresed.");
+				try{
+					DBManager.stmt.execute("UPDATE members SET semester=semester+1");
+					update_table();
+					JOptionPane.showMessageDialog(this, "The semester value of all members are incresed.");
+				}
+				catch(SQLException e){
+					System.out.println(e.toString());	
+				}
 			}
 		}
 		else{
