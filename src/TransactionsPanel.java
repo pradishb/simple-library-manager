@@ -46,6 +46,7 @@ public class TransactionsPanel extends TablePanel implements ListSelectionListen
 
 		public void update_table(){
 			update(librarian.transactions_to_array(librarian.get_transactions()));
+			table.changeSelection(0, 1, false, false);
 		}
 
 		public void actionPerformed(ActionEvent ae){

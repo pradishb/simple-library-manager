@@ -96,9 +96,9 @@ public class LibraryInterface extends JFrame{
 		mm_panel = new ManageMembersPanel(new String[]{"ID","NAME","EMAIL","SEMESTER"},librarian);
 		ib_panel = new IssueBookPanel(librarian);
 		mb_panel = new ManageBooksPanel(new String[]{"ID","ISBN","TITLE","AUTHOR","PUBLICATION","TOTAL COPIES"},librarian);
-		tr_panel = new TransactionsPanel(new String[]{"ID","BOOK","BORROWED BY","BORROWED TIME"},librarian);
-		// s_panel = new SearchPanel(librarian);
+		tr_panel = new TransactionsPanel(new String[]{"ID","ISBN","BOOK","BORROWED BY","BORROWED TIME"},librarian);
 		set_panel = new SettingsPanel(db_manager,security_manager);
+
 		menu = new MyMenuBar();
 		jtp = new JTabbedPane();
 	}
@@ -114,14 +114,18 @@ public class LibraryInterface extends JFrame{
 		jtp.addChangeListener(new ChangeListener() {
 			public void stateChanged(ChangeEvent e){
 				if(jtp.getSelectedComponent().getName()=="manage_books"){
+					mb_panel.reset();
 					mb_panel.update_table();
 				}else if(jtp.getSelectedComponent().getName()=="manage_memberships"){
+					mm_panel.reset();
 					mm_panel.update_table();
 				}else if(jtp.getSelectedComponent().getName()=="transactions"){
+					tr_panel.reset();
 					tr_panel.update_table();
 				}else if(jtp.getSelectedComponent().getName()=="settings"){
 					set_panel.update_panel();
 				}else if(jtp.getSelectedComponent().getName()=="issue_book"){
+					ib_panel.reset();
 					ib_panel.update_book_details();
 					ib_panel.update_member_details();
 					ib_panel.update_book_list();
@@ -137,7 +141,7 @@ public class LibraryInterface extends JFrame{
 		setSize(WIDTH,HEIGHT);
 		setLocationRelativeTo(null);
 		setJMenuBar(menu);
-		// setResizable(false);
+
 		add(jtp);
 		addWindowListener(new WindowAdapter(){
 			public void windowClosing(WindowEvent we){
@@ -157,6 +161,8 @@ public class LibraryInterface extends JFrame{
 			layout.createSequentialGroup()
 				.addComponent(jtp)
 			);
+
+		ib_panel.reset();
 	}
 
 }

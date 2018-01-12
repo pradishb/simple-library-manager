@@ -10,7 +10,7 @@ class SLM{
 	public static void main(String[] args){
 		db_manager = new DBManager();
 		security_manager = new SecurityManager();
-		librarian = new Librarian(db_manager, library_interface);
+		librarian = new Librarian(db_manager);
 		csv = new CSVExporter(librarian);
 
 		EventQueue.invokeLater(new Runnable(){

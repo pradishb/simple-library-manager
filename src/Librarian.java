@@ -21,12 +21,10 @@ class InvalidCsvFormatException extends Exception{
 }
 
 public class Librarian{
-	private LibraryInterface library_interface;
 	private DBManager dm;
 
-	public Librarian(DBManager dm, LibraryInterface library_interface){
+	public Librarian(DBManager dm){
 		this.dm = dm;
-		this.library_interface = library_interface;
 	}
 
 	public int add_book(Book myBook){
@@ -193,27 +191,6 @@ public class Librarian{
 		return result;
 	}
 
-	public Vector<TransactionDisplay> search_transactions(String myString){
-		Vector<TransactionDisplay> result = new Vector<TransactionDisplay>();
-		try{
-			dm.search_transactions_stmt.setString(1, "%"+myString+"%");
-			dm.search_transactions_stmt.setString(2, "%"+myString+"%");
-			dm.search_transactions_stmt.setString(3, "%"+myString+"%");
-			dm.search_transactions_stmt.setString(4, "%"+myString+"%");
-			ResultSet rs = dm.search_transactions_stmt.executeQuery();
-			while(rs.next()){
-				TransactionDisplay temp = new TransactionDisplay(rs.getInt("id"),rs.getString("title"),rs.getString("name"),rs.getTimestamp("borrowed_date"));
-				result.addElement(temp);
-			}
-		}
-		catch(Exception se){
-			System.out.println("ERROR: Error while searching transactions.");
-			System.out.println("Details:");
-			System.out.println(se.toString());
-		}
-		return result;
-	}
-
 	public Member get_member(int id){
 		Member result = new Member(0,"","",0);
 		try{
@@ -346,7 +323,7 @@ public class Librarian{
 			ResultSet rs = dm.get_transactions_stmt.executeQuery();
 			
 			while(rs.next()){
-				TransactionDisplay temp = new TransactionDisplay(rs.getInt("id"),rs.getString("title"),rs.getString("name"),rs.getTimestamp("borrowed_date"));
+				TransactionDisplay temp = new TransactionDisplay(rs.getInt("id"),rs.getString("isbn"),rs.getString("title"),rs.getString("name"),rs.getTimestamp("borrowed_date"));
 				result.addElement(temp);
 			}
 			
@@ -462,13 +439,14 @@ public class Librarian{
 	}
 
 	public Object[][] transactions_to_array(Vector<TransactionDisplay> transactions){
-		Object[][] result = new Object[transactions.size()][4];
+		Object[][] result = new Object[transactions.size()][5];
 
 		for(int i=0; i<transactions.size();i++){
 			result[i][0]=transactions.elementAt(i).get_id();
-			result[i][1]=transactions.elementAt(i).get_book_title();
-			result[i][2]=transactions.elementAt(i).get_borrower_name();
-			result[i][3]=transactions.elementAt(i).get_borrowed_date().toString();
+			result[i][1]=transactions.elementAt(i).get_isbn();
+			result[i][2]=transactions.elementAt(i).get_book_title();
+			result[i][3]=transactions.elementAt(i).get_borrower_name();
+			result[i][4]=transactions.elementAt(i).get_borrowed_date().toString();
 		}
 		return result;
 	}

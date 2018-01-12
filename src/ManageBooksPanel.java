@@ -82,6 +82,7 @@ public class ManageBooksPanel extends TablePanel implements ListSelectionListene
 	@Override
 	public void update_table(){
 		update(librarian.books_to_array(librarian.get_books()));
+		table.changeSelection(0, 1, false, false);
 	}
 
 	public void valueChanged(ListSelectionEvent le){

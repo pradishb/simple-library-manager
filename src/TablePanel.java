@@ -65,6 +65,10 @@ public class TablePanel extends JPanel{
 		table.setRowSorter(rowSorter);
 	}
 
+	public void reset(){
+		table.requestFocus();
+	}
+
 	public void update(Object[][] data){
 		tableModel.setDataVector(data, cols);
 		table.setModel(tableModel);

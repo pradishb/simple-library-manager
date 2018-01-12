@@ -46,7 +46,6 @@ public class IssueBookPanel extends JPanel implements ActionListener,ListSelecti
 		private int no_books_borrowed;
 		private BarcodeReader b_reader;
 
-
 		public IssueBookPanel(Librarian librarian){
 			this.librarian = librarian;
 			setName("issue_book");
@@ -85,7 +84,6 @@ public class IssueBookPanel extends JPanel implements ActionListener,ListSelecti
             list = new JList<>(listModel);  
           	list_s = new JScrollPane(list);
           	b_reader = new BarcodeReader();
-
 
 			name.setEditable(false);
 			email.setEditable(false);
@@ -204,6 +202,10 @@ public class IssueBookPanel extends JPanel implements ActionListener,ListSelecti
 				.addComponent(reader)
 			);
 		}
+		public void reset(){
+			btn.requestFocus();
+		}
+
 		public void actionPerformed(ActionEvent ae){
 			try{
 				if(title.getText().equals("")){
@@ -242,7 +244,6 @@ public class IssueBookPanel extends JPanel implements ActionListener,ListSelecti
 					update_book_details();
 				}
 			}
-
 		}
 		@Override
 		public void itemStateChanged(ItemEvent e){

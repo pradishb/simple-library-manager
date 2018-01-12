@@ -71,7 +71,7 @@ public class DBManager{
 			get_member_stmt = conn.prepareStatement("SELECT * FROM members WHERE id=?");
 			get_books_borrowed_stmt = conn.prepareStatement("SELECT * FROM books_borrowed WHERE id=?");
 			get_copies_stmt = conn.prepareStatement("SELECT * FROM copies WHERE id=?");
-			get_transactions_stmt = conn.prepareStatement("SELECT transactions.id, books.title, members.name, transactions.borrowed_date FROM transactions, members, books WHERE transactions.borrower_id=members.id && transactions.book_id=books.id ORDER BY transactions.id");
+			get_transactions_stmt = conn.prepareStatement("SELECT transactions.id, books.isbn, books.title, members.name, transactions.borrowed_date FROM transactions, members, books WHERE transactions.borrower_id=members.id && transactions.book_id=books.id ORDER BY transactions.id");
 			get_transaction_stmt = conn.prepareStatement("SELECT * FROM transactions WHERE id=?");
 			get_settings_stmt = conn.prepareStatement("SELECT * FROM settings WHERE id=1");
 			search_books_stmt = conn.prepareStatement("SELECT * FROM books WHERE id LIKE ? OR isbn LIKE ? OR title LIKE ? OR author LIKE ? OR publication LIKE ?");
