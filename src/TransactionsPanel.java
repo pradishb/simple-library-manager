@@ -7,18 +7,17 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 
-public class TransactionsPanel extends JPanel implements ListSelectionListener,ActionListener{
+public class TransactionsPanel extends TablePanel implements ListSelectionListener,ActionListener,Updatable{
 		private Librarian librarian;
 		private GroupLayout layout;
 		private JScrollPane scroll;
 		private JButton btn;
 		private Object[][] data;
-		public JTable table;
 
-		TransactionsPanel(Librarian librarian){
+		TransactionsPanel(String[] cols,Librarian librarian){
+			super(cols);
 			this.librarian = librarian;
-			table = new JTable();
-			scroll = new JScrollPane(table);
+
 			btn = new JButton("Return Book");
 
 			btn.setEnabled(false);
@@ -33,19 +32,20 @@ public class TransactionsPanel extends JPanel implements ListSelectionListener,A
 			
 			layout.setHorizontalGroup(
 				layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-				.addComponent(scroll)
+				.addComponent(input)
+				.addComponent(table_sp)
 				.addComponent(btn)
 			);
 			layout.setVerticalGroup(
 				layout.createSequentialGroup()
-				.addComponent(scroll)
+				.addComponent(input)
+				.addComponent(table_sp)
 				.addComponent(btn)
 			);
 		}
 
 		public void update_table(){
-			data = librarian.transactions_to_array(librarian.get_transactions());
-			librarian.update_table(table, new String[]{"ID","BOOK","BORROWED BY","BORROWED TIME"}, data);
+			update(librarian.transactions_to_array(librarian.get_transactions()));
 		}
 
 		public void actionPerformed(ActionEvent ae){

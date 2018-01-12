@@ -6,20 +6,19 @@ import java.awt.event.*;
 import javax.swing.event.*;
 import javax.swing.table.*;
 
-public class ManageBooksPanel extends JPanel implements ListSelectionListener,ActionListener,BarcodeReaderDialog.Updater{
+public class ManageBooksPanel extends TablePanel implements ListSelectionListener,ActionListener,Updatable{
 	private JButton add_book_btn;
 	private JButton add_using_barcode_btn;
 	private JButton remove_book_by_id_btn;
 	private JButton remove_book_btn;
 	private JButton update_book_btn;
 	private JButton import_books_btn;
-	private JTable table;
-	private JScrollPane table_sp;
 	private GroupLayout layout;
 	private JFileChooser chooser;
 	private Librarian librarian;
 	private Object[][] data;
-	ManageBooksPanel(Librarian librarian){
+	ManageBooksPanel(String[] cols,Librarian librarian){
+		super(cols);
 		setName("manage_books");
 
 		this.librarian = librarian;
@@ -31,8 +30,6 @@ public class ManageBooksPanel extends JPanel implements ListSelectionListener,Ac
 		update_book_btn = new JButton("Update Book");
 		import_books_btn = new JButton("Import Books");
 
-		table = new JTable();
-		table_sp = new JScrollPane(table);
 		chooser = new JFileChooser();
 
 		add(table_sp);
@@ -56,6 +53,8 @@ public class ManageBooksPanel extends JPanel implements ListSelectionListener,Ac
 		layout.setAutoCreateContainerGaps(true);
 		layout.setHorizontalGroup(
 		layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+			.addGroup(layout.createSequentialGroup()
+				.addComponent(input))
 			.addComponent(table_sp)
 			.addGroup(layout.createSequentialGroup()
 				.addComponent(add_book_btn)
@@ -67,6 +66,8 @@ public class ManageBooksPanel extends JPanel implements ListSelectionListener,Ac
 		);
 		layout.setVerticalGroup(
 			layout.createSequentialGroup()
+			.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+				.addComponent(input))
 			.addComponent(table_sp)
 			.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
 				.addComponent(add_book_btn)
@@ -78,12 +79,9 @@ public class ManageBooksPanel extends JPanel implements ListSelectionListener,Ac
 		);
 	}
 
+	@Override
 	public void update_table(){
-		librarian.update_table(table, new String[]{"ID","ISBN","TITLE","AUTHOR","PUBLICATION","COPIES"}, librarian.books_to_array(librarian.get_books()));
-	}
-
-	public void on_update_table(){
-		update_table();
+		update(librarian.books_to_array(librarian.get_books()));
 	}
 
 	public void valueChanged(ListSelectionEvent le){

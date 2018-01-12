@@ -4,17 +4,17 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
+interface Updatable{
+	void update_table();
+}
+
 public class BarcodeReaderDialog extends JDialog implements BarcodeListener{
 	JLabel msg;
 	String isbn;
 	private Librarian librarian;
-	Updater updater;
+	Updatable updater;
 
-	public interface Updater{
-		void on_update_table();
-	}
-
-	public BarcodeReaderDialog(JFrame parent, Librarian librarian, Updater updater){
+	public BarcodeReaderDialog(JFrame parent, Librarian librarian, Updatable updater){
 		super(parent,"Bar Code Reader",true);
 		this.librarian = librarian;
 		this.updater = updater;
@@ -86,7 +86,7 @@ public class BarcodeReaderDialog extends JDialog implements BarcodeListener{
 					try{
 						myBook.update_data(0,isbn_tf.getText(),title_tf.getText(),author_tf.getText(),publication_tf.getText(),Integer.parseInt(copies_tf.getText()));
 						librarian.add_book(myBook);
-						updater.on_update_table();
+						updater.update_table();
 						JOptionPane.showMessageDialog(this, "Book has been added.");
 					}
 					catch(NumberFormatException e){

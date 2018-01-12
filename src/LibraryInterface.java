@@ -93,10 +93,10 @@ public class LibraryInterface extends JFrame{
 	public void init_interface(){
 		System.out.println("Initializing Interface...");
 		//Initialization
-		mm_panel = new ManageMembersPanel(librarian);
+		mm_panel = new ManageMembersPanel(new String[]{"ID","NAME","EMAIL","SEMESTER"},librarian);
 		ib_panel = new IssueBookPanel(librarian);
-		mb_panel = new ManageBooksPanel(librarian);
-		tr_panel = new TransactionsPanel(librarian);
+		mb_panel = new ManageBooksPanel(new String[]{"ID","ISBN","TITLE","AUTHOR","PUBLICATION","TOTAL COPIES"},librarian);
+		tr_panel = new TransactionsPanel(new String[]{"ID","BOOK","BORROWED BY","BORROWED TIME"},librarian);
 		// s_panel = new SearchPanel(librarian);
 		set_panel = new SettingsPanel(db_manager,security_manager);
 		menu = new MyMenuBar();

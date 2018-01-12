@@ -8,7 +8,7 @@ import javax.swing.event.*;
 import javax.swing.table.*;
 import java.sql.SQLException;
 
-public class ManageMembersPanel extends JPanel implements ListSelectionListener,ActionListener{
+public class ManageMembersPanel extends TablePanel implements ListSelectionListener,ActionListener,Updatable{
 	private JButton add_member_btn;
 	private JButton remove_member_by_id_btn;
 	private JButton remove_btn;
@@ -16,13 +16,12 @@ public class ManageMembersPanel extends JPanel implements ListSelectionListener,
 	private JButton import_members_btn;
 	private JButton end_session_btn;
 	private JFileChooser chooser;
-	private JTable table;
-	private JScrollPane table_sp;
 	private GroupLayout layout;
 	private Librarian librarian;
 	private Object[][] data;
 
-	ManageMembersPanel(Librarian librarian){
+	ManageMembersPanel(String[] cols,Librarian librarian){
+		super(cols);
 		setName("manage_memberships");
 
 		this.librarian = librarian;
@@ -35,8 +34,6 @@ public class ManageMembersPanel extends JPanel implements ListSelectionListener,
 		end_session_btn = new JButton("End Session");
 
 		chooser = new JFileChooser();
-		table = new JTable();
-		table_sp = new JScrollPane(table);
 
 		add_member_btn.addActionListener(this);
 		remove_member_by_id_btn.addActionListener(this);
@@ -54,6 +51,7 @@ public class ManageMembersPanel extends JPanel implements ListSelectionListener,
 		layout.setAutoCreateContainerGaps(true);
 		layout.setHorizontalGroup(
 		layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+			.addComponent(input)
 			.addComponent(table_sp)
 			.addGroup(layout.createSequentialGroup()
 				.addComponent(add_member_btn)
@@ -65,6 +63,7 @@ public class ManageMembersPanel extends JPanel implements ListSelectionListener,
 		);
 		layout.setVerticalGroup(
 			layout.createSequentialGroup()
+			.addComponent(input)
 			.addComponent(table_sp)
 			.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
 				.addComponent(add_member_btn)
@@ -76,7 +75,7 @@ public class ManageMembersPanel extends JPanel implements ListSelectionListener,
 		);
 	}
 	public void update_table(){
-		librarian.update_table(table, new String[]{"ID","NAME","EMAIL","SEMESTER"}, librarian.members_to_array(librarian.get_members()));
+		update(librarian.members_to_array(librarian.get_members()));
 	}
 	public void valueChanged(ListSelectionEvent le){
 		if(table.getSelectedRow()!=-1){
