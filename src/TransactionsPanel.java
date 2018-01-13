@@ -58,7 +58,7 @@ public class TransactionsPanel extends TablePanel implements ListSelectionListen
 						msg = "Do you want to return the book?";
 					}
 					else{
-						msg = "The fine amout is "+fine+" x "+Settings.price+" = Rs. "+fine*Settings.price+".\nDo you want to return the book?";
+						msg = "The fine amout is "+fine+" x Rs. "+Settings.price+" = Rs. "+fine*Settings.price+".\nDo you want to return the book?";
 					}
 					if(JOptionPane.showConfirmDialog(null,msg, "Confirm Dialog", JOptionPane.YES_NO_OPTION)==JOptionPane.YES_OPTION){
 						librarian.return_book(result.get_id());
@@ -150,12 +150,13 @@ public class TransactionsPanel extends TablePanel implements ListSelectionListen
 						ReturnByMemberPanel panel = new ReturnByMemberPanel(Integer.parseInt(id));
 						int total_fine = panel.calculate_fine();
 						JButton return_btn = new JButton("Return all books");
-						JDialog dialog = new JOptionPane(new Object[]{panel,"Total Fine : "+total_fine},JOptionPane.PLAIN_MESSAGE,JOptionPane.DEFAULT_OPTION,null,new Object[]{return_btn}).createDialog("Books borrowed by "+name);
+						JDialog dialog = new JOptionPane(new Object[]{panel,"Total Fine : "+total_fine+" x Rs. "+Settings.price+" = Rs. "+total_fine*Settings.price},JOptionPane.PLAIN_MESSAGE,JOptionPane.DEFAULT_OPTION,null,new Object[]{return_btn}).createDialog("Books borrowed by "+name);
 						return_btn.addActionListener(new ActionListener(){
 							public void actionPerformed(ActionEvent ae){
-								if(JOptionPane.showConfirmDialog(null,"The total fine amout is Rs. "+total_fine+".\nDo you want to return all books?", "Confirm Dialog", JOptionPane.YES_NO_OPTION)==JOptionPane.YES_OPTION)
+								if(JOptionPane.showConfirmDialog(null,"The total fine amout is Rs. "+total_fine*Settings.price+".\nDo you want to return all books?", "Confirm Dialog", JOptionPane.YES_NO_OPTION)==JOptionPane.YES_OPTION)
 								{
 									panel.return_all_books();
+									update_table();
 									dialog.dispose();
 								}
 							}
