@@ -7,8 +7,6 @@ import java.awt.event.*;
 import java.util.*;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import org.krysalis.barcode4j.impl.upcean.EAN8LogicImpl;
-import org.krysalis.barcode4j.impl.upcean.EAN8Bean;
 import org.krysalis.barcode4j.impl.upcean.UPCEANLogicImpl;
 
 public class IssueBookPanel extends JPanel implements ActionListener,ListSelectionListener,ItemListener,BarcodeListener{
@@ -117,15 +115,15 @@ public class IssueBookPanel extends JPanel implements ActionListener,ListSelecti
 				}
 			});
 
-			addComponentListener (new ComponentAdapter()
+			addComponentListener(new ComponentAdapter()
 			{
-				public void componentShown ( ComponentEvent e )
+				public void componentShown (ComponentEvent e)
 				{
 					if(reader.isSelected())
 						b_reader.addBarcodeListener(IssueBookPanel.this);
 				}
 
-				public void componentHidden ( ComponentEvent e )
+				public void componentHidden (ComponentEvent e)
 				{
 					if(reader.isSelected())
 						b_reader.removeBarcodeListener(IssueBookPanel.this);
