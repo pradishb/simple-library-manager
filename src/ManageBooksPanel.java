@@ -16,7 +16,6 @@ public class ManageBooksPanel extends TablePanel implements ListSelectionListene
 	private GroupLayout layout;
 	private JFileChooser chooser;
 	private Librarian librarian;
-	private Object[][] data;
 	ManageBooksPanel(String[] cols,Librarian librarian){
 		super(cols);
 		setName("manage_books");
@@ -82,7 +81,6 @@ public class ManageBooksPanel extends TablePanel implements ListSelectionListene
 	@Override
 	public void update_table(){
 		update(librarian.books_to_array(librarian.get_books()));
-		table.changeSelection(0, 1, false, false);
 	}
 
 	public void valueChanged(ListSelectionEvent le){
@@ -194,12 +192,12 @@ public class ManageBooksPanel extends TablePanel implements ListSelectionListene
 			}
 		}
 		else if(ae.getSource()==remove_book_btn){
-			data = librarian.books_to_array(librarian.get_books());
 			int[] selectedRows = table.getSelectedRows();
 			int result = JOptionPane.showConfirmDialog(this, "Do you really want to remove "+selectedRows.length+" book(s)?","Confirm",JOptionPane.OK_CANCEL_OPTION);
 			if(result == JOptionPane.OK_OPTION){
 				for(int x:selectedRows){
-					librarian.remove_book((int)data[x][0]);
+					int id = (int)table.getValueAt(x, 0);
+					librarian.remove_book(id);
 				}
 				update_table();
 				System.out.println(selectedRows.length + " book(s) removed from database.");

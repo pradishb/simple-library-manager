@@ -76,7 +76,6 @@ public class ManageMembersPanel extends TablePanel implements ListSelectionListe
 	}
 	public void update_table(){
 		update(librarian.members_to_array(librarian.get_members()));
-		table.changeSelection(0, 0, false, false);
 	}
 	public void valueChanged(ListSelectionEvent le){
 		if(table.getSelectedRow()!=-1){

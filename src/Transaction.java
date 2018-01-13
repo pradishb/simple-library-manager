@@ -1,5 +1,6 @@
 package slm;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 public class Transaction{
 	private int id;
@@ -35,5 +36,12 @@ public class Transaction{
 
 	public Timestamp get_borrowed_date(){
 		return borrowed_date;
+	}
+
+	public static int calculate_fine(Timestamp time){
+		int yearDiff = LocalDateTime.now().getYear()-time.toLocalDateTime().getYear();
+		int monthDiff = LocalDateTime.now().getMonthValue()-time.toLocalDateTime().getMonthValue();
+		int dayDiff = LocalDateTime.now().getDayOfMonth()-time.toLocalDateTime().getDayOfMonth();
+		return (yearDiff*365+monthDiff*30+dayDiff-Settings.due);
 	}
 }

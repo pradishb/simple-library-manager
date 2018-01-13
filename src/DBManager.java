@@ -55,6 +55,7 @@ public class DBManager{
 			stmt.execute("CREATE TABLE IF NOT EXISTS settings(id smallint(6), password varchar(40), threshold smallint(6), overdue_duration smallint(6), fine_per_day tinyint(4),PRIMARY KEY (id))");
 			stmt.execute("CREATE OR REPLACE VIEW copies AS SELECT books.id, books.copies-(SELECT COUNT(id) FROM transactions WHERE books.id=transactions.book_id) AS remaining FROM books");
 			stmt.execute("CREATE OR REPLACE VIEW books_borrowed AS SELECT members.id, (SELECT COUNT(id) FROM transactions WHERE members.id=transactions.borrower_id) AS books_borrowed FROM members");
+			stmt.execute("CREATE OR REPLACE VIEW transactions_display AS SELECT transactions.id, books.id as book_id, books.title as book_title, members.id as member_id, transactions.borrowed_date FROM transactions, members, books WHERE transactions.borrower_id=members.id && transactions.book_id=books.id");
 
 			//create prepared statements
 			add_member_stmt = conn.prepareStatement("INSERT INTO members(id, name, semester, email) VALUES (0,?,?,?)");
