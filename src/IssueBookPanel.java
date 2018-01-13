@@ -114,6 +114,21 @@ public class IssueBookPanel extends JPanel implements ActionListener,ListSelecti
 				}
 			});
 
+			addComponentListener ( new ComponentAdapter ()
+			{
+				public void componentShown ( ComponentEvent e )
+				{
+					if(reader.isSelected())
+						b_reader.addBarcodeListener(IssueBookPanel.this);
+				}
+
+				public void componentHidden ( ComponentEvent e )
+				{
+					if(reader.isSelected())
+						b_reader.removeBarcodeListener(IssueBookPanel.this);
+				}
+			});
+
 			layout = new GroupLayout(this);
 			setLayout(layout);
 			layout.setAutoCreateGaps(true);
