@@ -7,6 +7,9 @@ import java.awt.event.*;
 import java.util.*;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import org.krysalis.barcode4j.impl.upcean.EAN8LogicImpl;
+import org.krysalis.barcode4j.impl.upcean.EAN8Bean;
+import org.krysalis.barcode4j.impl.upcean.UPCEANLogicImpl;
 
 public class IssueBookPanel extends JPanel implements ActionListener,ListSelectionListener,ItemListener,BarcodeListener{
 		private Librarian librarian;
@@ -114,7 +117,7 @@ public class IssueBookPanel extends JPanel implements ActionListener,ListSelecti
 				}
 			});
 
-			addComponentListener ( new ComponentAdapter ()
+			addComponentListener (new ComponentAdapter()
 			{
 				public void componentShown ( ComponentEvent e )
 				{
@@ -272,7 +275,7 @@ public class IssueBookPanel extends JPanel implements ActionListener,ListSelecti
 		@Override
 		public void onBarcodeRead(String barcode){
 			try{
-				if(barcode.length()==13){
+				if(barcode.length()==13 || barcode.length()==10){
 					ResultSet rs = DBManager.stmt.executeQuery("SELECT * FROM books WHERE isbn=\""+barcode+"\"");
 					if(rs.next()){
 						isbn.setText(barcode);
@@ -287,6 +290,30 @@ public class IssueBookPanel extends JPanel implements ActionListener,ListSelecti
 					else{
 						JOptionPane.showMessageDialog(this, "Book not found in the database.", "Bad Input", JOptionPane.ERROR_MESSAGE);
 					}
+				}
+				else if(barcode.length()==8){
+					char x = UPCEANLogicImpl.calcChecksum(barcode.substring(0, 7));
+					if(barcode.endsWith(String.valueOf(x))){
+						ResultSet rs = DBManager.stmt.executeQuery("SELECT * FROM members WHERE id=\""+barcode.substring(0, 7)+"\"");
+						if(rs.next()){
+							member.setText(rs.getString("id"));
+							name.setText(rs.getString("name"));
+							email.setText(rs.getString("email"));
+							sem.setText(rs.getString("semester"));
+							rs = DBManager.stmt.executeQuery("SELECT books_borrowed FROM books_borrowed WHERE id="+member.getText());
+							if(rs.next())
+								borrowed.setText(rs.getString("books_borrowed"));
+						}
+						else{
+							JOptionPane.showMessageDialog(this, "Member not found in the database.", "Bad Input", JOptionPane.ERROR_MESSAGE);
+						}
+					}
+					else{
+						JOptionPane.showMessageDialog(this, "Invalid check digit.", "Bad Input", JOptionPane.ERROR_MESSAGE);
+					}
+				}
+				else{
+					JOptionPane.showMessageDialog(this, "Invalid barcode length.", "Bad Input", JOptionPane.ERROR_MESSAGE);
 				}
 			}
 			catch(SQLException e){
